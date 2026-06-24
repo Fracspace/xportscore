@@ -15,7 +15,9 @@ export default function Home() {
     <div>
       {/* <Navbar /> */}
       {/* <XportScoreHero /> */}
-      <MainSection />
+      <div className="mt-16">
+        <MainSection />
+      </div>
       {/* <HeroSection /> */}
       <Standards />
       <ExportReadiness />

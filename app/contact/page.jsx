@@ -4,7 +4,7 @@ import React from "react";
 
 function page() {
   return (
-    <div>
+    <div className="mt-12">
       <ContactHero />
       <ContactSection />
     </div>

@@ -31,9 +31,13 @@ export default function RootLayout({ children }) {
       lang="en"
       className={`${dm.variable} ${manrope.variable} ${ibmPlexSans.variable} ${poppins.variable} h-full antialiased`}
     >
-      <Navbar />
-      <body className="min-h-full font-dm flex flex-col">{children}</body>
-      <Footer />
+      <div>
+        <div className="fixed t-0 w-[100vw] z-100">
+          <Navbar />
+        </div>
+        <body className="min-h-full font-dm flex flex-col">{children}</body>
+        <Footer />
+      </div>
     </html>
   );
 }

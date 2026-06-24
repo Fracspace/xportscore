@@ -5,7 +5,7 @@ import React from "react";
 
 function HowItWorks() {
   return (
-    <section>
+    <section className="mt-12">
       <HowXportscoreWorks />
       <AssessmentSteps />
       <AssessmentBasis />

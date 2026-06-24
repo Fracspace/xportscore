@@ -8,7 +8,7 @@ import React from "react";
 function AssessmentFramework() {
   return (
     <div>
-      <div>
+      <div className=" mt-15">
         <FrameworkHero />
         <CorePillars />
         <XportscoreBand />

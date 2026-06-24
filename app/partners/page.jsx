@@ -5,7 +5,7 @@ import React from "react";
 
 function Partners() {
   return (
-    <div>
+    <div className="mt-10">
       <PartnersHero />
       <WhoCanPartner />
       <PartnerModels />

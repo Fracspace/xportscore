@@ -6,7 +6,7 @@ import React from "react";
 function SampleReport() {
   return (
     <div>
-      <div>
+      <div className="mt-15">
         <ReportHero />
         <AuditReportContent />
         <VisualRediness />
