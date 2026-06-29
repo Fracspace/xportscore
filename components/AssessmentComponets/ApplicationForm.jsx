@@ -19,6 +19,7 @@ function ApplicationForm() {
     "Payment",
     "Final Submission"
   ];
+
   return (
     <section className="bg-slate-100 min-h-screen py-10">
       <div className="mx-auto max-w-7xl px-6">
@@ -366,7 +367,6 @@ function PaymentSection() {
 
       <div className="mt-6">
         <label className="block mb-2">Billing Address</label>
-
         <textarea rows="4" className="w-full border rounded-lg p-3" />
       </div>
     </div>

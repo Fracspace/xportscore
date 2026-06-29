@@ -31,13 +31,15 @@ export default function RootLayout({ children }) {
       lang="en"
       className={`${dm.variable} ${manrope.variable} ${ibmPlexSans.variable} ${poppins.variable} h-full antialiased`}
     >
-      <div>
-        <div className="fixed t-0 w-[100vw] z-100">
-          <Navbar />
+      <body>
+        <div>
+          <div className="fixed t-0 w-[100vw] z-100">
+            <Navbar />
+          </div>
+          <div className="min-h-full font-dm flex flex-col">{children}</div>
+          <Footer />
         </div>
-        <body className="min-h-full font-dm flex flex-col">{children}</body>
-        <Footer />
-      </div>
+      </body>
     </html>
   );
 }
