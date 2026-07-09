@@ -1,4 +1,5 @@
 import AppForm from "@/components/AssessmentComponets/AppForm/AppForm";
+import AssessmentReqForm from "@/components/AssessmentComponets/AppForm/AssessmentReqForm";
 import ApplicationForm from "@/components/AssessmentComponets/ApplicationForm";
 import AssessmentCTA from "@/components/AssessmentComponets/AssessmentCTA";
 import AssessmentForm from "@/components/AssessmentComponets/AssessmentForm";
@@ -10,9 +11,10 @@ function page() {
     <div className="mt-12">
       <AssessmentCTA />
       <IndustriesWeServe />
+      <AssessmentReqForm />
       {/* <ApplicationForm /> */}
       {/* <AssessmentForm /> */}
-      <AppForm />
+      {/* <AppForm /> */}
     </div>
   );
 }

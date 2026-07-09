@@ -16,6 +16,8 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
+import QRCode from "react-qr-code";
+
 function MainSection() {
   const router = useRouter();
   const pillars = [
@@ -175,7 +177,9 @@ function MainSection() {
                 Export Readiness Certificate
               </p>
 
-              <div className="w-20 h-20 bg-slate-300 mx-auto mt-6 rounded" />
+              {/* <div className="w-20 h-20 bg-slate-300 mx-auto mt-6 rounded" /> */}
+              <QRCode className="w-20 h-20 mx-auto mt-4"  />
+
 
               <p className="mt-4 font-medium text-teal-600">724 / 900</p>
             </div>

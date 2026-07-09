@@ -75,10 +75,10 @@ function PartnerModels() {
                   {item.description}
                 </p>
 
-                <button className="mt-8 inline-flex items-center gap-2 font-medium text-teal-700 hover:text-teal-800">
+                {/* <button className="mt-8 inline-flex items-center gap-2 font-medium text-teal-700 hover:text-teal-800">
                   {item.button}
                   <ArrowRight size={18} />
-                </button>
+                </button> */}
               </div>
             );
           })}
@@ -108,9 +108,9 @@ function PartnerModels() {
                 Become an XportScore Partner
               </button>
 
-              <button className="rounded-xl border border-slate-300 bg-white px-8 py-4 font-medium text-slate-900 transition hover:bg-slate-50">
+              {/* <button className="rounded-xl border border-slate-300 bg-white px-8 py-4 font-medium text-slate-900 transition hover:bg-slate-50">
                 Talk to Partner Success
-              </button>
+              </button> */}
             </div>
           </div>
         </div>

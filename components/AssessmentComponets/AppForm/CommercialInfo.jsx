@@ -1,45 +1,119 @@
+
+
+"use client";
+
 import React from "react";
-import Checkbox from "@/components/common/Checkbox";
+import { useFormContext } from "react-hook-form";
+
 import Input from "@/components/common/Input";
+import Checkbox from "@/components/common/Checkbox";
+import Radio from "@/components/common/Radio";
 
 function CommercialInfo() {
+  const {
+    register,
+    watch,
+    formState: { errors }
+  } = useFormContext();
+
+  const selectedCurrencies = watch("preferredPricingCurrency") || [];
+
   return (
-    <div className="bg-white border rounded-xl p-8">
-      <h2 className="text-3xl font-bold mb-8">Commercial Information</h2>
+    <div className="rounded-xl border bg-white p-8">
+      <h2 className="mb-8 text-3xl font-bold">Commercial Information</h2>
 
       <div className="space-y-8">
-        <div>
-          <h3 className="font-semibold mb-4">Current Price List Available?</h3>
+        {/* Current Price List */}
 
-          <Checkbox label="Yes" />
-          <Checkbox label="No" />
+        <div>
+          <h3 className="mb-4 font-semibold">Current Price List Available?</h3>
+
+          <div className="space-y-3">
+            <Radio
+              label="Yes"
+              value="Yes"
+              {...register("currentPriceListAvailable")}
+            />
+
+            <Radio
+              label="No"
+              value="No"
+              {...register("currentPriceListAvailable")}
+            />
+          </div>
+
+          {errors.currentPriceListAvailable && (
+            <p className="mt-2 text-sm text-red-500">
+              {errors.currentPriceListAvailable.message}
+            </p>
+          )}
         </div>
 
-        <div>
-          <h3 className="font-semibold mb-4">Export Price List Available?</h3>
+        {/* Export Price List */}
 
-          <Checkbox label="Yes" />
-          <Checkbox label="No" />
+        <div>
+          <h3 className="mb-4 font-semibold">Export Price List Available?</h3>
+
+          <div className="space-y-3">
+            <Radio
+              label="Yes"
+              value="Yes"
+              {...register("exportPriceListAvailable")}
+            />
+
+            <Radio
+              label="No"
+              value="No"
+              {...register("exportPriceListAvailable")}
+            />
+          </div>
+
+          {errors.exportPriceListAvailable && (
+            <p className="mt-2 text-sm text-red-500">
+              {errors.exportPriceListAvailable.message}
+            </p>
+          )}
         </div>
 
-        <div>
-          <h3 className="font-semibold mb-4">Preferred Pricing Currency</h3>
+        {/* Preferred Pricing Currency */}
 
-          <div className="grid md:grid-cols-3 gap-4">
-            {["USD", "INR", "EUR", "GBP", "AED"].map((item) => (
-              <Checkbox key={item} label={item} />
+        <div>
+          <h3 className="mb-4 font-semibold">Preferred Pricing Currency</h3>
+
+          <div className="grid gap-4 md:grid-cols-3">
+            {["USD", "INR", "EUR", "GBP", "AED", "Other"].map((item) => (
+              <Checkbox
+                key={item}
+                label={item}
+                value={item}
+                {...register("preferredPricingCurrency")}
+              />
             ))}
           </div>
 
-          <div className="mt-4">
-            <Input label="Other Currency" />
-          </div>
+          {errors.preferredPricingCurrency && (
+            <p className="mt-2 text-sm text-red-500">
+              {errors.preferredPricingCurrency.message}
+            </p>
+          )}
+
+          {selectedCurrencies.includes("Other") && (
+            <div className="mt-4">
+              <Input
+                label="Other Currency"
+                {...register("otherCurrency")}
+                error={errors.otherCurrency}
+              />
+            </div>
+          )}
         </div>
 
-        <div>
-          <h3 className="font-semibold mb-4">Payment Terms</h3>
+        {/* Payment Terms */}
 
-          <div className="grid md:grid-cols-2 gap-4">
+        <div>
+          <h3 className="mb-4 font-semibold">Payment Terms</h3>
+
+          <div className="grid gap-4 md:grid-cols-2">
             {[
               "100% advance",
               "Advance + balance before dispatch",
@@ -48,9 +122,20 @@ function CommercialInfo() {
               "Negotiable",
               "Not finalised"
             ].map((item) => (
-              <Checkbox key={item} label={item} />
+              <Checkbox
+                key={item}
+                label={item}
+                value={item}
+                {...register("paymentTerms")}
+              />
             ))}
           </div>
+
+          {errors.paymentTerms && (
+            <p className="mt-2 text-sm text-red-500">
+              {errors.paymentTerms.message}
+            </p>
+          )}
         </div>
       </div>
     </div>

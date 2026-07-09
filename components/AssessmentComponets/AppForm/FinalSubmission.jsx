@@ -1,7 +1,12 @@
 import React from "react";
 import Input from "@/components/common/Input";
+import { useFormContext } from "react-hook-form";
 
 function FinalSubmission() {
+  const {
+    register,
+    formState: { errors }
+  } = useFormContext();
   return (
     <div className="bg-white border rounded-xl p-8">
       <h2 className="text-3xl font-bold mb-8">Final Submission</h2>

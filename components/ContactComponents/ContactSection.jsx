@@ -25,7 +25,7 @@ function ContactSection() {
                     label: "GENERAL SUPPORT",
                     value: "support@xportscore.com",
                     desc: "24/7 ticket response for active audit cycles."
-                  }
+                  },
 
                   // {
                   //   icon: Handshake,
@@ -33,12 +33,12 @@ function ContactSection() {
                   //   value: "partners@xportscore.com",
                   //   desc: "For government agencies and trade associations."
                   // }
-                  // {
-                  //   icon: Phone,
-                  //   label: "PHONE / WHATSAPP",
-                  //   value: "+1 (555) 012-3456",
-                  //   desc: "Available Mon–Fri, 9:00 AM – 6:00 PM EST."
-                  // },
+                  {
+                    icon: Phone,
+                    label: "PHONE / WHATSAPP",
+                    value: "+91 92479 52343",
+                    desc: "Available Mon–Sat, 9:00 AM – 6:00 PM IST."
+                  }
                   // {
                   //   icon: MapPin,
                   //   label: "REGISTERED ADDRESS",

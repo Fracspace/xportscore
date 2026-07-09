@@ -41,9 +41,9 @@ function PartnersHero() {
                 <ArrowRight size={18} />
               </button>
 
-              <button className="rounded-lg border border-slate-300 bg-white px-8 py-4 font-medium text-slate-800 transition hover:bg-slate-50">
+              {/* <button className="rounded-lg border border-slate-300 bg-white px-8 py-4 font-medium text-slate-800 transition hover:bg-slate-50">
                 View Partner Models
-              </button>
+              </button> */}
             </div>
           </div>
 

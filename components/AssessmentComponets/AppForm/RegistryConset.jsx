@@ -1,7 +1,12 @@
 import React from "react";
 import Radio from "@/components/common/Radio";
+import { useFormContext } from "react-hook-form";
 
 function RegistryConset() {
+  const {
+    register,
+    formState: { errors }
+  } = useFormContext();
   return (
     <div className="bg-white border rounded-xl p-8">
       <h2 className="text-3xl font-bold mb-8">Registry Consent</h2>
@@ -12,9 +17,21 @@ function RegistryConset() {
       </p>
 
       <div className="space-y-3">
-        <Radio label="Yes" />
+        {/* <Radio label="Yes" />
         <Radio label="No" />
-        <Radio label="Decide Later" />
+        <Radio label="Decide Later" /> */}
+        {["Yes", "No", "Decide Later"].map((item) => (
+          <label key={item} className="flex items-center gap-2 cursor-pointer">
+            <input type="radio" value={item} {...register("registryConsent")} />
+
+            {item}
+          </label>
+        ))}
+        {errors?.registryConsent && (
+          <p className="text-red-500 text-sm mt-1">
+            {errors?.registryConsent?.message}
+          </p>
+        )}
       </div>
 
       <div className="mt-8 bg-slate-50 rounded-lg p-5">

@@ -10,8 +10,9 @@ const navLinks = [
   { label: "Home", href: "/" },
   { label: "How It Works", href: "/howitworks" },
   { label: "Framework", href: "/assessmentframework" },
+  { label: "XportVerify", href: "/xportverify" },
+  { label: "XportAssessment", href: "/startassessment" },
   { label: "Sample Report", href: "/samplereport" },
-  { label: "For Partners", href: "/partners" },
   { label: "FAQ", href: "/faq" },
   { label: "Contact", href: "/contact" }
 ];
@@ -33,7 +34,9 @@ export default function Navbar() {
             <BriefcaseBusiness size={20} />
           </div>
 
-          <span className="text-xl font-ibm font-bold text-black">XportScore</span>
+          <span className="text-xl font-ibm font-bold text-black">
+            XportScore
+          </span>
         </Link>
 
         {/* Desktop Nav */}
@@ -57,10 +60,13 @@ export default function Navbar() {
         {/* CTA Button */}
         <div className="hidden lg:block">
           <button
-            onClick={() =>{setSelected("startassessment"); router.push("/startassessment")}}
+            onClick={() => {
+              setSelected("startassessment");
+              router.push("/login");
+            }}
             className="rounded-md font-ibm bg-black px-6 py-3 text-sm font-medium text-white transition hover:bg-gray-900 cursor-pointer"
           >
-            Get Your XportScore
+            Login
           </button>
         </div>
 
