@@ -5,7 +5,7 @@ import { useFormContext } from "react-hook-form";
 function VerificationScope() {
   const {
     register,
-    formState: { error }
+    formState: { errors }
   } = useFormContext();
   return (
     <div>
@@ -84,8 +84,12 @@ function VerificationScope() {
                 />
                 <span>Directors / Key management (where available)</span>
               </label>
-             
             </div>
+            {errors?.identityVerification && (
+              <p className="mt-4 text-sm text-red-500">
+                {errors?.identityVerification?.message}
+              </p>
+            )}
           </div>
 
           {/* Trade Intelligence */}
@@ -136,6 +140,11 @@ function VerificationScope() {
                 {...register("tradeIntelligence")}
               />
             </div>
+            {errors?.tradeIntelligence && (
+              <p className="mt-4 text-sm text-red-500">
+                {errors?.tradeIntelligence?.message}
+              </p>
+            )}
           </div>
 
           {/* Business Reputation */}
@@ -181,6 +190,11 @@ function VerificationScope() {
                 {...register("businessReputation")}
               />
             </div>
+            {errors?.businessReputation && (
+              <p className="mt-4 text-sm text-red-500">
+                {errors?.businessReputation?.message}
+              </p>
+            )}
           </div>
 
           {/* Operational Review */}
@@ -216,6 +230,11 @@ function VerificationScope() {
                 {...register("operationalReview")}
               />
             </div>
+            {errors?.operationalReview && (
+              <p className="mt-4 text-sm text-red-500">
+                {errors?.operationalReview?.message}
+              </p>
+            )}
           </div>
 
           {/* Compliance Review */}
@@ -251,6 +270,11 @@ function VerificationScope() {
                 {...register("complianceReview")}
               />
             </div>
+            {errors?.complianceReview && (
+              <p className="mt-4 text-sm text-red-500">
+                {errors?.complianceReview?.message}
+              </p>
+            )}
           </div>
 
           {/* Risk & Due Diligence */}
@@ -296,6 +320,11 @@ function VerificationScope() {
                 {...register("riskDueDiligence")}
               />
             </div>
+            {errors?.riskDueDiligence && (
+              <p className="mt-4 text-sm text-red-500">
+                {errors?.riskDueDiligence?.message}
+              </p>
+            )}
           </div>
 
           {/* Contact Verification */}
@@ -336,6 +365,11 @@ function VerificationScope() {
                 {...register("contactVerification")}
               />
             </div>
+            {errors?.contactVerification && (
+              <p className="mt-4 text-sm text-red-500">
+                {errors?.contactVerification?.message}
+              </p>
+            )}
           </div>
         </div>
       </div>

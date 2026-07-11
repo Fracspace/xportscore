@@ -32,13 +32,21 @@ function AppForm() {
       exportType: "product",
       skus: [""],
       exportStatus: "",
+
+      currentPriceListAvailable: "",
+      exportPriceListAvailable: "",
+      preferredPricingCurrency: [],
+      paymentTerms: [],
+
       iecExportRegistration: "",
       informationAccuracy: false,
       documentAuthenticity: false,
       privateAuditAcknowledgement: false,
       noGuaranteeAcknowledgement: false,
       revocationAcknowledgement: false,
-      dataConsent: false
+      dataConsent: false,
+
+      registryConsent: ""
     }
   });
 
@@ -62,7 +70,136 @@ function AppForm() {
     console.log("Current Step Data:", methods.getValues(fields));
     console.log("Complete Form:", methods.getValues());
 
-    setCurrentStep((prev) => prev + 1);
+    // setCurrentStep((prev) => prev + 1);
+
+    try {
+      const formData = methods.getValues();
+      console.log("form data is", formData);
+
+      const values = methods.getValues();
+
+      const payload = {
+        applicant: {
+          fullname: "Vishnuteja",
+          designation: "Export Director",
+          email: "vishnuteja476@gmail.com",
+          phone: "+916304798328"
+        },
+
+        business: {
+          legalBusinessName: "ACME Exports Ltd",
+          brandName: "ACME",
+          country: "India",
+          city: "Mumbai",
+          address: "123 Industrial Area, Phase II",
+          website: "https://www.acmeexports.com",
+          businessType: "Manufacturer",
+          otherBusinessType: "OEM Contractor",
+          yearEstablished: "2015"
+        },
+
+        exportStatus: {
+          exportStatus: "Already exporting",
+          countriesExportedTo: "USA, Germany, UAE",
+          iecExportRegistration: "Yes"
+        },
+
+        productService: {
+          exportType: "product",
+          productCategory: "Textiles & Apparel",
+          monthlyProductionCapacity: "50,000 units",
+          minimumOrderQuantity: "1,000 units",
+          productShelfLife: "Not Applicable",
+          productDescription: "Premium organic cotton t-shirts and hoodies",
+          skus: ["SKU-COT-BLK-S", "SKU-COT-BLK-M"],
+          primaryServiceCategory: "IT Consulting",
+          keyServiceLines: "Custom software development",
+          industriesServed: "Retail, FinTech",
+          teamSize: "25",
+          deliveryCapacity: "3 projects concurrently",
+          avgProjectSize: "$50,000",
+          minEngagementValue: "$10,000",
+          avgTurnaroundTime: "3 months",
+          serviceDescription: "Agile development and architecture design",
+          deliveryModel: "Dedicated team"
+        },
+
+        commercialInformation: {
+          currentPriceListAvailable: "Yes",
+          exportPriceListAvailable: "Yes",
+          preferredPricingCurrency: ["USD", "EUR"],
+          otherCurrency: "INR",
+          paymentTerms: ["100% advance", "Letter of Credit"]
+        },
+
+        registryConsent: {
+          registryConsent: "Yes"
+        },
+
+        uploadDocuments: {
+          businessDocuments: [
+            "https://d2j0qyp55z3e9s.cloudfront.net/assessments/test-file.pdf"
+          ],
+          productServiceDocuments: [],
+          packagingDocuments: [],
+          certificationQualityDocuments: [],
+          pastExportDocuments: []
+        },
+
+        supportingDocuments: {
+          distributorAgreement: [],
+          productVideos: [],
+          factoryPhotos: [],
+          qualityControlProcessDocuments: []
+        },
+
+        declaration: {
+          informationAccuracy: true,
+          documentAuthenticity: true,
+          privateAuditAcknowledgement: true,
+          noGuaranteeAcknowledgement: true,
+          revocationAcknowledgement: true,
+          dataConsent: true
+        },
+
+        finalSubmission: {
+          applicantName: "John Doe",
+          companyName: "ACME Exports Ltd",
+          date: new Date().toISOString(),
+          digitalSignature: "/s/ John Doe"
+        },
+
+        assessmentStatus: "draft"
+      };
+
+      const token =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVhZjE1ZTRjLTMyNzEtNDM1OS1hOTk3LTdmMGNiOWVkZjIwZCIsInJvbGUiOiJhcHBsaWNhbnQiLCJlbWFpbCI6InZpc2hudXRlamE0NzZAZ21haWwuY29tIiwiaWF0IjoxNzgzNzQ4MzA0LCJleHAiOjE3ODYzNDAzMDR9.1xa7VE_ayOv_nqzJp8n8hkRl-hM7Ym9ETypJz0skZsM";
+
+      const response = await fetch(
+        "https://api.xportscore.com/api/export-assessments",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": "Xportscore@2026",
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify(payload)
+        }
+      );
+
+      const data = await response.json();
+      console.log("form resp is", data);
+
+      if (!response.ok) {
+        throw new Error(data.message);
+      }
+
+      // setCurrentStep((prev) => prev + 1);
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
+    }
   };
 
   const sections = [

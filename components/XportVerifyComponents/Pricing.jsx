@@ -104,13 +104,13 @@ export default function Pricing() {
                 <Feature icon={<Clock3 size={18} />} text={features[4]} />
               </div>
 
-              <Link
+              {/* <Link
                 href="#"
                 className="mt-10 flex w-full items-center justify-center rounded-lg bg-teal-600 px-6 py-4 font-semibold transition hover:bg-teal-700"
               >
                 Verify an Importer Now
                 <ArrowRight className="ml-2" size={18} />
-              </Link>
+              </Link> */}
             </div>
           </div>
         </div>

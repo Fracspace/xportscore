@@ -1,7 +1,7 @@
 import React from "react";
 import { Shield, CheckCircle } from "lucide-react";
 
-function AssessmentCTA() {
+function AssessmentCTA({onProceed}) {
   const features = [
     "Comprehensive XportScore",
     "Readiness Status Audit",
@@ -63,7 +63,7 @@ function AssessmentCTA() {
                 ))}
               </div>
 
-              <button className="mt-8 w-full rounded-md bg-teal-700 px-6 py-3 font-medium text-white transition hover:bg-teal-800">
+              <button onClick={onProceed} className="mt-8 w-full cursor-pointer rounded-md bg-teal-700 px-6 py-3 font-medium text-white transition hover:bg-teal-800">
                 Proceed to Assessment
               </button>
             </div>

@@ -13,7 +13,7 @@ import {
 import Image from "next/image";
 import xportVerifyImg from "../../assets/xportVerify.png";
 
-export default function Hero() {
+export default function Hero({onProceed}) {
   return (
     <section className="relative overflow-hidden bg-[#F8FAFC]">
       <div className="mx-auto max-w-7xl px-6 py-16 lg:px-8 lg:py-24">
@@ -64,21 +64,21 @@ export default function Hero() {
             {/* Buttons */}
 
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-              <Link
-                href="#"
-                className="flex items-center justify-center rounded-xl bg-teal-500 px-7 py-4 font-semibold text-white transition hover:bg-teal-600"
+              <button
+                onClick={onProceed}
+                className="flex items-center cursor-pointer justify-center rounded-xl bg-teal-500 px-7 py-4 font-semibold text-white transition hover:bg-teal-600"
               >
                 Verify an Importer Now
                 <ArrowRight className="ml-2" size={18} />
-              </Link>
-
+              </button>
+{/* 
               <Link
                 href="#"
                 className="flex items-center justify-center rounded-xl border border-slate-300 bg-white px-7 py-4 font-semibold text-[#081B4B] transition hover:border-[#081B4B]"
               >
                 View Sample Report
                 <FileText className="ml-2" size={18} />
-              </Link>
+              </Link> */}
             </div>
           </div>
 

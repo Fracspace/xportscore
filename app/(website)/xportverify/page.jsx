@@ -1,23 +1,39 @@
+"use client";
+
+import PaymentMethodSelector from "@/components/common/PaymentMethodSelector";
 import Hero from "@/components/XportVerifyComponents/Hero";
 import Pricing from "@/components/XportVerifyComponents/Pricing";
 import VerificationAreas from "@/components/XportVerifyComponents/VerificationAreas";
 import VerificationRequestForm from "@/components/XportVerifyComponents/VerifyForm/VerificationRequestForm";
 import VerifyForm from "@/components/XportVerifyComponents/VerifyForm/VerifyForm";
 import React from "react";
+import { useRef } from "react";
 
-function page() {
+function XportVerify() {
+  const formRef = useRef(null);
+
+  const scrollToForm = () => {
+    formRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  };
+
   return (
     <div>
       <h1>Export Verify</h1>
       <div>
-        <Hero />
+        <Hero onProceed={scrollToForm} />
         <VerificationAreas />
         <Pricing />
-        <VerificationRequestForm />
+        <div ref={formRef}>
+          <VerificationRequestForm />
+          <PaymentMethodSelector />
+        </div>
         {/* <VerifyForm /> */}
       </div>
     </div>
   );
 }
 
-export default page;
+export default XportVerify;

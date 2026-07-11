@@ -10,24 +10,6 @@ import "../../globals.css";
 export default function DashboardLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   return (
-    // <div className="flex h-screen bg-[#F6F8FC] overflow-hidden">
-    //   {/* Sidebar */}
-    //   <aside className="w-64 h-screen sticky top-0 shrink-0 bg-white border-r border-gray-200">
-    //     <Sidebar />
-    //   </aside>
-
-    //   {/* Right Section */}
-    //   <div className="flex flex-col flex-1 overflow-hidden">
-    //     {/* Sticky Topbar */}
-    //     <div className="sticky top-0  bg-white border-b border-gray-200">
-    //       <Topbar />
-    //     </div>
-
-    //     {/* Scrollable Content */}
-    //     <main className="flex-1 overflow-y-auto p-6">{children}</main>
-    //   </div>
-    // </div>
-
     <div className="flex h-screen bg-[#F6F8FC] overflow-hidden">
       {/* Mobile Overlay */}
       {sidebarOpen && (

@@ -63,6 +63,10 @@ function ExportStatus() {
           </p>
         )}
       </div>
+
+      <div className="mt-8">
+        <Input label="IEC (Import Export Code)" {...register("iecNumber")} />
+      </div>
     </div>
   );
 }

@@ -1,3 +1,5 @@
+"use client";
+
 import {
   ShieldCheck,
   User,
@@ -9,9 +11,85 @@ import {
 import Link from "next/link";
 
 import { Country } from "country-state-city";
+import { useState } from "react";
 
 export default function SignupPage() {
   const countries = Country.getAllCountries();
+  const [formData, setFormData] = useState({
+    companyName: "",
+    contactPersonName: "",
+    designation: "",
+    officeEmail: "",
+    password: "",
+    countryCode: "+91",
+    phoneNumber: "",
+    formType: "export"
+  });
+
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleCountryChange = (e) => {
+    const selectedCountry = Country.getAllCountries().find(
+      (c) => c.name === e.target.value
+    );
+
+    setFormData((prev) => ({
+      ...prev,
+      countryCode: selectedCountry?.phonecode
+        ? `+${selectedCountry.phonecode}`
+        : "+91"
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      setLoading(true);
+
+      const response = await fetch(
+        "https://api.xportscore.com/api/auth/signup",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": "Xportscore@2026",
+            accept: "application/json"
+          },
+          body: JSON.stringify(formData)
+        }
+      );
+
+      console.log("resp is", response);
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Something went wrong");
+      }
+
+      localStorage.setItem("token", data.token);
+
+      console.log(data);
+
+      alert("Account created successfully!");
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <main className="min-h-screen bg-[#f5f7fb] bg-[radial-gradient(#d9dde7_1px,transparent_1px)] [background-size:20px_20px] flex items-center justify-center mt-12 py-12 px-4">
       <div className="w-full max-w-xl bg-white border border-gray-200 shadow-lg rounded-sm px-10 py-12">
@@ -31,16 +109,24 @@ export default function SignupPage() {
 
         {/* Form */}
 
-        <form className="mt-10 space-y-5">
+        <form onSubmit={handleSubmit} className="mt-10 space-y-5">
           {/* Full Name */}
           <div>
             <label className="mb-2 block text-[10px] font-bold tracking-[2px] text-gray-600 uppercase">
               FULL NAME
             </label>
-            <input
+            {/* <input
               type="text"
               placeholder="Johnathan Doe"
               className="w-full h-12 rounded border border-gray-300 bg-[#f9fbff] px-4 text-sm placeholder:text-gray-400 focus:border-[#0B1E48] focus:ring-2 focus:ring-blue-100 outline-none transition"
+            /> */}
+            <input
+              type="text"
+              name="contactPersonName"
+              value={formData.contactPersonName}
+              onChange={handleChange}
+              placeholder="John Doe"
+              className="w-full h-12 rounded border border-gray-300 bg-[#f9fbff] px-4"
             />
           </div>
 
@@ -49,10 +135,18 @@ export default function SignupPage() {
             <label className="mb-2 block text-[10px] font-bold tracking-[2px] text-gray-600 uppercase">
               WORK EMAIL
             </label>
-            <input
+            {/* <input
               type="email"
               placeholder="j.doe@company.com"
               className="w-full h-12 rounded border border-gray-300 bg-[#f9fbff] px-4 text-sm placeholder:text-gray-400 focus:border-[#0B1E48] focus:ring-2 focus:ring-blue-100 outline-none transition"
+            /> */}
+            <input
+              type="email"
+              name="officeEmail"
+              value={formData.officeEmail}
+              onChange={handleChange}
+              placeholder="j.doe@company.com"
+              className="w-full h-12 rounded border border-gray-300 bg-[#f9fbff] px-4"
             />
           </div>
 
@@ -62,10 +156,18 @@ export default function SignupPage() {
               <label className="mb-2 block text-[10px] font-bold tracking-[2px] text-gray-600 uppercase">
                 MOBILE NUMBER
               </label>
-              <input
+              {/* <input
                 type="tel"
                 placeholder="+1 (555) 000-0000"
                 className="w-full h-12 rounded border border-gray-300 bg-[#f9fbff] px-4 text-sm placeholder:text-gray-400 focus:border-[#0B1E48] focus:ring-2 focus:ring-blue-100 outline-none transition"
+              /> */}
+              <input
+                type="tel"
+                name="phoneNumber"
+                value={formData.phoneNumber}
+                onChange={handleChange}
+                placeholder="9876543210"
+                className="w-full h-12 rounded border border-gray-300 bg-[#f9fbff] px-4"
               />
             </div>
 
@@ -73,10 +175,18 @@ export default function SignupPage() {
               <label className="mb-2 block text-[10px] font-bold tracking-[2px] text-gray-600 uppercase">
                 DESIGNATION
               </label>
-              <input
+              {/* <input
                 type="text"
                 placeholder="Export Manager"
                 className="w-full h-12 rounded border border-gray-300 bg-[#f9fbff] px-4 text-sm placeholder:text-gray-400 focus:border-[#0B1E48] focus:ring-2 focus:ring-blue-100 outline-none transition"
+              /> */}
+              <input
+                type="text"
+                name="designation"
+                value={formData.designation}
+                onChange={handleChange}
+                placeholder="Export Manager"
+                className="w-full h-12 rounded border border-gray-300 bg-[#f9fbff] px-4"
               />
             </div>
           </div>
@@ -86,10 +196,18 @@ export default function SignupPage() {
             <label className="mb-2 block text-[10px] font-bold tracking-[2px] text-gray-600 uppercase">
               COMPANY NAME
             </label>
-            <input
+            {/* <input
               type="text"
               placeholder="Global Logistics Inc."
               className="w-full h-12 rounded border border-gray-300 bg-[#f9fbff] px-4 text-sm placeholder:text-gray-400 focus:border-[#0B1E48] focus:ring-2 focus:ring-blue-100 outline-none transition"
+            /> */}
+            <input
+              type="text"
+              name="companyName"
+              value={formData.companyName}
+              onChange={handleChange}
+              placeholder="Global Logistics Inc."
+              className="w-full h-12 rounded border border-gray-300 bg-[#f9fbff] px-4"
             />
           </div>
 
@@ -99,7 +217,10 @@ export default function SignupPage() {
               COUNTRY
             </label>
 
-            <select className="w-full h-12 rounded border border-gray-300 bg-[#f9fbff] px-4 text-sm text-gray-700 focus:border-[#0B1E48] focus:ring-2 focus:ring-blue-100 outline-none transition">
+            <select
+              onChange={handleCountryChange}
+              className="w-full h-12 rounded border border-gray-300 bg-[#f9fbff] px-4 text-sm text-gray-700 focus:border-[#0B1E48] focus:ring-2 focus:ring-blue-100 outline-none transition"
+            >
               <option value="">Select Country</option>
 
               {countries.map((country) => (
@@ -127,11 +248,18 @@ export default function SignupPage() {
           </div>
 
           {/* Submit */}
-          <button
+          {/* <button
             type="submit"
             className="w-full bg-[#0B1E48] hover:bg-[#091738] text-white font-semibold py-4 rounded shadow-md transition"
           >
             Create Account
+          </button> */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full cursor-pointer rounded bg-[#0B1E48] py-4 font-semibold text-white disabled:opacity-50"
+          >
+            {loading ? "Creating Account..." : "Create Account"}
           </button>
         </form>
 
@@ -148,27 +276,5 @@ export default function SignupPage() {
         </p>
       </div>
     </main>
-  );
-}
-
-function Input({ label, placeholder, icon }) {
-  return (
-    <div>
-      <label className="mb-2 block text-[10px] font-bold tracking-[2px] text-gray-600 uppercase">
-        {label}
-      </label>
-
-      <div className="relative">
-        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-          {icon}
-        </span>
-
-        <input
-          type="text"
-          placeholder={placeholder}
-          className="w-full h-12 rounded border border-gray-300 bg-[#f9fbff] pl-10 pr-4 text-sm placeholder:text-gray-400 focus:border-[#0B1E48] focus:ring-2 focus:ring-blue-100 outline-none transition"
-        />
-      </div>
-    </div>
   );
 }

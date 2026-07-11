@@ -37,14 +37,14 @@ function ReportHero() {
 
           {/* Buttons */}
           <div className="flex flex-col sm:flex-row gap-4">
-            <button className="bg-[#020817] text-white px-8 py-4 rounded font-semibold flex items-center justify-center gap-2 hover:bg-[#0f172a] transition">
+            {/* <button className="bg-[#020817] text-white px-8 py-4 rounded font-semibold flex items-center justify-center gap-2 hover:bg-[#0f172a] transition">
               <Download size={18} />
               Download Sample Report
-            </button>
+            </button> */}
 
             <button
               onClick={() => router.push("/startassessment")}
-              className="border cursor-pointer border-gray-300 px-8 py-4 rounded font-semibold text-[#07132D] flex items-center justify-center gap-2 hover:bg-white transition"
+              className="border bg-[#020817] cursor-pointer border-gray-300 px-8 py-4 rounded font-semibold text-white flex items-center justify-center gap-2 hover:bg-gray-800 transition"
             >
               Get Your XportScore
               <ArrowRight size={18} />

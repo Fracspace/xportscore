@@ -21,7 +21,19 @@ import { verifyformSteps } from "../VerifySchemas/verifySchema";
 function VerifyForm() {
   const [currentStep, setCurrentStep] = useState(0);
   const methods = useForm({
-    resolver: zodResolver(verifySchema)
+    resolver: zodResolver(verifySchema),
+    defaultValues: {
+      identityVerification: [],
+      tradeIntelligence: [],
+      businessReputation: [],
+      operationalReview: [],
+      complianceReview: [],
+      riskDueDiligence: [],
+      contactVerification: [],
+
+      supportingDocuments: [],
+      uploadedDocuments: []
+    }
   });
 
   const sections = [
@@ -45,6 +57,10 @@ function VerifyForm() {
     console.log("fields are", fields);
     console.log("Errors:", methods?.formState?.errors);
     const isValid = await methods.trigger(fields);
+
+    if (currentStep == 6) {
+      setCurrentStep((prev) => prev + 1);
+    }
 
     if (!isValid) return;
     setCurrentStep((prev) => prev + 1);
@@ -73,7 +89,7 @@ function VerifyForm() {
               </h1>
 
               <p className="mt-2 text-center text-gray-500">
-                Complete the  form below to initiate verification.
+                Complete the form below to initiate verification.
               </p>
 
               <div className="mt-10 grid grid-cols-12 md:gap-8">

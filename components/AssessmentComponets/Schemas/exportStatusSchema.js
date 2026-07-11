@@ -7,5 +7,6 @@ export const exportStatusSchema = z.object({
 
   iecExportRegistration: z
     .string()
-    .min(1, "Please select your IEC / Export Registration status.")
+    .min(1, "Please select your IEC / Export Registration status."),
+  iecNumber: z.string().optional()
 });

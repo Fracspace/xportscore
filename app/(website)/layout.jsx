@@ -2,6 +2,7 @@ import { DM_Sans, Manrope, IBM_Plex_Sans, Poppins } from "next/font/google";
 import "../globals.css";
 import Navbar from "@/components/common/Navbar";
 import Footer from "@/components/common/Footer";
+import { AuthProvider } from "../context/AuthContext";
 
 const dm = DM_Sans({
   variable: "--font-dm",
@@ -32,13 +33,15 @@ export default function RootLayout({ children }) {
       className={`${dm.variable} ${manrope.variable} ${ibmPlexSans.variable} ${poppins.variable} h-full antialiased`}
     >
       <body>
-        <div>
-          <div className="fixed t-0 w-[100vw] z-100">
-            <Navbar />
+        <AuthProvider>
+          <div>
+            <div className="fixed t-0 w-[100vw] z-100">
+              <Navbar />
+            </div>
+            <div className="min-h-full font-dm flex flex-col">{children}</div>
+            <Footer />
           </div>
-          <div className="min-h-full font-dm flex flex-col">{children}</div>
-          <Footer />
-        </div>
+        </AuthProvider>
       </body>
     </html>
   );

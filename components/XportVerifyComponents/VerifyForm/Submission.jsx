@@ -18,20 +18,28 @@ function Submission() {
           label="Requestor Name*"
           placeholder="Full Name"
           {...register("requestorName")}
+          error={errors?.requestorName?.message}
         />
 
         <Input
           label="Company*"
           placeholder="Company Name"
           {...register("company")}
+          error={errors?.company?.message}
         />
 
-        <Input label="Date*" type="date" {...register("date")} />
+        <Input
+          label="Date*"
+          type="date"
+          {...register("date")}
+          error={errors?.date?.message}
+        />
 
         <Input
           label="Digital Signature / Confirmation*"
           {...register("digitalSignature")}
           placeholder="Type your full name as your digital signature"
+          error={errors?.digitalSignature?.message}
         />
       </div>
 

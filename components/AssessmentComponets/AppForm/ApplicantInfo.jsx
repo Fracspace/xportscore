@@ -17,6 +17,8 @@ function ApplicantInfo() {
         <Input label="Designation" {...register("designation")} error={errors?.designation?.message} />
         <Input label="Email Address" type="email" {...register("email")} error={errors?.email?.message} />
         <Input label="Mobile / WhatsApp Number" {...register("phone")} error={errors?.phone?.message} />
+        <Input label="Company Name" {...register("company")} error={errors?.company?.message} />
+        <Input label="Country" {...register("country")} error={errors?.country?.message} />
       </div>
     </div>
   );

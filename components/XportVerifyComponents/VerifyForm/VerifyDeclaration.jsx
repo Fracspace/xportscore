@@ -35,6 +35,9 @@ function VerifyDeclaration() {
         <div className="mt-8 border-t border-slate-200 pt-6">
           <Checkbox label="I Agree" {...register("agree")} />
         </div>
+        {errors?.agree && (
+          <p className="mt-4 text-sm text-red-500">{errors?.agree?.message}</p>
+        )}
       </div>
     </div>
   );
