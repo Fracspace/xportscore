@@ -5,8 +5,16 @@ import React from "react";
 
 import { ArrowLeft, ShieldCheck, RotateCcw } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
-function page() {
+function XportAssessment() {
+  // const searchParams = useSearchParams();
+
+  // const assessmentId = searchParams.get("assessmentId");
+  // const token = searchParams.get("token");
+
+  // console.log("Assessment ID:", assessmentId);
+  // console.log("Token:", token);
   return (
     <div>
       <div className="mt-16 pt-12 bg-gray-50">
@@ -23,4 +31,4 @@ function page() {
   );
 }
 
-export default page;
+export default XportAssessment;

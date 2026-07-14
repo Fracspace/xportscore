@@ -44,7 +44,7 @@ function ReportHero() {
 
             <button
               onClick={() => router.push("/startassessment")}
-              className="border bg-[#020817] cursor-pointer border-gray-300 px-8 py-4 rounded font-semibold text-white flex items-center justify-center gap-2 hover:bg-gray-800 transition"
+              className="border bg-[#020817] cursor-pointer border-gray-300 px-8 py-4 rounded font-semibold text-white flex items-center justify-center gap-2 hover:bg-gray-800d transition"
             >
               Get Your XportScore
               <ArrowRight size={18} />

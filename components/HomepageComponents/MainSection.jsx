@@ -20,6 +20,7 @@ import QRCode from "react-qr-code";
 
 function MainSection() {
   const router = useRouter();
+   const verifyUrl = "https://www.xportscore.com/verifycertificates";
   const pillars = [
     {
       icon: ShieldCheck,
@@ -178,7 +179,7 @@ function MainSection() {
               </p>
 
               {/* <div className="w-20 h-20 bg-slate-300 mx-auto mt-6 rounded" /> */}
-              <QRCode className="w-20 h-20 mx-auto mt-4"  />
+              <QRCode value={verifyUrl} className="w-20 h-20 mx-auto mt-4"  />
 
 
               <p className="mt-4 font-medium text-teal-600">724 / 900</p>

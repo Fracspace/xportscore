@@ -12,7 +12,7 @@ export default function Page() {
   const [loading, setLoading] = useState(false);
   const [showVerifyOTP, setShowVerifyOTP] = useState(false);
 
-  const { setUser, setApplicationId, setApplicantId } = useAuth();
+  const { setUser, setApplicationId, setApplicantId, user, token } = useAuth();
 
   const sendOTP = async () => {
     if (!email) {
@@ -42,8 +42,12 @@ export default function Page() {
       setApplicantId(data?.user?.applicantId);
       setApplicationId(data?.application?.id);
 
+      localStorage.setItem("user", JSON.stringify(data?.user));
+      localStorage.setItem("applicantId", data?.user?.applicantId || "");
+      localStorage.setItem("applicationId", data?.application?.id || "");
+
       console.log(
-        "details are",
+        "details are inside login",
         data?.user,
         data?.user?.applicantId,
         data?.application?.id
@@ -52,6 +56,9 @@ export default function Page() {
       if (!response.ok) {
         throw new Error(data.message);
       }
+
+      alert("OTP sent successfully.");
+      setShowVerifyOTP(true);
 
       alert("OTP sent successfully.");
 

@@ -22,6 +22,7 @@ export default function PaymentMethodSelector() {
     setPaymentType,
     applicationId,
     setApplicationId,
+    token,
 
     setUser,
     applicantId,
@@ -102,9 +103,9 @@ export default function PaymentMethodSelector() {
             "x-api-key": "Xportscore@2026"
           },
           body: JSON.stringify({
-            applicationId:"70b18a89-2cfa-4a60-8ced-830c3cbdc744",
-            applicantId:"5ad74580-ba76-4147-b5bf-14b88c08357e",
-            planName: "xport_assessment",
+            applicationId,
+            applicantId,
+            planName: formType,
             paymentType
           })
         }
@@ -179,7 +180,7 @@ export default function PaymentMethodSelector() {
             name="payment"
             className="hidden"
             checked={paymentMethod === "domestic"}
-            onChange={() => setPaymentMethod("domestic")}
+            onChange={() => {setPaymentMethod("domestic");setPaymentType("domestic")}}
           />
 
           <div className="p-7">
@@ -237,7 +238,7 @@ export default function PaymentMethodSelector() {
             name="payment"
             className="hidden"
             checked={paymentMethod === "international"}
-            onChange={() => setPaymentMethod("international")}
+            onChange={() =>{ setPaymentMethod("international");setPaymentType("international")}}
           />
 
           <div className="p-7">

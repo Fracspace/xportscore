@@ -5,6 +5,9 @@ import { useForm } from "react-hook-form";
 import { Send } from "lucide-react";
 import { Country } from "country-state-city";
 
+import Input from "@/components/common/Input";
+import { useAuth } from "@/app/context/AuthContext";
+
 export default function AssessmentReqForm() {
   const {
     register,
@@ -12,8 +15,58 @@ export default function AssessmentReqForm() {
     formState: { errors }
   } = useForm();
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const { setFormType, setPaymentForm } = useAuth();
+
+  const token = localStorage.getItem("token");
+
+  console.log("toekn is", token);
+
+  const onSubmit = async (data) => {
+    const payload = {
+      applicant: {
+        fullname: data.fullname,
+        designation: data.designation,
+        email: data.email,
+        phone: data.phone
+      }
+    };
+
+    console.log("payload is :", payload);
+
+    try {
+      const response = await fetch(
+        "https://api.xportscore.com/api/export-assessments",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": "Xportscore@2026",
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify(payload)
+        }
+      );
+
+      setFormType("xport_assessment");
+
+      const result = await response.json();
+
+      // if (!response.ok) {
+      //   throw new Error(result.message || "Something went wrong");
+      // }
+
+      if (result?.success) {
+        setPaymentForm(true);
+        console.log("Success:", result);
+        alert("Assessment request submitted successfully!");
+      }
+
+      // console.log("Success:", result);
+      // alert("Assessment request submitted successfully!");
+    } catch (error) {
+      console.error(error);
+      alert(error.message);
+    }
   };
 
   const countries = Country.getAllCountries();
@@ -35,64 +88,91 @@ export default function AssessmentReqForm() {
             <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2">
               {/* Company Name */}
               <div>
-                <label className="mb-2 block text-sm font-semibold text-slate-800">
+                {/* <label className="mb-2 block text-sm font-semibold text-slate-800">
                   Company Name<span className="text-red-500">*</span>
-                </label>
+                </label> */}
 
-                <input
+                <Input
+                  label="Company Name"
+                  {...register("company")}
+                  error={errors?.company?.message}
+                />
+
+                {/* <input
                   placeholder="Your Registered Company Name"
                   className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-teal-600 focus:ring-2 focus:ring-teal-100"
-                />
+                /> */}
               </div>
 
               {/* Contact Person */}
               <div>
-                <label className="mb-2 block text-sm font-semibold text-slate-800">
+                {/* <label className="mb-2 block text-sm font-semibold text-slate-800">
                   Contact Person Name<span className="text-red-500">*</span>
-                </label>
-
-                <input
+                </label> */}
+                <Input
+                  label="Applicant Name"
+                  {...register("fullname")}
+                  error={errors?.fullname?.message}
+                />
+                {/* <input
                   placeholder="Full Name"
                   className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-teal-600 focus:ring-2 focus:ring-teal-100"
-                />
+                /> */}
               </div>
 
               {/* Designation */}
               <div>
-                <label className="mb-2 block text-sm font-semibold text-slate-800">
+                {/* <label className="mb-2 block text-sm font-semibold text-slate-800">
                   Designation<span className="text-red-500">*</span>
-                </label>
+                </label> */}
 
-                <input
+                <Input
+                  label="Designation"
+                  {...register("designation")}
+                  error={errors?.designation?.message}
+                />
+
+                {/* <input
                   placeholder="e.g. Export Manager"
                   className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-teal-600 focus:ring-2 focus:ring-teal-100"
-                />
+                /> */}
               </div>
 
               {/* Email */}
               <div>
-                <label className="mb-2 block text-sm font-semibold text-slate-800">
+                {/* <label className="mb-2 block text-sm font-semibold text-slate-800">
                   Official Email<span className="text-red-500">*</span>
-                </label>
+                </label> */}
+                <Input
+                  label="Email Address"
+                  type="email"
+                  {...register("email")}
+                  error={errors?.email?.message}
+                />
 
-                <input
+                {/* <input
                   type="email"
                   placeholder="email@company.com"
                   className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-teal-600 focus:ring-2 focus:ring-teal-100"
-                />
+                /> */}
               </div>
 
               {/* Phone */}
               <div>
-                <label className="mb-2 block text-sm font-semibold text-slate-800">
+                {/* <label className="mb-2 block text-sm font-semibold text-slate-800">
                   Phone / WhatsApp<span className="text-red-500">*</span>
-                </label>
+                </label> */}
+                <Input
+                  label="Mobile / WhatsApp Number"
+                  {...register("phone")}
+                  error={errors?.phone?.message}
+                />
 
-                <input
+                {/* <input
                   {...register("phone")}
                   placeholder="+1..."
                   className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-teal-600 focus:ring-2 focus:ring-teal-100"
-                />
+                /> */}
               </div>
 
               {/* Country */}
@@ -101,7 +181,10 @@ export default function AssessmentReqForm() {
                   Country<span className="text-red-500">*</span>
                 </label>
 
-                <select {...register("country")}  className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-teal-600 focus:ring-2 focus:ring-teal-100">
+                <select
+                  {...register("country")}
+                  className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-teal-600 focus:ring-2 focus:ring-teal-100"
+                >
                   <option value="">Select Country</option>
 
                   {countries.map((country) => (

@@ -70,6 +70,15 @@ export default function Sidebar({ closeSidebar }) {
     alert("logout!");
   };
 
+  const logout = () =>{
+    localStorage.removeItem("applicantId");
+    localStorage.removeItem("applicationId");
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    localStorage.removeItem("assessmentId");
+    router.push('/')
+  }
+
   return (
     <aside className="w-64 min-h-screen bg-white border-r border-gray-200 px-6 py-8 flex flex-col">
       {/* Logo */}
@@ -141,7 +150,7 @@ export default function Sidebar({ closeSidebar }) {
 
       <div className="border-t border-gray-200 p-5 mt-auto bg-[#F7FAFF]">
         {/* User */}
-        <div className="flex items-center gap-3">
+        {/* <div className="flex items-center gap-3">
           <div className="w-11 h-11 rounded-xl bg-[#08203D] text-white flex items-center justify-center font-bold text-sm">
             ABC
           </div>
@@ -154,20 +163,18 @@ export default function Sidebar({ closeSidebar }) {
 
             <p className="text-xs text-gray-500 truncate">company</p>
           </div>
-        </div>
+        </div> */}
 
         {/* Logout */}
         <button
-          onClick={() => setOpenLogout(true)}
+          onClick={logout}
           className="mt-5 w-full flex items-center justify-center gap-2 rounded-lg border border-red-200 py-2.5 text-red-600 hover:bg-red-50 transition"
         >
           <LogOut size={18} />
           <span className="font-medium">Logout</span>
         </button>
       </div>
-      {openLogout && (
-        <LogoutModal open={true} onClose={onClose} onConfirm={onConfirm} />
-      )}
+     
     </aside>
   );
 }

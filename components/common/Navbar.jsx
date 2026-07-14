@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Menu, X, BriefcaseBusiness } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
+
+import { useAuth } from "@/app/context/AuthContext";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -22,6 +24,35 @@ export default function Navbar() {
   const [selected, setSelected] = useState();
   const router = useRouter();
   const pathname = usePathname();
+
+
+
+  const { setUser, setApplicationId, token,setApplicantId, user} = useAuth();
+
+  // useEffect(() => {
+  //   const storedUser = localStorage.getItem("user");
+  //   const storedApplicantId = localStorage.getItem("applicantId");
+  //   const storedApplicationId = localStorage.getItem("applicationId");
+
+  //   console.log(
+  //     "auth items",
+  //     storedUser,
+  //     storedApplicantId,
+  //     storedApplicationId
+  //   );
+
+  //   if (storedUser) {
+  //     setUser(JSON.parse(storedUser));
+  //   }
+
+  //   if (storedApplicantId) {
+  //     setApplicantId(storedApplicantId);
+  //   }
+
+  //   if (storedApplicationId) {
+  //     setApplicationId(storedApplicationId);
+  //   }
+  // }, []);
 
   // console.log("pathname is",pathname)
 
@@ -59,15 +90,27 @@ export default function Navbar() {
 
         {/* CTA Button */}
         <div className="hidden lg:block">
-          <button
-            onClick={() => {
-              setSelected("startassessment");
-              router.push("/login");
-            }}
-            className="rounded-md font-ibm bg-black px-6 py-3 text-sm font-medium text-white transition hover:bg-gray-900 cursor-pointer"
-          >
-            Login
-          </button>
+          {!token ? (
+            <button
+              onClick={() => {
+                setSelected("startassessment");
+                router.push("/login");
+              }}
+              className="rounded-md font-ibm bg-black px-6 py-3 text-sm font-medium text-white transition hover:bg-gray-900 cursor-pointer"
+            >
+              Login
+            </button>
+          ) : (
+            <button
+              onClick={() => {
+                setSelected("startassessment");
+                router.push("/dashboard");
+              }}
+              className="rounded-md font-ibm bg-black px-6 py-3 text-sm font-medium text-white transition hover:bg-gray-900 cursor-pointer"
+            >
+              Dashboard
+            </button>
+          )}
         </div>
 
         {/* Mobile Menu Button */}

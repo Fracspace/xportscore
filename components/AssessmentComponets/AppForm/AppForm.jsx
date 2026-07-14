@@ -23,9 +23,130 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { applicationSchema } from "../Schemas/applicationSchema";
 import { formSteps } from "../Schemas/applicationSchema";
+import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+
+import { useAuth } from "@/app/context/AuthContext";
 
 function AppForm() {
+  const searchParams = useSearchParams();
+
+  const assessmentId = searchParams.get("assessmentId");
+  const token = searchParams.get("token");
+
+  console.log("Assessment ID:", assessmentId);
+  console.log("Token:", token);
+
+  if (assessmentId) {
+    localStorage.setItem("assessmentId", assessmentId);
+  }
+
+  const token1 = localStorage.getItem("token");
+
+  const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
+
+  const extractSectionValues = (values, currentStep) => {
+    switch (currentStep) {
+      case 0:
+        return {
+          legalBusinessName: values.legalBusinessName,
+          brandName: values.brandName,
+          country: values.country,
+          city: values.city,
+          address: values.address,
+          website: values.website,
+          businessType: values.businessType,
+          otherBusinessType: values.otherBusinessType,
+          yearEstablished: values.yearEstablished
+        };
+
+      case 1:
+        return {
+          exportStatus: values.exportStatus,
+          countriesExportedTo: values.countriesExportedTo,
+          iecExportRegistration: values.iecExportRegistration
+        };
+
+      case 2:
+        return {
+          exportType: values.exportType,
+          productCategory: values.productCategory,
+          monthlyProductionCapacity: values.monthlyProductionCapacity,
+          minimumOrderQuantity: values.minimumOrderQuantity,
+          productShelfLife: values.productShelfLife,
+          productDescription: values.productDescription,
+          skus: values.skus,
+
+          primaryServiceCategory: values.primaryServiceCategory,
+          keyServiceLines: values.keyServiceLines,
+          industriesServed: values.industriesServed,
+          teamSize: values.teamSize,
+          deliveryCapacity: values.deliveryCapacity,
+          avgProjectSize: values.avgProjectSize,
+          minEngagementValue: values.minEngagementValue,
+          avgTurnaroundTime: values.avgTurnaroundTime,
+          serviceDescription: values.serviceDescription,
+          deliveryModel: values.deliveryModel
+        };
+
+      case 3:
+        return {
+          currentPriceListAvailable: values.currentPriceListAvailable,
+          exportPriceListAvailable: values.exportPriceListAvailable,
+          preferredPricingCurrency: values.preferredPricingCurrency,
+          otherCurrency: values.otherCurrency,
+          paymentTerms: values.paymentTerms
+        };
+
+      case 4:
+        return {
+          businessDocuments: values.businessDocuments,
+          productServiceDocuments: values.productServiceDocuments,
+          packagingDocuments: values.packagingDocuments,
+          certificationQualityDocuments: values.certificationQualityDocuments,
+          pastExportDocuments: values.pastExportDocuments
+        };
+
+      case 5:
+        return {
+          distributorAgreement: values.distributorAgreement,
+          productVideos: values.productVideos,
+          factoryPhotos: values.factoryPhotos,
+          qualityControlProcessDocuments: values.qualityControlProcessDocuments
+        };
+
+      case 6:
+        return {
+          registryConsent: values.registryConsent
+        };
+
+      case 7:
+        return {
+          informationAccuracy: values.informationAccuracy,
+          documentAuthenticity: values.documentAuthenticity,
+          privateAuditAcknowledgement: values.privateAuditAcknowledgement,
+          noGuaranteeAcknowledgement: values.noGuaranteeAcknowledgement,
+          revocationAcknowledgement: values.revocationAcknowledgement,
+          dataConsent: values.dataConsent
+        };
+
+      default:
+        return {};
+    }
+  };
+
+  const stepPayloadMap = {
+    0: "business",
+    1: "exportStatus",
+    2: "productService",
+    3: "commercialInformation",
+    4: "uploadDocuments",
+    5: "supportingDocuments",
+    6: "registryConsent",
+    7: "declaration"
+  };
+
   const methods = useForm({
     resolver: zodResolver(applicationSchema),
     defaultValues: {
@@ -50,160 +171,100 @@ function AppForm() {
     }
   });
 
-  const handleNext = async () => {
-    let fields = formSteps[currentStep].fields;
-
-    // Special case for Product / Service step
-    if (currentStep === 3) {
-      const exportType = methods.getValues("exportType");
-
-      fields =
-        exportType === "product"
-          ? formSteps[currentStep].productFields
-          : formSteps[currentStep].serviceFields;
-    }
-
-    const isValid = await methods.trigger(fields);
-
-    if (!isValid) return;
-
-    console.log("Current Step Data:", methods.getValues(fields));
-    console.log("Complete Form:", methods.getValues());
-
-    // setCurrentStep((prev) => prev + 1);
-
+  const handleNext = async (e) => {
+    console.log("insided handle next", "current step is", currentStep);
     try {
-      const formData = methods.getValues();
-      console.log("form data is", formData);
+      let fields = formSteps[currentStep].fields;
 
-      const values = methods.getValues();
+      console.log("fielda rae", fields);
 
-      const payload = {
-        applicant: {
-          fullname: "Vishnuteja",
-          designation: "Export Director",
-          email: "vishnuteja476@gmail.com",
-          phone: "+916304798328"
-        },
 
-        business: {
-          legalBusinessName: "ACME Exports Ltd",
-          brandName: "ACME",
-          country: "India",
-          city: "Mumbai",
-          address: "123 Industrial Area, Phase II",
-          website: "https://www.acmeexports.com",
-          businessType: "Manufacturer",
-          otherBusinessType: "OEM Contractor",
-          yearEstablished: "2015"
-        },
+      // Handle Product / Service validation
+      if (currentStep === 3) {
+        const exportType = methods.getValues("exportType");
 
-        exportStatus: {
-          exportStatus: "Already exporting",
-          countriesExportedTo: "USA, Germany, UAE",
-          iecExportRegistration: "Yes"
-        },
-
-        productService: {
-          exportType: "product",
-          productCategory: "Textiles & Apparel",
-          monthlyProductionCapacity: "50,000 units",
-          minimumOrderQuantity: "1,000 units",
-          productShelfLife: "Not Applicable",
-          productDescription: "Premium organic cotton t-shirts and hoodies",
-          skus: ["SKU-COT-BLK-S", "SKU-COT-BLK-M"],
-          primaryServiceCategory: "IT Consulting",
-          keyServiceLines: "Custom software development",
-          industriesServed: "Retail, FinTech",
-          teamSize: "25",
-          deliveryCapacity: "3 projects concurrently",
-          avgProjectSize: "$50,000",
-          minEngagementValue: "$10,000",
-          avgTurnaroundTime: "3 months",
-          serviceDescription: "Agile development and architecture design",
-          deliveryModel: "Dedicated team"
-        },
-
-        commercialInformation: {
-          currentPriceListAvailable: "Yes",
-          exportPriceListAvailable: "Yes",
-          preferredPricingCurrency: ["USD", "EUR"],
-          otherCurrency: "INR",
-          paymentTerms: ["100% advance", "Letter of Credit"]
-        },
-
-        registryConsent: {
-          registryConsent: "Yes"
-        },
-
-        uploadDocuments: {
-          businessDocuments: [
-            "https://d2j0qyp55z3e9s.cloudfront.net/assessments/test-file.pdf"
-          ],
-          productServiceDocuments: [],
-          packagingDocuments: [],
-          certificationQualityDocuments: [],
-          pastExportDocuments: []
-        },
-
-        supportingDocuments: {
-          distributorAgreement: [],
-          productVideos: [],
-          factoryPhotos: [],
-          qualityControlProcessDocuments: []
-        },
-
-        declaration: {
-          informationAccuracy: true,
-          documentAuthenticity: true,
-          privateAuditAcknowledgement: true,
-          noGuaranteeAcknowledgement: true,
-          revocationAcknowledgement: true,
-          dataConsent: true
-        },
-
-        finalSubmission: {
-          applicantName: "John Doe",
-          companyName: "ACME Exports Ltd",
-          date: new Date().toISOString(),
-          digitalSignature: "/s/ John Doe"
-        },
-
-        assessmentStatus: "draft"
-      };
-
-      const token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVhZjE1ZTRjLTMyNzEtNDM1OS1hOTk3LTdmMGNiOWVkZjIwZCIsInJvbGUiOiJhcHBsaWNhbnQiLCJlbWFpbCI6InZpc2hudXRlamE0NzZAZ21haWwuY29tIiwiaWF0IjoxNzgzNzQ4MzA0LCJleHAiOjE3ODYzNDAzMDR9.1xa7VE_ayOv_nqzJp8n8hkRl-hM7Ym9ETypJz0skZsM";
-
-      const response = await fetch(
-        "https://api.xportscore.com/api/export-assessments",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "x-api-key": "Xportscore@2026",
-            Authorization: `Bearer ${token}`
-          },
-          body: JSON.stringify(payload)
-        }
-      );
-
-      const data = await response.json();
-      console.log("form resp is", data);
-
-      if (!response.ok) {
-        throw new Error(data.message);
+        fields =
+          exportType === "product"
+            ? formSteps[currentStep].productFields
+            : formSteps[currentStep].serviceFields;
       }
 
-      // setCurrentStep((prev) => prev + 1);
+      // Validate current step
+      const isValid = await methods.trigger(fields);
+      console.log("isValid", isValid);
+const values = methods.getValues();
+      const payload1 = {
+  [stepPayloadMap[currentStep]]: extractSectionValues(
+    values,
+    currentStep
+  ),
+};
+
+console.log(payload1,"values");
+
+      // if (!isValid) return;
+
+      const payload = methods.getValues();
+      // const assessmentId = localStorage.getItem("assessmentId");
+
+      console.log("payload details are :", payload);
+
+      const url = `https://api.xportscore.com/api/export-assessments/${assessmentId}`;
+
+      const method = "PUT";
+
+      const headers = {
+        "Content-Type": "application/json",
+        "x-api-key": "Xportscore@2026",
+        Authorization: `Bearer ${token1}`
+      };
+
+      console.log("headers are", headers);
+
+      console.log("Submitting...", url, {
+        method,
+        url,
+        payload1
+      });
+
+      const response = await fetch(url, {
+        method,
+        headers,
+        body: JSON.stringify(payload)
+      });
+
+      const data = await response.json();
+
+      console.log("data is", data);
+
+      if (!response.ok) {
+        throw new Error(data?.message || "Something went wrong");
+      }
+
+      // Save assessment id after first creation
+      if (!assessmentId && data?.data?.assessmentId) {
+        localStorage.setItem("assessmentId", data.data.assessmentId);
+      }
+
+      console.log("API Success:", data);
+
+      // Last step
+      if (currentStep === sections.length - 1) {
+        alert("Assessment submitted successfully!");
+        localStorage.removeItem("assessmentId");
+        router.push("/");
+        return;
+      }
+
+      // Next step
+      setCurrentStep((prev) => prev + 1);
     } catch (err) {
-      console.error(err);
-      alert(err.message);
+      console.error("handleNext Error:", err);
+      alert(err.message || "Something went wrong");
     }
   };
 
   const sections = [
-    "Applicant Information",
     "Business Information",
     "Export Status",
     "Product / Service",
@@ -224,9 +285,9 @@ function AppForm() {
   return (
     <FormProvider {...methods}>
       <form
-        onSubmit={methods.handleSubmit(onSubmit, (errors) => {
-          console.log("Validation Errors:", errors);
-        })}
+      // onSubmit={methods.handleSubmit(onSubmit, (errors) => {
+      //   console.log("Validation Errors:", errors);
+      // })}
       >
         <section className="bg-slate-100 min-h-screen py-10">
           <div className="mx-auto max-w-7xl px-6">
@@ -256,16 +317,16 @@ function AppForm() {
 
               {/* Content */}
               <div className="space-y-8">
-                {currentStep === 0 && <ApplicantInfo />}
-                {currentStep === 1 && <BusinessInfo />}
-                {currentStep === 2 && <ExportStatus />}
-                {currentStep === 3 && <ProductServiceInfo />}
-                {currentStep === 4 && <CommercialInfo />}
-                {currentStep === 5 && <UploadDocs />}
-                {currentStep === 6 && <SupportingDocs />}
-                {currentStep === 7 && <RegistryConset />}
-                {currentStep === 8 && <Declaration />}
-                {currentStep === 9 && <Payment />}
+                {/* {currentStep === 0 && <ApplicantInfo />} */}
+                {currentStep === 0 && <BusinessInfo />}
+                {currentStep === 1 && <ExportStatus />}
+                {currentStep === 2 && <ProductServiceInfo />}
+                {currentStep === 3 && <CommercialInfo />}
+                {currentStep === 4 && <UploadDocs />}
+                {currentStep === 5 && <SupportingDocs />}
+                {currentStep === 6 && <RegistryConset />}
+                {currentStep === 7 && <Declaration />}
+                {/* {currentStep === 9 && <Payment />} */}
                 {/* {currentStep === 10 && <FinalSubmission />} */}
                 {/* {currentStep === 11 && <ServiceInfo />} */}
 
@@ -297,8 +358,9 @@ function AppForm() {
                     </button>
                   ) : (
                     <button
-                      type="submit"
+                      type="button"
                       className="bg-[#041B4D] text-white px-6 py-3 rounded-lg"
+                      onClick={handleNext}
                     >
                       Submit Application
                     </button>

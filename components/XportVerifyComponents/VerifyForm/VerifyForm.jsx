@@ -17,8 +17,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { verifySchema } from "../VerifySchemas/verifySchema";
 import { verifyformSteps } from "../VerifySchemas/verifySchema";
+import { useRouter } from "next/navigation";
 
 function VerifyForm() {
+  const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
   const methods = useForm({
     resolver: zodResolver(verifySchema),
@@ -32,7 +34,8 @@ function VerifyForm() {
       contactVerification: [],
 
       supportingDocuments: [],
-      uploadedDocuments: []
+      uploadedDocuments: [],
+        agree: false,
     }
   });
 
@@ -49,21 +52,85 @@ function VerifyForm() {
   ];
 
   const handleNext = async () => {
-    console.log("current step is", currentStep);
-    const formData = methods.getValues();
-
-    console.log("Form Data:", formData);
-    let fields = verifyformSteps[currentStep].fields;
-    console.log("fields are", fields);
-    console.log("Errors:", methods?.formState?.errors);
-    const isValid = await methods.trigger(fields);
-
     if (currentStep == 6) {
       setCurrentStep((prev) => prev + 1);
     }
+    let fields = verifyformSteps[currentStep].fields;
+
+    console.log("fields are", fields);
+
+    const isValid = await methods.trigger(fields);
 
     if (!isValid) return;
+
+    console.log("curr step is", currentStep);
+
+    const payload = methods.getValues();
+
+    console.log("Payload is ", payload);
+
     setCurrentStep((prev) => prev + 1);
+
+    // try {
+    //   const verificationRequestId = localStorage.getItem(
+    //     "verificationRequestId"
+    //   );
+
+    //   let response;
+
+    //   if (!verificationRequestId) {
+    //     // First step -> Create draft
+    //     response = await fetch("http://localhost:3002/api/verify-requests", {
+    //       method: "POST",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //         "x-api-key": "Xportscore@2026"
+    //       },
+    //       body: JSON.stringify(payload)
+    //     });
+    //   } else {
+    //     // Remaining steps -> Update draft
+    //     response = await fetch(
+    //       `http://localhost:3002/api/verify-requests/${verificationRequestId}`,
+    //       {
+    //         method: "PUT",
+    //         headers: {
+    //           "Content-Type": "application/json",
+    //           "x-api-key": "Xportscore@2026"
+    //         },
+    //         body: JSON.stringify(payload)
+    //       }
+    //     );
+    //   }
+
+    //   const data = await response.json();
+
+    //   console.log("data is",data)
+
+    //   if (!response.ok) {
+    //     throw new Error(data.message || "Something went wrong");
+    //   }
+
+    //   // Save id only once
+    //   if (!verificationRequestId && data?.data?.requestId) {
+    //     localStorage.setItem("verificationRequestId", data?.data?.requestId);
+    //   }
+
+    //   console.log("data and request id's are:", data, data?.data?.requestId);
+
+    //   // Success screen
+    //   if (currentStep === 8) {
+    //     alert("Verification request submitted successfully!");
+    //     localStorage.removeItem("verificationRequestId");
+    //     // router.push("/");
+    //     return;
+    //   }
+
+    //   setCurrentStep((prev) => prev + 1);
+    // } catch (err) {
+    //   console.error(err);
+    //   alert(err.message);
+    // }
   };
 
   const onSubmit = (data) => {
@@ -169,7 +236,8 @@ function VerifyForm() {
                         </button>
                       ) : (
                         <button
-                          type="submit"
+                          onClick={handleNext}
+                          type="button"
                           className="bg-[#041B4D] text-white px-4 py-1 md:px-6 md:py-3 rounded-lg"
                         >
                           Submit Application

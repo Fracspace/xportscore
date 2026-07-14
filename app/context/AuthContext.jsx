@@ -15,18 +15,31 @@ export function AuthProvider({ children }) {
 
   const [applicationId, setApplicationId] = useState("");
   const [applicantId, setApplicantId] = useState("");
+  const [paymentform,setPaymentForm] = useState(false);
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     const storedUser = localStorage.getItem("user");
 
+    const storedApplicantId = localStorage.getItem("applicantId");
+    const storedApplicationId = localStorage.getItem("applicationId");
+     
+    console.log("auth local storage details are:", storedApplicantId,storedApplicationId,storedToken)
+
     if (storedToken) {
       setToken(storedToken);
     }
 
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+    if(storedApplicantId){
+      setApplicantId(storedApplicantId);
     }
+
+    if(storedApplicationId){
+      setApplicationId(storedApplicationId);
+    }
+    // if (storedUser) {
+    //   setUser(JSON.parse(storedUser));
+    // }
 
     setLoading(false);
   }, []);
@@ -64,6 +77,11 @@ export function AuthProvider({ children }) {
 
         login,
         logout,
+
+        paymentform,
+        setPaymentForm,
+
+        setToken,
 
         setUser,
 

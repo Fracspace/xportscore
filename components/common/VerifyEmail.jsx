@@ -15,7 +15,7 @@ export default function VerifyEmailPage({ email }) {
 
   const router = useRouter();
 
-  const { setUser, setApplicationId, setApplicantId } = useAuth();
+  const { setUser, setApplicationId,setToken, setApplicantId } = useAuth();
 
   const verifyOTP = async () => {
     try {
@@ -40,13 +40,24 @@ export default function VerifyEmailPage({ email }) {
       setUser(data?.data?.user);
       setApplicantId(data?.data?.user?.applicantId);
       setApplicationId(data?.data?.application?.id);
+      setToken(data?.data?.token);
+
+            localStorage.setItem("user", JSON.stringify(data?.data?.user));
+      localStorage.setItem("applicantId", data?.data?.user?.applicantId || "");
+      localStorage.setItem("applicationId", data?.data?.application?.id || "");
+      localStorage.setItem("token",data?.data?.token)
 
       console.log(
-        "details are",
+        "details are inside otp",data?.success,
+        data,
         data?.data?.user,
         data?.data?.user?.applicantId,
         data?.data?.application?.id
       );
+
+      if(data?.success){
+        router.push('/')
+      }
 
       if (!response.ok) {
         throw new Error(data.message);
@@ -55,7 +66,7 @@ export default function VerifyEmailPage({ email }) {
       console.log("data is", data?.data);
 
       // Save JWT if returned
-      localStorage.setItem("token", data?.data.token);
+      localStorage.setItem("token", data?.data?.token);
 
       // router.push("/dashboard");
     } catch (error) {

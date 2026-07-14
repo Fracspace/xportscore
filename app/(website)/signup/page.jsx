@@ -12,6 +12,9 @@ import Link from "next/link";
 
 import { Country } from "country-state-city";
 import { useState } from "react";
+import { json } from "zod";
+import { da } from "zod/locales";
+import { useRouter } from "next/navigation";
 
 export default function SignupPage() {
   const countries = Country.getAllCountries();
@@ -27,6 +30,8 @@ export default function SignupPage() {
   });
 
   const [loading, setLoading] = useState(false);
+
+  const router = useRouter();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -52,7 +57,7 @@ export default function SignupPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    console.log("Submitting:", formData);
     try {
       setLoading(true);
 
@@ -73,17 +78,31 @@ export default function SignupPage() {
 
       const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error(data.message || "Something went wrong");
+      // if (!response.ok) {
+      //   throw new Error(data.message || "Something went wrong");
+      // }
+
+      if (data?.success) {
+        localStorage.setItem("token", data?.data?.token);
+        localStorage.setItem("applicantId", data?.data?.user?.applicantId);
+        localStorage.setItem("applicationId", data?.data?.application?.id);
+        localStorage.setItem("prefill details",JSON.stringify(data?.data?.prefill?.applicant))
+         alert("Account created successfully!");
+         router.push('/')
       }
 
-      localStorage.setItem("token", data.token);
+      console.log("data is", data, "token is", data?.token,"appan id",data?.data?.application?.id,"applicantid",data?.data?.user?.applicantId);
 
-      console.log(data);
+      if(!data?.success){
+         alert(data?.error?.message);
+      }
 
-      alert("Account created successfully!");
+     
     } catch (err) {
       console.error(err);
+      console.error("Error:", err);
+      console.error("Message:", err.message);
+      console.error("Name:", err.name);
       alert(err.message);
     } finally {
       setLoading(false);

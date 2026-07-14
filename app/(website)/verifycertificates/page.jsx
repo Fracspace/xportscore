@@ -1,17 +1,54 @@
 "use client";
 
 import Image from "next/image";
+import { useParams } from "next/navigation";
 import QRCode from "react-qr-code";
 
-export default function VerifyCertificates({
-  company = "ABC Exports Private Limited",
-  score = 724,
-  total = 900,
-  certificateId = "XS-24-000789",
-  issueDate = "18 Jan 2024",
-  validTill = "18 Dec 2025",
-  verifyUrl = "https://www.xportscore.com/verify"
-}) {
+import { useSearchParams } from "next/navigation";
+import { useEffect } from "react";
+
+export default function VerifyCertificates({}) {
+  const company = "ABC Exports Private Limited";
+  const score = 724;
+  const total = 900;
+  const certificateId = "XS-24-000789";
+  const issueDate = "18 Jan 2024";
+  const validTill = "18 Dec 2025";
+  const verifyUrl = "https://www.xportscore.com/verifycertificates";
+
+  const searchParams = useSearchParams();
+
+  const id = searchParams.get("id");
+
+  console.log("search id is", id);
+
+  async function getData() {
+    try {
+      const res = await fetch(
+        `https://api.xportscore.com/api/certificates/validate/${id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": "Xportscore@2026"
+          }
+        }
+      );
+
+      console.log("res is",res);
+
+      const data = await res.json();
+
+      console.log("data is ", data);
+    } catch (error) {
+      console.log("error is", error);
+    }
+  }
+
+  useEffect(() => {
+    getData();
+  }, []);
+
   return (
     <div className="w-full mt-26 mb-12 max-w-5xl mx-auto rounded-2xl border-4 border-slate-200 bg-white shadow-xl p-6 md:p-10 relative overflow-hidden">
       {/* Decorative Corners */}
