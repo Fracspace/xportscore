@@ -16,12 +16,12 @@ function ExportAssessment() {
   // const { token } = useAuth();
 
   // Replace this with wherever you're storing the assessment ID
-  let assessmentId;
-  if (typeof window !== "undefined") {
-    assessmentId = localStorage.getItem("assessmentId");
-  }
+  // let assessmentId;
+  // if (typeof window !== "undefined") {
+  //   assessmentId = localStorage.getItem("assessmentId");
+  // }
 
-  console.log("assesment id is", assessmentId);
+  // console.log("assesment id is", assessmentId);
   const assessmentId1 = "56623c58-8ed1-4638-8bd1-b90cac2a1017";
 
   const [assessment, setAssessment] = useState(null);
@@ -34,6 +34,8 @@ function ExportAssessment() {
     //   return;
     // }
 
+    const assessmentId = localStorage.getItem("assessmentId");
+
     const fetchAssessment = async () => {
       try {
         setLoading(true);
@@ -43,7 +45,7 @@ function ExportAssessment() {
         console.log("token is ", token);
 
         const response = await fetch(
-          `https://api.xportscore.com/api/export-assessments/${assessmentId1}`,
+          `https://api.xportscore.com/api/export-assessments/${assessmentId}`,
           {
             method: "GET",
             headers: {
