@@ -21,8 +21,8 @@ import ProductServiceInfo from "./ProductServiceInfo";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-
-import { formSteps } from "../Schemas/applicationSchema";
+import { applicationSchema } from "../Schemas/ApplicationSchema";
+import { formSteps } from "../Schemas/ApplicationSchema";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 
@@ -178,7 +178,6 @@ function AppForm() {
 
       console.log("fielda rae", fields);
 
-
       // Handle Product / Service validation
       if (currentStep === 3) {
         const exportType = methods.getValues("exportType");
@@ -192,15 +191,12 @@ function AppForm() {
       // Validate current step
       const isValid = await methods.trigger(fields);
       console.log("isValid", isValid);
-const values = methods.getValues();
+      const values = methods.getValues();
       const payload1 = {
-  [stepPayloadMap[currentStep]]: extractSectionValues(
-    values,
-    currentStep
-  ),
-};
+        [stepPayloadMap[currentStep]]: extractSectionValues(values, currentStep)
+      };
 
-console.log(payload1,"values");
+      console.log(payload1, "values");
 
       // if (!isValid) return;
 
