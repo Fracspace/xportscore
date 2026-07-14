@@ -30,17 +30,19 @@ import { useAuth } from "@/app/context/AuthContext";
 function AppForm() {
   const searchParams = useSearchParams();
 
+  const {token} = useAuth();
+
   const assessmentId = searchParams.get("assessmentId");
-  const token = searchParams.get("token");
+  const token2 = searchParams.get("token");
 
   console.log("Assessment ID:", assessmentId);
-  console.log("Token:", token);
+  console.log("Token:", token2);
 
   if (assessmentId) {
     localStorage.setItem("assessmentId", assessmentId);
   }
 
-  const token1 = localStorage.getItem("token");
+  
 
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
@@ -195,14 +197,14 @@ function AppForm() {
         [stepPayloadMap[currentStep]]: extractSectionValues(values, currentStep)
       };
 
-      console.log(payload1, "values");
+      console.log("current payload details are :",payload1);
 
       // if (!isValid) return;
 
       const payload = methods.getValues();
       // const assessmentId = localStorage.getItem("assessmentId");
 
-      console.log("payload details are :", payload);
+      console.log("overal method values are :", payload);
 
       const url = `https://api.xportscore.com/api/export-assessments/${assessmentId}`;
 
@@ -211,7 +213,7 @@ function AppForm() {
       const headers = {
         "Content-Type": "application/json",
         "x-api-key": "Xportscore@2026",
-        Authorization: `Bearer ${token1}`
+        Authorization: `Bearer ${token}`
       };
 
       console.log("headers are", headers);

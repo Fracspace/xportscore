@@ -38,20 +38,17 @@ export default function Page() {
       );
 
       const data = await response.json();
+
+      console.log("response is",data);
+
+      if(!data?.success){
+        alert(data?.error?.message);
+      }
+      
       setUser(data?.user);
       setApplicantId(data?.user?.applicantId);
       setApplicationId(data?.application?.id);
 
-      localStorage.setItem("user", JSON.stringify(data?.user));
-      localStorage.setItem("applicantId", data?.user?.applicantId || "");
-      localStorage.setItem("applicationId", data?.application?.id || "");
-
-      console.log(
-        "details are inside login",
-        data?.user,
-        data?.user?.applicantId,
-        data?.application?.id
-      );
 
       if (!response.ok) {
         throw new Error(data.message);
