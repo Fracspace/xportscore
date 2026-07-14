@@ -5,11 +5,9 @@ import { Suspense } from "react";
 function page() {
   return (
     <div>
-         <Suspense fallback={<div>Loading...</div>}></Suspense>
-      <div>
-        <AppForm />
-      </div>
-      <Suspense />
+       <Suspense fallback={<div>Loading...</div>}>
+      <AppForm />
+    </Suspense>
     </div>
   );
 }
