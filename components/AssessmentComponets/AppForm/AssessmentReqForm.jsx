@@ -15,9 +15,7 @@ export default function AssessmentReqForm() {
     formState: { errors }
   } = useForm();
 
-  const { setFormType, setPaymentForm } = useAuth();
-
-  const token = localStorage.getItem("token");
+  const { setFormType, setPaymentForm, token } = useAuth();
 
   console.log("toekn is", token);
 
