@@ -3,7 +3,6 @@
 import { useState } from "react";
 import React from "react";
 
-import ApplicantInfo from "./ApplicantInfo";
 import BusinessInfo from "./BusinessInfo";
 import CommercialInfo from "./CommercialInfo";
 import Declaration from "./Declaration";
