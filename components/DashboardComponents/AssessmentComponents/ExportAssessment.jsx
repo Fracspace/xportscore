@@ -6,7 +6,7 @@ import DraftAssessmentCard from "../Common/DraftAssessmentCard";
 import ReviewAssessmentCard from "../Common/ReviewAssessmentCard";
 
 import { useAuth } from "@/app/context/AuthContext";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 
 function ExportAssessment() {
   // const { token } = useAuth();
@@ -16,8 +16,12 @@ function ExportAssessment() {
   // const { token } = useAuth();
 
   // Replace this with wherever you're storing the assessment ID
-  const assessmentId = localStorage.getItem("assessmentId");
-  console.log("assesment id is",assessmentId);
+  let assessmentId;
+  if (typeof window !== "undefined") {
+    assessmentId = localStorage.getItem("assessmentId");
+  }
+
+  console.log("assesment id is", assessmentId);
   const assessmentId1 = "56623c58-8ed1-4638-8bd1-b90cac2a1017";
 
   const [assessment, setAssessment] = useState(null);
@@ -36,7 +40,7 @@ function ExportAssessment() {
 
         const token = localStorage.getItem("token");
 
-        console.log("token is ",token)
+        console.log("token is ", token);
 
         const response = await fetch(
           `https://api.xportscore.com/api/export-assessments/${assessmentId1}`,
