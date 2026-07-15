@@ -5,12 +5,16 @@ import { useForm } from "react-hook-form";
 import { Send } from "lucide-react";
 import { Country } from "country-state-city";
 
+import { useAuth } from "@/app/context/AuthContext";
+
 export default function VerificationRequestForm() {
   const {
     register,
     handleSubmit,
     formState: { errors }
   } = useForm();
+
+   const { setFormType, setPaymentForm, token } = useAuth();
 
   const onSubmit = (data) => {
     console.log(data);

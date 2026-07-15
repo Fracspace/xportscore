@@ -30,19 +30,19 @@ import { useAuth } from "@/app/context/AuthContext";
 function AppForm() {
   const searchParams = useSearchParams();
 
-  const {token} = useAuth();
+  const { token } = useAuth();
+    console.log("Token:", token);
 
-  const assessmentId = searchParams.get("assessmentId");
-  const token2 = searchParams.get("token");
+  useEffect(() => {
+    const assessmentId = searchParams.get("assessmentId");
 
-  console.log("Assessment ID:", assessmentId);
-  console.log("Token:", token2);
-
-  if (assessmentId) {
-    localStorage.setItem("assessmentId", assessmentId);
-  }
-
+    console.log("Assessment ID:", assessmentId);
   
+
+    if (assessmentId) {
+      localStorage.setItem("assessmentId", assessmentId);
+    }
+  }, [searchParams]);
 
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
@@ -189,6 +189,46 @@ function AppForm() {
             : formSteps[currentStep].serviceFields;
       }
 
+      const uploadUrl = `https://api.xportscore.com/api/export-assessments/${assessmentId}/upload-document`;
+
+      if (currentStep === 4) {
+        const values = methods.getValues();
+
+        const uploadDocuments = {
+          businessDocuments: values.businessDocuments,
+          productServiceDocuments: values.productServiceDocuments,
+          packagingDocuments: values.packagingDocuments,
+          certificationQualityDocuments: values.certificationQualityDocuments,
+          pastExportDocuments: values.pastExportDocuments
+        };
+
+        console.log("upload docs is", uploadDocuments);
+
+        for (const [category, fileList] of Object.entries(uploadDocuments)) {
+          if (!fileList || fileList.length === 0) continue;
+
+          const formData = new FormData();
+
+          formData.append("file", fileList[0]); // field name expected by backend
+          formData.append("category", category);
+
+          const response = await fetch(uploadUrl, {
+            method: "POST",
+            headers: {
+              "x-api-key": "Xportscore@2026",
+              Authorization: `Bearer ${token}`
+            },
+            body: formData
+          });
+
+          const data = await response.json();
+
+          console.log(category, data);
+        }
+
+        // console.log("step 4 resp is", data);
+      }
+
       // Validate current step
       const isValid = await methods.trigger(fields);
       console.log("isValid", isValid);
@@ -197,7 +237,7 @@ function AppForm() {
         [stepPayloadMap[currentStep]]: extractSectionValues(values, currentStep)
       };
 
-      console.log("current payload details are :",payload1);
+      console.log("current payload details are :", payload1);
 
       // if (!isValid) return;
 

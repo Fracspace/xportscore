@@ -17,9 +17,21 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { verifySchema } from "../VerifySchemas/verifySchema";
 import { verifyformSteps } from "../VerifySchemas/verifySchema";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+
+import { useAuth } from "@/app/context/AuthContext";
 
 function VerifyForm() {
+
+  const searchParams = useSearchParams();
+  const verificationRequestId = searchParams.get("verifyId");
+
+  if(verificationRequestId){
+    localStorage.setItem("verificationRequestId",verificationRequestId);
+  }
+
+  const {token} = useAuth();
+
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
   const methods = useForm({
@@ -35,9 +47,99 @@ function VerifyForm() {
 
       supportingDocuments: [],
       uploadedDocuments: [],
-        agree: false,
+      agree: false
     }
   });
+
+  const stepPayloadMap = {
+    0: "requestingCompany",
+    1: "businessToVerify",
+    2: "relationship",
+    3: "verificationScope",
+    4: "supportingInfo",
+    5: "additionalInformation",
+    6: "submission",
+    7: "declaration"
+  };
+
+  const extractSectionValues = (values, currentStep) => {
+    switch (currentStep) {
+      case 0:
+        return {
+          companyName: values.companyName,
+          contactPerson: values.contactPerson,
+          designation: values.designation,
+          email: values.email,
+          phone: values.phone,
+          country: values.country
+        };
+
+      case 1:
+        return {
+          legalCompanyName: values.legalCompanyName,
+          brandTradingName: values.brandTradingName,
+          countryOfCompany: values.countryOfCompany,
+          registeredAddress: values.registeredAddress,
+          website: values.website,
+          companyEmail: values.companyEmail,
+          companyPhone: values.companyPhone,
+          businessRegistrationNumber: values.businessRegistrationNumber,
+          taxVatNumber: values.taxVatNumber,
+          importExportRegistrationNumber: values.importExportRegistrationNumber,
+          businessContactPerson: values.businessContactPerson
+        };
+
+      case 2:
+        return {
+          beforePlacingOrder: values.beforePlacingOrder,
+          beforeShippingGoods: values.beforeShippingGoods,
+          beforeMakingPayment: values.beforeMakingPayment,
+          beforeAppointingImporter: values.beforeAppointingImporter,
+          beforeAppointingDistributor: values.beforeAppointingDistributor,
+          beforeAppointingSupplier: values.beforeAppointingSupplier,
+          vendorOnboarding: values.vendorOnboarding,
+          investmentDueDiligence: values.investmentDueDiligence,
+          strategicPartnership: values.strategicPartnership,
+          other: values.other
+        };
+
+      case 3:
+        return {
+          identityVerification: values.identityVerification,
+          tradeIntelligence: values.tradeIntelligence,
+          businessReputation: values.businessReputation,
+          operationalReview: values.operationalReview,
+          complianceReview: values.complianceReview,
+          riskDueDiligence: values.riskDueDiligence,
+          contactVerification: values.contactVerification
+        };
+
+      case 4:
+        return {
+          supportingDocuments: values.supportingDocuments,
+          uploadedDocuments: values.uploadedDocuments
+        };
+
+      case 5:
+        return values.additionalInformation;
+
+      case 6:
+        return {
+          requestorName: values.requestorName,
+          company: values.company,
+          date: values.date,
+          digitalSignature: values.digitalSignature
+        };
+
+      case 7:
+        return {
+          agree: values.agree
+        };
+
+      default:
+        return {};
+    }
+  };
 
   const sections = [
     "Requesting Company",
@@ -52,6 +154,62 @@ function VerifyForm() {
   ];
 
   const handleNext = async () => {
+    try {
+      const fields = verifyformSteps[currentStep].fields;
+
+      const isValid = await methods.trigger(fields);
+
+      if (!isValid) return;
+
+      const values = methods.getValues();
+
+      const payload = {
+        [stepPayloadMap[currentStep]]: extractSectionValues(values, currentStep)
+      };
+
+      console.log("Current Payload", payload);
+
+
+      const url = verificationRequestId
+        ? `https://api.xportscore.com/api/verify-requests/${verificationRequestId}`
+        : `https://api.xportscore.com/api/verify-requests`;
+
+      const method = verificationRequestId ? "PUT" : "POST";
+
+      const response = await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": "Xportscore@2026",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Something went wrong");
+      }
+
+      if (!verificationRequestId && data?.data?.requestId) {
+        localStorage.setItem("verificationRequestId", data.data.requestId);
+      }
+
+      if (currentStep === sections.length - 1) {
+        alert("Verification submitted successfully");
+        router.push("/");
+        return;
+      }
+
+      setCurrentStep((prev) => prev + 1);
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
+    }
+  };
+
+  const handleNext2 = async () => {
     if (currentStep == 6) {
       setCurrentStep((prev) => prev + 1);
     }
