@@ -1,17 +1,22 @@
 import { ShieldCheck } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
+import logoImg from "@/assets/XPORTSCORE_IMG.png";
 
 export default function Footer() {
   return (
     <footer className="bg-[#01081A] border-t border-[#101d35]">
-      <div className="max-w-7xl mx-auto px-6 py-14">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+      <div className="max-w-7xl mx-auto px-6 pt-10 pb-14">
+        <div className="flex flex-col md:flex-row justify-between gap-10">
           {/* Logo Section */}
-          <div>
-            <div className="flex items-center gap-2 mb-4">
-              <ShieldCheck size={18} className="text-cyan-400" />
-              <h3 className="text-white font-semibold text-lg">XportScore</h3>
-            </div>
+          <div className="max-w-xs">
+            <Link href="/" className="flex items-center mb-4">
+              <Image
+                src={logoImg}
+                alt="XportScore"
+                className="h-16 md:h-20 w-auto object-contain brightness-0 invert"
+              />
+            </Link>
 
             <p className="text-gray-500 text-sm leading-6 max-w-xs">
               The Global Export Readiness Audit.

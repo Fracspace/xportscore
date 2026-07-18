@@ -5,6 +5,8 @@ import { useState, useEffect } from "react";
 import { Menu, X, BriefcaseBusiness } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
+import logoImg from "@/assets/XPORTSCORE_IMG.png";
 
 import { useAuth } from "@/app/context/AuthContext";
 
@@ -13,9 +15,8 @@ const navLinks = [
   { label: "How It Works", href: "/howitworks" },
   { label: "Framework", href: "/assessmentframework" },
   { label: "XportVerify", href: "/xportverify" },
-  { label: "XportAssessment", href: "/startassessment" },
+  { label: "XportScore", href: "/startassessment" },
   { label: "Sample Report", href: "/samplereport" },
-  { label: "FAQ", href: "/faq" },
   { label: "Contact", href: "/contact" }
 ];
 
@@ -25,7 +26,7 @@ export default function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
 
-  const { setUser, setApplicationId, token,setApplicantId, user} = useAuth();
+  const { setUser, setApplicationId, token, setApplicantId, user } = useAuth();
 
   // useEffect(() => {
   //   const storedUser = localStorage.getItem("user");
@@ -58,14 +59,13 @@ export default function Navbar() {
     <div className="w-full border-b border-gray-200 bg-white">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-md border border-gray-200">
-            <BriefcaseBusiness size={20} />
-          </div>
-
-          <span className="text-xl font-ibm font-bold text-black">
-            XportScore
-          </span>
+        <Link href="/" className="flex items-center">
+          <Image
+            src={logoImg}
+            alt="XportScore"
+            className="h-16 md:h-20 w-auto object-contain"
+            priority
+          />
         </Link>
 
         {/* Desktop Nav */}
@@ -74,11 +74,10 @@ export default function Navbar() {
             <Link
               key={link.label}
               href={link.href}
-              className={`text-sm font-dm transition-colors hover:text-cyan-600 ${
-                link?.href === pathname
-                  ? "border-b-2 border-cyan-500 pb-1 text-cyan-600"
-                  : "text-gray-700"
-              }`}
+              className={`text-sm font-dm transition-colors hover:text-cyan-600 ${link?.href === pathname
+                ? "border-b-2 border-cyan-500 pb-1 text-cyan-600"
+                : "text-gray-700"
+                }`}
               onClick={() => setSelected(link?.label)}
             >
               {link.label}

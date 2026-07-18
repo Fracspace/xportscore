@@ -41,7 +41,7 @@ const pillars = [
 
 export default function ExportScoreHero() {
   return (
-    <section className="bg-slate-50 p-3 lg:p-5">
+    <section className="bg-slate-50 p-3  lg:p-5">
       <div className="mx-auto max-w-[1600px] rounded-[32px] border bg-white p-5 lg:p-6">
         {/* ======================= */}
         {/* HERO */}

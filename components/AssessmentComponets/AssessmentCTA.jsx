@@ -1,12 +1,12 @@
 import React from "react";
 import { Shield, CheckCircle } from "lucide-react";
 
-function AssessmentCTA({onProceed}) {
+function AssessmentCTA({ onProceed }) {
   const features = [
     "Comprehensive XportScore",
     "Readiness Status Audit",
     "QR-Verifiable Certificate",
-    "6-Month Validity",
+    "12 Months Validity",
     "Online Verification Portal"
   ];
   return (
