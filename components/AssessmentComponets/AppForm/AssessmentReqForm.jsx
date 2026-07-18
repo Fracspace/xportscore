@@ -72,7 +72,7 @@ export default function AssessmentReqForm() {
           <div className="p-5 sm:p-6 md:p-8 lg:p-10">
             {/* Heading */}
             <h2 className="text-2xl font-bold text-slate-900 md:text-3xl">
-              Start Export Score Assessment
+              Start Xport Score Assessment
             </h2>
             <p className="mt-3 text-sm md:text-base text-slate-600">
               Provide your details below to start the Xport Score Assessment
