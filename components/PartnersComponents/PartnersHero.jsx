@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
@@ -36,7 +38,14 @@ function PartnersHero() {
             </p>
 
             <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-              <button className="inline-flex items-center justify-center gap-2 rounded-lg bg-slate-950 px-8 py-4 font-medium text-white transition hover:bg-slate-800">
+              <button
+                onClick={() => {
+                  document.getElementById("partner-form-section")?.scrollIntoView({
+                    behavior: "smooth"
+                  });
+                }}
+                className="inline-flex items-center justify-center gap-2 rounded-lg bg-slate-950 px-8 py-4 font-medium text-white transition hover:bg-slate-800 cursor-pointer"
+              >
                 Apply for Partnership
                 <ArrowRight size={18} />
               </button>

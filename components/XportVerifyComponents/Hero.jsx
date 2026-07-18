@@ -28,7 +28,7 @@ export default function Hero({onProceed}) {
             </span>
 
             <h1 className="mt-8 text-5xl font-bold leading-tight text-[#081B4B] lg:text-7xl">
-              Know Who You're
+              Know Who You&apos;re
               <br />
               <span className="text-[#0A6D7E]">Trading With.</span>
             </h1>

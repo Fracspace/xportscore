@@ -6,6 +6,7 @@ import { Send } from "lucide-react";
 import { Country } from "country-state-city";
 
 import { useAuth } from "@/app/context/AuthContext";
+import Input from "@/components/common/Input";
 
 export default function VerificationRequestForm() {
   const {
@@ -14,10 +15,53 @@ export default function VerificationRequestForm() {
     formState: { errors }
   } = useForm();
 
-   const { setFormType, setPaymentForm, token } = useAuth();
+  const { setFormType, setPaymentForm, token } = useAuth();
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     console.log(data);
+    const payload = {
+      requestingCompany: {
+        contactPerson: data.fullname,
+        designation: data.designation,
+        email: data.email,
+        phone: data.phone,
+        companyName: data.company,
+        country: data.country
+      }
+    };
+
+    console.log("payload is :", payload);
+
+    try {
+      const response = await fetch(
+        "https://api.xportscore.com/api/verify-requests",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": "Xportscore@2026",
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify(payload)
+        }
+      );
+
+      setFormType("xport_verify");
+
+      const result = await response.json();
+
+      if (result?.success) {
+        setPaymentForm(true);
+        console.log("Success:", result);
+        alert("Export Verification request submitted successfully!");
+      }
+
+      console.log("response is ", result);
+      // alert("Assessment request submitted successfully!");
+    } catch (error) {
+      console.error(error);
+      alert(error.message);
+    }
   };
 
   const countries = Country.getAllCountries();
@@ -40,64 +84,59 @@ export default function VerificationRequestForm() {
             <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2">
               {/* Company Name */}
               <div>
-                <label className="mb-2 block text-sm font-semibold text-slate-800">
-                  Company Name<span className="text-red-500">*</span>
-                </label>
 
-                <input
-                  placeholder="Your Registered Company Name"
-                  className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-teal-600 focus:ring-2 focus:ring-teal-100"
+
+                <Input
+                  label="Company Name"
+                  {...register("company")}
+                  error={errors?.company?.message}
                 />
+
               </div>
 
               {/* Contact Person */}
               <div>
-                <label className="mb-2 block text-sm font-semibold text-slate-800">
-                  Contact Person Name<span className="text-red-500">*</span>
-                </label>
 
-                <input
-                  placeholder="Full Name"
-                  className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-teal-600 focus:ring-2 focus:ring-teal-100"
+                <Input
+                  label="Applicant Name"
+                  {...register("fullname")}
+                  error={errors?.fullname?.message}
                 />
+
               </div>
 
               {/* Designation */}
               <div>
-                <label className="mb-2 block text-sm font-semibold text-slate-800">
-                  Designation<span className="text-red-500">*</span>
-                </label>
 
-                <input
-                  placeholder="e.g. Export Manager"
-                  className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-teal-600 focus:ring-2 focus:ring-teal-100"
+                <Input
+                  label="Designation"
+                  {...register("designation")}
+                  error={errors?.designation?.message}
                 />
+
               </div>
 
               {/* Email */}
               <div>
-                <label className="mb-2 block text-sm font-semibold text-slate-800">
-                  Official Email<span className="text-red-500">*</span>
-                </label>
 
-                <input
+                <Input
+                  label="Email Address"
                   type="email"
-                  placeholder="email@company.com"
-                  className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-teal-600 focus:ring-2 focus:ring-teal-100"
+                  {...register("email")}
+                  error={errors?.email?.message}
                 />
+
               </div>
 
               {/* Phone */}
               <div>
-                <label className="mb-2 block text-sm font-semibold text-slate-800">
-                  Phone / WhatsApp<span className="text-red-500">*</span>
-                </label>
 
-                <input
+                <Input
+                  label="Mobile / WhatsApp Number"
                   {...register("phone")}
-                  placeholder="+1..."
-                  className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-teal-600 focus:ring-2 focus:ring-teal-100"
+                  error={errors?.phone?.message}
                 />
+
               </div>
 
               {/* Country */}
@@ -105,6 +144,7 @@ export default function VerificationRequestForm() {
                 <label className="mb-2 block text-sm font-semibold text-slate-800">
                   Country<span className="text-red-500">*</span>
                 </label>
+
                 <select
                   {...register("country")}
                   className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-teal-600 focus:ring-2 focus:ring-teal-100"

@@ -15,7 +15,6 @@ function UploadDocs() {
 
         <input
           type="file"
-          multiple
           {...register("businessDocuments")}
           className="w-full border rounded-lg p-3"
         />
@@ -34,7 +33,6 @@ function UploadDocs() {
 
         <input
           type="file"
-          multiple
           {...register("productServiceDocuments")}
           className="w-full border rounded-lg p-3"
         />
@@ -51,7 +49,6 @@ function UploadDocs() {
 
         <input
           type="file"
-          multiple
           {...register("packagingDocuments")}
           className="w-full border rounded-lg p-3"
         />
@@ -70,7 +67,6 @@ function UploadDocs() {
 
         <input
           type="file"
-          multiple
           {...register("certificationQualityDocuments")}
           className="w-full border rounded-lg p-3"
         />
@@ -87,7 +83,6 @@ function UploadDocs() {
 
         <input
           type="file"
-          multiple
           {...register("pastExportDocuments")}
           className="w-full border rounded-lg p-3"
         />

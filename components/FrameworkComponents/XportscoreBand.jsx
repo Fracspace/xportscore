@@ -61,7 +61,7 @@ function XportscoreBand() {
                 <div className="flex items-center gap-3 mb-5">
                   <Info size={22} className="text-[#006D77]" strokeWidth={2} />
                   <h3 className="text-2xl font-semibold text-[#07132D]">
-                    The "Bridge" Metaphor
+                    The &quot;Bridge&quot; Metaphor
                   </h3>
                 </div>
 

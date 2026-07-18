@@ -26,22 +26,30 @@ export function AuthProvider({ children }) {
      
     console.log("auth local storage details are:", storedApplicantId,storedApplicationId,storedToken)
 
-    if (storedToken) {
-      setToken(storedToken);
-    }
+    // Defer state updates to avoid synchronous cascading renders during effect phase
+    setTimeout(() => {
+      if (storedToken) {
+        setToken(storedToken);
+      }
 
-    if(storedApplicantId){
-      setApplicantId(storedApplicantId);
-    }
+      if (storedUser) {
+        try {
+          setUser(JSON.parse(storedUser));
+        } catch (e) {
+          console.error("Error parsing stored user in AuthContext", e);
+        }
+      }
 
-    if(storedApplicationId){
-      setApplicationId(storedApplicationId);
-    }
-    // if (storedUser) {
-    //   setUser(JSON.parse(storedUser));
-    // }
+      if (storedApplicantId) {
+        setApplicantId(storedApplicantId);
+      }
 
-    setLoading(false);
+      if (storedApplicationId) {
+        setApplicationId(storedApplicationId);
+      }
+
+      setLoading(false);
+    }, 0);
   }, []);
 
   const login = (token, user) => {

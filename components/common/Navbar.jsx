@@ -25,8 +25,6 @@ export default function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
 
-
-
   const { setUser, setApplicationId, token,setApplicantId, user} = useAuth();
 
   // useEffect(() => {

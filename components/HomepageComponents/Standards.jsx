@@ -17,8 +17,8 @@ function Standards() {
 
             <p className="mt-6 text-gray-600 leading-relaxed max-w-xl">
               XportScore is a data-driven private audit framework that evaluates
-              a business's capability to successfully trade across borders. We
-              don't just give you a certificate; we provide a rigorous 360°
+              a business&apos;s capability to successfully trade across borders. We
+              don&apos;t just give you a certificate; we provide a rigorous 360°
               evaluation of your compliance, pricing, and product readiness.
             </p>
 

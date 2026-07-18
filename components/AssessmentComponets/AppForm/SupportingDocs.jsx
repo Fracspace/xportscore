@@ -16,7 +16,6 @@ function SupportingDocs() {
 
         <input
           type="file"
-          multiple
           {...register("distributorAgreement")}
           className="w-full border rounded-lg p-3"
         />
@@ -27,7 +26,6 @@ function SupportingDocs() {
 
         <input
           type="file"
-          multiple
           {...register("productVideos")}
           className="w-full border rounded-lg p-3"
         />
@@ -38,7 +36,6 @@ function SupportingDocs() {
 
         <input
           type="file"
-          multiple
           {...register("factoryPhotos")}
           className="w-full border rounded-lg p-3"
         />
@@ -51,7 +48,6 @@ function SupportingDocs() {
 
         <input
           type="file"
-          multiple
           {...register("qualityControlProcessDocuments")}
           className="w-full border rounded-lg p-3"
         />

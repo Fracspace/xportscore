@@ -81,7 +81,7 @@ export default function PartnersCTA() {
           </h2>
 
           <p className="text-cyan-300 max-w-2xl mx-auto mb-10 leading-7">
-            Don't wait for a shipment rejection to realize your gaps.
+            Don&apos;t wait for a shipment rejection to realize your gaps.
             Get assessed today and trade with earned confidence.
           </p>
 

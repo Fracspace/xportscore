@@ -66,7 +66,7 @@ function AuditReportContent() {
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-14">
           <h2 className="text-4xl md:text-5xl font-bold text-[#07132D] mb-5">
-            What's Inside Your Audit Report?
+            What&apos;s Inside Your Audit Report?
           </h2>
 
           <p className="text-gray-500 text-lg leading-8">

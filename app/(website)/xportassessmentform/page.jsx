@@ -10,8 +10,8 @@ import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 
 function XportAssessment() {
+  const router = useRouter();
   // const searchParams = useSearchParams();
-
   // const assessmentId = searchParams.get("assessmentId");
   // const token = searchParams.get("token");
 

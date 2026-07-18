@@ -1,8 +1,10 @@
 "use client";
 
-import { Hourglass, Clock3 } from "lucide-react";
+import { Hourglass, Clock3, Eye } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function ReviewAssessmentCard() {
+  const router = useRouter();
   return (
     <div className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition">
       <div className="p-8 flex flex-col items-center text-center">
@@ -51,6 +53,15 @@ export default function ReviewAssessmentCard() {
             </p>
           </div>
         </div>
+
+        {/* Action button */}
+        <button
+          onClick={() => router.push("/dashboard/assessments/view")}
+          className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg bg-blue-50 hover:bg-blue-100 py-3.5 text-sm font-semibold text-slate-700 transition cursor-pointer"
+        >
+          <Eye size={17} />
+          View Details
+        </button>
       </div>
     </div>
   );

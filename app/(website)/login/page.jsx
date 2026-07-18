@@ -39,23 +39,15 @@ export default function Page() {
 
       const data = await response.json();
 
-      console.log("response is",data);
+      console.log("response is", data);
 
-      if(!data?.success){
+      if (!data?.success) {
         alert(data?.error?.message);
       }
-      
-      setUser(data?.user);
-      setApplicantId(data?.user?.applicantId);
-      setApplicationId(data?.application?.id);
-
 
       if (!response.ok) {
         throw new Error(data.message);
       }
-
-      alert("OTP sent successfully.");
-      setShowVerifyOTP(true);
 
       alert("OTP sent successfully.");
 
@@ -71,7 +63,7 @@ export default function Page() {
     <>
       {showVerifyOTP ? (
         <div>
-          <VerifyEmailPage email={email} />
+          <VerifyEmailPage email={email} backUrl="/login" />
         </div>
       ) : (
         <div className="min-h-screen bg-[#f5f7fc] flex items-center justify-center px-4">

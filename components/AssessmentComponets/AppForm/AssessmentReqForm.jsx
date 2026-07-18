@@ -49,17 +49,13 @@ export default function AssessmentReqForm() {
 
       const result = await response.json();
 
-      // if (!response.ok) {
-      //   throw new Error(result.message || "Something went wrong");
-      // }
-
       if (result?.success) {
         setPaymentForm(true);
         console.log("Success:", result);
         alert("Assessment request submitted successfully!");
       }
 
-      // console.log("Success:", result);
+      console.log("response is ", result);
       // alert("Assessment request submitted successfully!");
     } catch (error) {
       console.error(error);
@@ -86,9 +82,7 @@ export default function AssessmentReqForm() {
             <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2">
               {/* Company Name */}
               <div>
-                {/* <label className="mb-2 block text-sm font-semibold text-slate-800">
-                  Company Name<span className="text-red-500">*</span>
-                </label> */}
+
 
                 <Input
                   label="Company Name"
@@ -96,33 +90,21 @@ export default function AssessmentReqForm() {
                   error={errors?.company?.message}
                 />
 
-                {/* <input
-                  placeholder="Your Registered Company Name"
-                  className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-teal-600 focus:ring-2 focus:ring-teal-100"
-                /> */}
               </div>
 
               {/* Contact Person */}
               <div>
-                {/* <label className="mb-2 block text-sm font-semibold text-slate-800">
-                  Contact Person Name<span className="text-red-500">*</span>
-                </label> */}
+
                 <Input
                   label="Applicant Name"
                   {...register("fullname")}
                   error={errors?.fullname?.message}
                 />
-                {/* <input
-                  placeholder="Full Name"
-                  className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-teal-600 focus:ring-2 focus:ring-teal-100"
-                /> */}
+
               </div>
 
               {/* Designation */}
               <div>
-                {/* <label className="mb-2 block text-sm font-semibold text-slate-800">
-                  Designation<span className="text-red-500">*</span>
-                </label> */}
 
                 <Input
                   label="Designation"
@@ -130,17 +112,11 @@ export default function AssessmentReqForm() {
                   error={errors?.designation?.message}
                 />
 
-                {/* <input
-                  placeholder="e.g. Export Manager"
-                  className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-teal-600 focus:ring-2 focus:ring-teal-100"
-                /> */}
               </div>
 
               {/* Email */}
               <div>
-                {/* <label className="mb-2 block text-sm font-semibold text-slate-800">
-                  Official Email<span className="text-red-500">*</span>
-                </label> */}
+
                 <Input
                   label="Email Address"
                   type="email"
@@ -148,29 +124,17 @@ export default function AssessmentReqForm() {
                   error={errors?.email?.message}
                 />
 
-                {/* <input
-                  type="email"
-                  placeholder="email@company.com"
-                  className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-teal-600 focus:ring-2 focus:ring-teal-100"
-                /> */}
               </div>
 
               {/* Phone */}
               <div>
-                {/* <label className="mb-2 block text-sm font-semibold text-slate-800">
-                  Phone / WhatsApp<span className="text-red-500">*</span>
-                </label> */}
+
                 <Input
                   label="Mobile / WhatsApp Number"
                   {...register("phone")}
                   error={errors?.phone?.message}
                 />
 
-                {/* <input
-                  {...register("phone")}
-                  placeholder="+1..."
-                  className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-teal-600 focus:ring-2 focus:ring-teal-100"
-                /> */}
               </div>
 
               {/* Country */}

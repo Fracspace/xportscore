@@ -5,87 +5,47 @@ import CompletedAssessmentCard from "../Common/CompletedAssessmentCard";
 import DraftAssessmentCard from "../Common/DraftAssessmentCard";
 import ReviewAssessmentCard from "../Common/ReviewAssessmentCard";
 
-import { useAuth } from "@/app/context/AuthContext";
-import { useState, useEffect } from "react";
+function ExportAssessment({ assessment, loading }) {
+  console.log("assessment is", assessment);
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center p-8 bg-white border border-gray-200 rounded-xl">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-teal-600 border-t-transparent" />
+      </div>
+    );
+  }
 
-function ExportAssessment() {
-  // const { token } = useAuth();
+  if (!assessment) {
+    return (
+      <div className="flex flex-col items-center justify-center p-10 bg-white border border-gray-200 rounded-xl text-center">
+        <h3 className="text-xl font-semibold text-slate-800">No Export Assessment Found</h3>
+        <p className="mt-2 text-sm text-gray-500 max-w-sm">
+          You haven't started an Export Readiness Assessment yet. Get started to evaluate your capabilities.
+        </p>
+      </div>
+    );
+  }
 
-  // console.log("token")
-
-  // const { token } = useAuth();
-
-  // Replace this with wherever you're storing the assessment ID
-  // let assessmentId;
-  // if (typeof window !== "undefined") {
-  //   assessmentId = localStorage.getItem("assessmentId");
-  // }
-
-  // console.log("assesment id is", assessmentId);
-  const assessmentId1 = "56623c58-8ed1-4638-8bd1-b90cac2a1017";
-
-  const [assessment, setAssessment] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    // if (!token || !assessmentId) {
-    //   setLoading(false);
-    //   return;
-    // }
-
-    const assessmentId = localStorage.getItem("assessmentId");
-
-    const fetchAssessment = async () => {
-      try {
-        setLoading(true);
-
-        const token = localStorage.getItem("token");
-
-        console.log("token is ", token);
-
-        const response = await fetch(
-          `https://api.xportscore.com/api/export-assessments/${assessmentId}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              "x-api-key": "Xportscore@2026",
-              Authorization: `Bearer ${token}`
-            }
-          }
-        );
-
-        const data = await response.json();
-
-        console.log("Assessment Response:", data);
-
-        if (!response.ok) {
-          throw new Error(data?.message || "Failed to fetch assessment");
-        }
-
-        setAssessment(data);
-      } catch (err) {
-        console.error(err);
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAssessment();
-  }, []);
+  const isCompleted = assessment.status === "completed" || assessment.assessmentStatus === "completed" || assessment.assessmentStatus === "active";
+  const isUnderReview = assessment.status === "review" || assessment.status === "in_review";
 
   return (
     <div>
+      {/* <div className="mt-4">
+        {isCompleted && <CompletedAssessmentCard />}
+        {isUnderReview && <ReviewAssessmentCard />}
+        {!isCompleted && !isUnderReview && <DraftAssessmentCard />}
+      </div> */}
       <div className="mt-4">
-        <CompletedAssessmentCard />
-      </div>
-      <div className="mt-4">
-        <DraftAssessmentCard />
-      </div>
-      <div className="mt-4">
-        <ReviewAssessmentCard />
+        <div className="">
+          <CompletedAssessmentCard />
+        </div>
+        <div className="mt-4">
+          <ReviewAssessmentCard />
+        </div>
+        <div className="mt-4">
+          <DraftAssessmentCard />
+        </div>
       </div>
     </div>
   );

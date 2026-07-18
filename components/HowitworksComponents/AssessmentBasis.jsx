@@ -38,7 +38,7 @@ function AssessmentBasis() {
           </h2>
 
           <p className="mt-4 text-gray-600 leading-relaxed">
-            XportScore is an objective, document-driven standard. We don't rely
+            XportScore is an objective, document-driven standard. We don&apos;t rely
             on self declarations; we audit the evidence.
           </p>
         </div>

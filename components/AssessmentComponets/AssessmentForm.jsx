@@ -1311,17 +1311,20 @@ export default function AssessmentForm() {
 
   const set = (key, value) => setForm((prev) => ({ ...prev, [key]: value }));
 
-  const sections = [
-    <S1 form={form} set={set} />,
-    <S2 form={form} set={set} />,
-    <S3 form={form} set={set} />,
-    <S4 form={form} set={set} />,
-    <S5 form={form} set={set} />,
-    <S6 form={form} />,
-    <S7 form={form} set={set} />,
-    <S8 form={form} set={set} />,
-    <S9 form={form} set={set} />
-  ];
+  const renderStep = () => {
+    switch (step) {
+      case 0: return <S1 form={form} set={set} />;
+      case 1: return <S2 form={form} set={set} />;
+      case 2: return <S3 form={form} set={set} />;
+      case 3: return <S4 form={form} set={set} />;
+      case 4: return <S5 form={form} set={set} />;
+      case 5: return <S6 form={form} />;
+      case 6: return <S7 form={form} set={set} />;
+      case 7: return <S8 form={form} set={set} />;
+      case 8: return <S9 form={form} set={set} />;
+      default: return null;
+    }
+  };
 
   const goTo = (i) => {
     setStep(i);
@@ -1395,7 +1398,7 @@ export default function AssessmentForm() {
             }}
           >
             Your XportScore® Export Readiness Assessment has been received.
-            You'll be notified once the review is complete.
+            You&apos;ll be notified once the review is complete.
           </p>
           <button
             onClick={() => {
@@ -1994,7 +1997,7 @@ export default function AssessmentForm() {
           </div>
 
           {/* Section */}
-          {sections[step]}
+          {renderStep()}
 
           {/* Nav buttons */}
           <div

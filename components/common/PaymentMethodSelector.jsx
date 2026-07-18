@@ -13,7 +13,7 @@ import { useAuth } from "@/app/context/AuthContext";
 import { useRouter } from "next/navigation";
 
 export default function PaymentMethodSelector() {
-  const [paymentMethod, setPaymentMethod] = useState("international");
+  const [paymentMethod, setPaymentMethod] = useState("domestic");
 
   const {
     formType,
@@ -30,7 +30,7 @@ export default function PaymentMethodSelector() {
   } = useAuth();
 
   const router = useRouter();
-  console.log("stored details are", paymentType, applicantId, applicationId);
+  console.log("stored details are", formType, paymentType, applicantId, applicationId);
 
   const openRazorpayFromHtml = (htmlForm) => {
     // Remove previous Razorpay container if it exists
@@ -169,18 +169,17 @@ export default function PaymentMethodSelector() {
       <div className="mt-10 space-y-6">
         {/* Domestic */}
         <label
-          className={`relative block cursor-pointer rounded-xl border transition-all duration-300 ${
-            paymentMethod === "domestic"
-              ? "border-cyan-500 bg-cyan-50 shadow-md"
-              : "border-slate-200 bg-white hover:border-cyan-300 hover:shadow-sm"
-          }`}
+          className={`relative block cursor-pointer rounded-xl border transition-all duration-300 ${paymentMethod === "domestic"
+            ? "border-cyan-500 bg-cyan-50 shadow-md"
+            : "border-slate-200 bg-white hover:border-cyan-300 hover:shadow-sm"
+            }`}
         >
           <input
             type="radio"
             name="payment"
             className="hidden"
             checked={paymentMethod === "domestic"}
-            onChange={() => {setPaymentMethod("domestic");setPaymentType("domestic")}}
+            onChange={() => { setPaymentMethod("domestic"); setPaymentType("domestic") }}
           />
 
           <div className="p-7">
@@ -227,18 +226,17 @@ export default function PaymentMethodSelector() {
 
         {/* International */}
         <label
-          className={`relative block cursor-pointer rounded-xl border transition-all duration-300 ${
-            paymentMethod === "international"
-              ? "border-cyan-500 bg-cyan-50 shadow-md"
-              : "border-slate-200 bg-white hover:border-cyan-300 hover:shadow-sm"
-          }`}
+          className={`relative block cursor-pointer rounded-xl border transition-all duration-300 ${paymentMethod === "international"
+            ? "border-cyan-500 bg-cyan-50 shadow-md"
+            : "border-slate-200 bg-white hover:border-cyan-300 hover:shadow-sm"
+            }`}
         >
           <input
             type="radio"
             name="payment"
             className="hidden"
             checked={paymentMethod === "international"}
-            onChange={() =>{ setPaymentMethod("international");setPaymentType("international")}}
+            onChange={() => { setPaymentMethod("international"); setPaymentType("international") }}
           />
 
           <div className="p-7">

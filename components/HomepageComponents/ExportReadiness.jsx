@@ -55,7 +55,7 @@ function ExportReadiness() {
             </h3>
 
             <p className="mt-3 text-sm text-gray-600 leading-relaxed">
-              Audit your pricing readiness to ensure you haven't overlooked
+              Audit your pricing readiness to ensure you haven&apos;t overlooked
               hidden logistics or compliance costs.
             </p>
           </div>

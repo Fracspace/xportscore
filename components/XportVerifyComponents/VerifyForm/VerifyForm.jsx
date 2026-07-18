@@ -26,11 +26,11 @@ function VerifyForm() {
   const searchParams = useSearchParams();
   const verificationRequestId = searchParams.get("verifyId");
 
-  if(verificationRequestId){
-    localStorage.setItem("verificationRequestId",verificationRequestId);
+  if (verificationRequestId) {
+    localStorage.setItem("verificationRequestId", verificationRequestId);
   }
 
-  const {token} = useAuth();
+  const { token } = useAuth();
 
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
@@ -58,8 +58,9 @@ function VerifyForm() {
     3: "verificationScope",
     4: "supportingInfo",
     5: "additionalInformation",
-    6: "submission",
-    7: "declaration"
+    6: null,
+    7: "declaration",
+    8: "submission"
   };
 
   const extractSectionValues = (values, currentStep) => {
@@ -124,6 +125,15 @@ function VerifyForm() {
         return values.additionalInformation;
 
       case 6:
+        return {}
+
+      case 7:
+        return {
+          agree: values.agree
+        };
+
+
+      case 8:
         return {
           requestorName: values.requestorName,
           company: values.company,
@@ -131,10 +141,6 @@ function VerifyForm() {
           digitalSignature: values.digitalSignature
         };
 
-      case 7:
-        return {
-          agree: values.agree
-        };
 
       default:
         return {};
@@ -155,11 +161,21 @@ function VerifyForm() {
 
   const handleNext = async () => {
     try {
-      const fields = verifyformSteps[currentStep].fields;
+      let fields = [];
+      if (currentStep < 6) {
+        fields = verifyformSteps[currentStep].fields;
+      } else if (currentStep > 6) {
+        fields = verifyformSteps[currentStep - 1].fields;
+      }
 
       const isValid = await methods.trigger(fields);
 
       if (!isValid) return;
+
+      if (currentStep === 6) {
+        setCurrentStep((prev) => prev + 1);
+        return;
+      }
 
       const values = methods.getValues();
 
@@ -168,6 +184,8 @@ function VerifyForm() {
       };
 
       console.log("Current Payload", payload);
+
+      console.log("current step is and sections length is", currentStep, sections.length)
 
 
       const url = verificationRequestId
@@ -187,6 +205,8 @@ function VerifyForm() {
       });
 
       const data = await response.json();
+
+      console.log("response is", data);
 
       if (!response.ok) {
         throw new Error(data.message || "Something went wrong");
@@ -209,103 +229,16 @@ function VerifyForm() {
     }
   };
 
-  const handleNext2 = async () => {
-    if (currentStep == 6) {
-      setCurrentStep((prev) => prev + 1);
-    }
-    let fields = verifyformSteps[currentStep].fields;
 
-    console.log("fields are", fields);
-
-    const isValid = await methods.trigger(fields);
-
-    if (!isValid) return;
-
-    console.log("curr step is", currentStep);
-
-    const payload = methods.getValues();
-
-    console.log("Payload is ", payload);
-
-    setCurrentStep((prev) => prev + 1);
-
-    // try {
-    //   const verificationRequestId = localStorage.getItem(
-    //     "verificationRequestId"
-    //   );
-
-    //   let response;
-
-    //   if (!verificationRequestId) {
-    //     // First step -> Create draft
-    //     response = await fetch("http://localhost:3002/api/verify-requests", {
-    //       method: "POST",
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //         "x-api-key": "Xportscore@2026"
-    //       },
-    //       body: JSON.stringify(payload)
-    //     });
-    //   } else {
-    //     // Remaining steps -> Update draft
-    //     response = await fetch(
-    //       `http://localhost:3002/api/verify-requests/${verificationRequestId}`,
-    //       {
-    //         method: "PUT",
-    //         headers: {
-    //           "Content-Type": "application/json",
-    //           "x-api-key": "Xportscore@2026"
-    //         },
-    //         body: JSON.stringify(payload)
-    //       }
-    //     );
-    //   }
-
-    //   const data = await response.json();
-
-    //   console.log("data is",data)
-
-    //   if (!response.ok) {
-    //     throw new Error(data.message || "Something went wrong");
-    //   }
-
-    //   // Save id only once
-    //   if (!verificationRequestId && data?.data?.requestId) {
-    //     localStorage.setItem("verificationRequestId", data?.data?.requestId);
-    //   }
-
-    //   console.log("data and request id's are:", data, data?.data?.requestId);
-
-    //   // Success screen
-    //   if (currentStep === 8) {
-    //     alert("Verification request submitted successfully!");
-    //     localStorage.removeItem("verificationRequestId");
-    //     // router.push("/");
-    //     return;
-    //   }
-
-    //   setCurrentStep((prev) => prev + 1);
-    // } catch (err) {
-    //   console.error(err);
-    //   alert(err.message);
-    // }
-  };
-
-  const onSubmit = (data) => {
-    const formData = methods.getValues();
-
-    console.log("Form Data:", formData);
-    console.log("Final Data", data);
-  };
 
   return (
     <section>
       <FormProvider {...methods}>
         <form
-          onSubmit={methods.handleSubmit(onSubmit, (errors) => {
-            console.log("Validation Errors:", errors);
-            console.log("Current Form Data:", methods.getValues());
-          })}
+        // onSubmit={methods.handleSubmit(onSubmit, (errors) => {
+        //   console.log("Validation Errors:", errors);
+        //   console.log("Current Form Data:", methods.getValues());
+        // })}
         >
           <main className="min-h-screen bg-gray-50 p-8">
             <div className="mx-auto max-w-7xl">
@@ -329,21 +262,19 @@ function VerifyForm() {
                       >
                         <div
                           className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-semibold
-            ${
-              index === currentStep
-                ? "bg-teal-600 text-white"
-                : "bg-slate-200 text-slate-600"
-            }`}
+            ${index === currentStep
+                              ? "bg-teal-600 text-white"
+                              : "bg-slate-200 text-slate-600"
+                            }`}
                         >
                           {String(index + 1).padStart(2, "0")}
                         </div>
 
                         <span
-                          className={`text-sm ${
-                            index === currentStep
-                              ? "font-semibold text-slate-800"
-                              : "text-gray-500"
-                          }`}
+                          className={`text-sm ${index === currentStep
+                            ? "font-semibold text-slate-800"
+                            : "text-gray-500"
+                            }`}
                         >
                           {step}
                         </span>

@@ -17,7 +17,7 @@ function BusinessRelation() {
         </h2>
 
         <p className="mt-2 text-sm text-gray-500">
-          Tell us why you're requesting this business verification.
+          Tell us why you&apos;re requesting this business verification.
         </p>
 
         <div className="mt-8">

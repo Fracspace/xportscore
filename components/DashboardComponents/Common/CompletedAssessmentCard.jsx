@@ -1,8 +1,10 @@
 "use client";
 
 import { Eye, Download, BadgeCheck, ShieldCheck } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function CompletedAssessmentCard() {
+  const router = useRouter();
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-all duration-300">
       {/* Top */}
@@ -37,25 +39,22 @@ export default function CompletedAssessmentCard() {
 
       {/* Actions */}
       <div className="grid grid-cols-2 gap-3 mt-8">
-        <button className="flex items-center justify-center gap-2 bg-blue-50 hover:bg-blue-100 rounded-lg py-3 text-sm font-medium text-slate-700 transition">
+        <button
+          onClick={() => router.push("/dashboard/assessments/view")}
+          className="flex items-center justify-center gap-2 bg-blue-50 hover:bg-blue-100 rounded-lg py-3 text-sm font-medium text-slate-700 transition cursor-pointer"
+        >
           <Eye size={17} />
           View Report
         </button>
 
-        <button className="flex items-center justify-center gap-2 bg-blue-50 hover:bg-blue-100 rounded-lg py-3 text-sm font-medium text-slate-700 transition">
-          <Download size={17} />
-          PDF Report
-        </button>
+
 
         <button className="flex items-center justify-center gap-2 bg-blue-50 hover:bg-blue-100 rounded-lg py-3 text-sm font-medium text-slate-700 transition">
           <BadgeCheck size={17} />
           Certificate
         </button>
 
-        <button className="flex items-center justify-center gap-2 bg-blue-50 hover:bg-blue-100 rounded-lg py-3 text-sm font-medium text-slate-700 transition">
-          <ShieldCheck size={17} />
-          Verify
-        </button>
+
       </div>
     </div>
   );

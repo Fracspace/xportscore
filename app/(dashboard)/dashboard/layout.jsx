@@ -1,14 +1,13 @@
 "use client";
 
 import { useState } from "react";
-
 import React from "react";
 import Sidebar from "@/components/DashboardComponents/Common/Sidebar";
 import Topbar from "@/components/DashboardComponents/Common/Topbar";
-import "../../globals.css";
 
 export default function DashboardLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
   return (
     <div className="flex h-screen bg-[#F6F8FC] overflow-hidden">
       {/* Mobile Overlay */}
@@ -33,9 +32,7 @@ export default function DashboardLayout({ children }) {
           transform
           transition-transform
           duration-300
-          ${
-            sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
-          }
+          ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
         `}
       >
         <Sidebar closeSidebar={() => setSidebarOpen(false)} />

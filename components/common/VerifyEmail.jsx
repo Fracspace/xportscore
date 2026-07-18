@@ -8,14 +8,14 @@ import { useRouter } from "next/navigation";
 
 import { useAuth } from "@/app/context/AuthContext";
 
-export default function VerifyEmailPage({ email }) {
+export default function VerifyEmailPage({ email, backUrl = "/signup", onBack, onSuccess }) {
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const inputs = useRef([]);
 
   const router = useRouter();
 
-  const { setUser, setApplicationId,setToken, setApplicantId } = useAuth();
+  const { setUser, setApplicationId, setToken, setApplicantId } = useAuth();
 
   const verifyOTP = async () => {
     try {
@@ -42,21 +42,26 @@ export default function VerifyEmailPage({ email }) {
       setApplicationId(data?.data?.application?.id);
       setToken(data?.data?.token);
 
-            localStorage.setItem("user", JSON.stringify(data?.data?.user));
+      localStorage.setItem("user", JSON.stringify(data?.data?.user));
       localStorage.setItem("applicantId", data?.data?.user?.applicantId || "");
       localStorage.setItem("applicationId", data?.data?.application?.id || "");
-      localStorage.setItem("token",data?.data?.token)
+      localStorage.setItem("token", data?.data?.token);
 
       console.log(
-        "details are inside otp",data?.success,
+        "details are inside otp",
+        data?.success,
         data,
         data?.data?.user,
         data?.data?.user?.applicantId,
         data?.data?.application?.id
       );
 
-      if(data?.success){
-        router.push('/')
+      if (data?.success) {
+        if (onSuccess) {
+          onSuccess(data?.data);
+        } else {
+          router.push("/");
+        }
       }
 
       if (!response.ok) {
@@ -80,13 +85,23 @@ export default function VerifyEmailPage({ email }) {
     <main className="min-h-screen bg-[#f5f7fb] flex items-center justify-center px-4">
       <div className="w-full max-w-md rounded-md border border-gray-200 bg-white shadow-lg p-8">
         {/* Back Button */}
-        <Link
-          href="/register"
-          className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-800 transition"
-        >
-          <ArrowLeft size={16} />
-          Back
-        </Link>
+        {onBack ? (
+          <button
+            onClick={onBack}
+            className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-800 transition cursor-pointer bg-transparent border-none p-0 outline-none"
+          >
+            <ArrowLeft size={16} />
+            Back
+          </button>
+        ) : (
+          <Link
+            href={backUrl}
+            className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-800 transition"
+          >
+            <ArrowLeft size={16} />
+            Back
+          </Link>
+        )}
 
         {/* Icon */}
         <div className="mt-6 flex justify-center">
@@ -102,7 +117,7 @@ export default function VerifyEmailPage({ email }) {
           </h1>
 
           <p className="mt-3 text-sm leading-6 text-gray-500">
-            We've sent a 6-digit verification code to your
+            We&apos;ve sent a 6-digit verification code to your
             <br />
             corporate email address. Please enter it below to
             <br />

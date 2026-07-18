@@ -104,7 +104,14 @@ function PartnerModels() {
             </p>
 
             <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
-              <button className="rounded-xl bg-slate-950 px-8 py-4 font-medium text-white transition hover:bg-slate-800">
+              <button
+                onClick={() => {
+                  document.getElementById("partner-form-section")?.scrollIntoView({
+                    behavior: "smooth"
+                  });
+                }}
+                className="rounded-xl bg-slate-950 px-8 py-4 font-medium text-white transition hover:bg-slate-800 cursor-pointer"
+              >
                 Become an XportScore Partner
               </button>
 

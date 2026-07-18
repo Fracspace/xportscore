@@ -1,11 +1,13 @@
 import VerifyForm from "@/components/XportVerifyComponents/VerifyForm/VerifyForm";
-import React from "react";
+import React, { Suspense } from "react";
 
 function page() {
   return (
     <div>
       <div>
-        <VerifyForm />
+        <Suspense fallback={<div>Loading...</div>}>
+          <VerifyForm />
+        </Suspense>
       </div>
     </div>
   );

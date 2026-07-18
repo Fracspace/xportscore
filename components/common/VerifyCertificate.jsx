@@ -22,32 +22,33 @@ export default function VerifyCertificate({}) {
 
   console.log("search id is", id);
 
-  async function getData() {
-    try {
-      const res = await fetch(
-        `https://api.xportscore.com/api/certificates/validate/${id}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "x-api-key": "Xportscore@2026"
-          }
-        }
-      );
-
-      console.log("res is", res);
-
-      const data = await res.json();
-
-      console.log("data is ", data);
-    } catch (error) {
-      console.log("error is", error);
-    }
-  }
-
   useEffect(() => {
+    async function getData() {
+      if (!id) return;
+      try {
+        const res = await fetch(
+          `https://api.xportscore.com/api/certificates/validate/${id}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "x-api-key": "Xportscore@2026"
+            }
+          }
+        );
+
+        console.log("res is", res);
+
+        const data = await res.json();
+
+        console.log("data is ", data);
+      } catch (error) {
+        console.log("error is", error);
+      }
+    }
+
     getData();
-  }, []);
+  }, [id]);
 
   return (
     <div className="w-full mt-26 mb-12 max-w-5xl mx-auto rounded-2xl border-4 border-slate-200 bg-white shadow-xl p-6 md:p-10 relative overflow-hidden">
@@ -74,7 +75,7 @@ export default function VerifyCertificate({}) {
               <h1 className="text-4xl font-bold text-slate-900">XportScore</h1>
 
               <p className="text-gray-500 text-sm">
-                India's Private Export Readiness Standard
+                India&apos;s Private Export Readiness Standard
               </p>
             </div>
           </div>

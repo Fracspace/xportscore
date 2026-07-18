@@ -37,7 +37,7 @@ export default function Certificate({
               <h1 className="text-4xl font-bold text-slate-900">XportScore</h1>
 
               <p className="text-gray-500 text-sm">
-                India's Private Export Readiness Standard
+                India&apos;s Private Export Readiness Standard
               </p>
             </div>
           </div>

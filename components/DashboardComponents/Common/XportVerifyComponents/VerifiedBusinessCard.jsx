@@ -1,8 +1,12 @@
 "use client";
 
 import { Building2, Eye, Download } from "lucide-react";
+import { useRouter } from "next/navigation";
 
-export default function VerifiedBusinessCard() {
+export default function VerifiedBusinessCard({ verification }) {
+  const router = useRouter();
+  const companyName = verification?.business_to_verify?.legalCompanyName || "ABC Global Ltd";
+
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition">
       {/* Header */}
@@ -25,7 +29,7 @@ export default function VerifiedBusinessCard() {
       {/* Company */}
       <div className="flex items-center gap-2 mt-4 text-sm text-slate-700">
         <Building2 size={15} />
-        <span>ABC Global Ltd</span>
+        <span>{companyName}</span>
       </div>
 
       {/* Result */}
@@ -43,7 +47,10 @@ export default function VerifiedBusinessCard() {
 
       {/* Buttons */}
       <div className="grid grid-cols-2 gap-4 mt-8">
-        <button className="flex items-center justify-center gap-2 rounded-lg bg-slate-900 text-white py-3 font-medium hover:bg-slate-800 transition">
+        <button
+          onClick={() => router.push("/dashboard/verifications/view")}
+          className="flex items-center justify-center gap-2 rounded-lg bg-slate-900 text-white py-3 font-medium hover:bg-slate-800 transition cursor-pointer"
+        >
           <Eye size={18} />
           View Full
         </button>

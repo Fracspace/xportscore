@@ -1,7 +1,7 @@
 "use client";
 
 import VerifyForm from "@/components/XportVerifyComponents/VerifyForm/VerifyForm";
-import React from "react";
+import React, { Suspense } from "react";
 import { ArrowLeft, ShieldCheck, RotateCcw } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -17,7 +17,9 @@ function VerifyFormPage() {
           <ArrowLeft size={16} />
           Back
         </div>
-        <VerifyForm />
+        <Suspense fallback={<div>Loading...</div>}>
+          <VerifyForm />
+        </Suspense>
       </div>
     </div>
   );
