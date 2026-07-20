@@ -131,9 +131,13 @@ export default function Navbar() {
               </Link>
             ))}
 
-            <button className="mt-4 rounded-md bg-black px-5 py-3 text-white">
+            <Link
+              href="/startassessment"
+              onClick={() => setIsOpen(false)}
+              className="mt-4 rounded-md bg-black px-5 py-3 text-center text-white font-medium"
+            >
               Get Your XportScore
-            </button>
+            </Link>
           </div>
         </div>
       )}

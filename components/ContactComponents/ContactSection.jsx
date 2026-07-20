@@ -1,12 +1,85 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
+import { Country } from "country-state-city";
 
 import { Mail, Handshake, Phone, MapPin, ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 function ContactSection() {
   const router = useRouter();
+  const countries = Country.getAllCountries();
+  const [formData, setFormData] = useState({
+    name: "",
+    companyName: "",
+    email: "",
+    phone: "",
+    country: "",
+    enquiryType: "Standard Readiness Audit",
+    message: "",
+    agree: false
+  });
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.agree) {
+      setError("You must agree to the Privacy Policy to submit your enquiry.");
+      return;
+    }
+    setLoading(true);
+    setError("");
+    setSuccess(false);
+
+    const payload = {
+      name: formData.name,
+      email: formData.email,
+      subject: formData.enquiryType,
+      message: formData.message,
+      companyName: formData.companyName,
+      phone: formData.phone,
+      country: formData.country
+    };
+
+    try {
+      const response = await fetch("https://api.xportscore.com/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": "Xportscore@2026",
+          accept: "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const result = await response.json();
+
+      if (response.ok && (result?.success || result?.message === "success" || !result?.error)) {
+        setSuccess(true);
+        setFormData({
+          name: "",
+          companyName: "",
+          email: "",
+          phone: "",
+          country: "United States",
+          enquiryType: "Standard Readiness Audit",
+          message: "",
+          agree: false
+        });
+      } else {
+        setError(result?.message || result?.error?.message || "Failed to submit enquiry. Please try again.");
+      }
+    } catch (err) {
+      console.error(err);
+      setError("Something went wrong. Please check your internet connection.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       <section className="bg-[#F7F9FC] py-20">
@@ -36,7 +109,7 @@ function ContactSection() {
                   {
                     icon: Phone,
                     label: "PHONE / WHATSAPP",
-                    value: "+91 92479 52343",
+                    value: "+91 92479 52344",
                     desc: "Available Mon–Sat, 9:00 AM – 6:00 PM IST."
                   }
                   // {
@@ -96,77 +169,145 @@ function ContactSection() {
                 Institutional Enquiry
               </h2>
 
-              <p className="mt-3 text-slate-600">
+              <p className="mt-3 text-slate-600 mb-6">
                 Please fill out the form below. Our trade compliance specialists
                 typically respond within 12 business hours.
               </p>
 
-              <form className="mt-8 space-y-5">
-                <div className="grid gap-5 md:grid-cols-2">
-                  <Input label="FULL NAME" placeholder="John Doe" />
-
-                  <Input
-                    label="COMPANY NAME"
-                    placeholder="Global Exports Inc."
-                  />
-                </div>
-
-                <div className="grid gap-5 md:grid-cols-2">
-                  <Input
-                    label="BUSINESS EMAIL"
-                    placeholder="name@company.com"
-                  />
-
-                  <Input label="PHONE NUMBER" placeholder="+1 (555) 000-0000" />
-                </div>
-
-                <div className="grid gap-5 md:grid-cols-2">
-                  <Select
-                    label="COUNTRY OF OPERATION"
-                    options={["United States", "India", "United Kingdom"]}
-                  />
-
-                  <Select
-                    label="ENQUIRY TYPE"
-                    options={[
-                      "Standard Readiness Audit",
-                      "Partnership",
-                      "Certification"
-                    ]}
-                  />
-                </div>
-
-                <div>
-                  <label className="mb-2 block text-xs font-semibold tracking-wide text-slate-600">
-                    MESSAGE / DETAILS
-                  </label>
-
-                  <textarea
-                    rows="5"
-                    placeholder="Briefly describe your requirements or question..."
-                    className="w-full rounded-md border border-slate-300 px-4 py-3 focus:border-teal-600 focus:outline-none"
-                  />
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <input type="checkbox" className="mt-1" />
-
-                  <p className="text-sm text-slate-600">
-                    I agree to the{" "}
-                    <span className="text-teal-600">Privacy Policy</span>{" "}
-                    regarding the handling of my business data.
+              {success ? (
+                <div className="rounded-xl border border-emerald-100 bg-emerald-50/50 p-8 text-center shadow-sm">
+                  <h3 className="text-2xl font-bold text-slate-900">Enquiry Submitted!</h3>
+                  <p className="mt-3 text-slate-600 leading-relaxed max-w-md mx-auto">
+                    Thank you for contacting XportScore. Your enquiry has been received and our trade compliance specialists will review it shortly.
                   </p>
+                  <button
+                    onClick={() => setSuccess(false)}
+                    className="mt-8 rounded-xl bg-[#041B4D] px-6 py-3 font-medium text-white transition hover:bg-[#062766]"
+                  >
+                    Send Another Message
+                  </button>
                 </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-5">
+                  <div className="grid gap-5 md:grid-cols-2">
+                    <Input
+                      label="FULL NAME"
+                      placeholder="John Doe"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      required
+                    />
 
-                <button
-                  onClick={(e) => e.preventDefault()}
-                  type="submit"
-                  className="flex w-full items-center justify-center gap-2 rounded-md bg-[#041B4D] px-6 py-4 font-medium text-white transition hover:bg-[#062766]"
-                >
-                  Submit Enquiry
-                  <ArrowRight size={18} />
-                </button>
-              </form>
+                    <Input
+                      label="COMPANY NAME"
+                      placeholder="Global Exports Inc."
+                      value={formData.companyName}
+                      onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
+                      required
+                    />
+                  </div>
+
+                  <div className="grid gap-5 md:grid-cols-2">
+                    <Input
+                      label="BUSINESS EMAIL"
+                      type="email"
+                      placeholder="name@company.com"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      required
+                    />
+
+                    <Input
+                      label="PHONE NUMBER"
+                      placeholder="+1 (555) 000-0000"
+                      value={formData.phone}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      required
+                    />
+                  </div>
+
+                  <div className="grid gap-5 md:grid-cols-2">
+                    <div>
+                      <label className="mb-2 block text-xs font-semibold tracking-wide text-slate-600">
+                        COUNTRY OF OPERATION
+                      </label>
+                      <select
+                        value={formData.country}
+                        onChange={(e) => setFormData({ ...formData, country: e.target.value })}
+                        required
+                        className="w-full rounded-md border border-slate-300 px-4 py-3 focus:border-teal-600 focus:outline-none text-sm text-gray-700 bg-white"
+                      >
+                        <option value="">Select Country</option>
+                        {countries.map((country) => (
+                          <option key={country.isoCode} value={country.name}>
+                            {country.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <Select
+                      label="ENQUIRY TYPE"
+                      options={[
+                        "Xport Score",
+                        "Xport Verify",
+                        "Partnership",
+
+                      ]}
+                      value={formData.enquiryType}
+                      onChange={(e) => setFormData({ ...formData, enquiryType: e.target.value })}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-2 block text-xs font-semibold tracking-wide text-slate-600">
+                      MESSAGE / DETAILS
+                    </label>
+
+                    <textarea
+                      rows="5"
+                      placeholder="Briefly describe your requirements or question..."
+                      value={formData.message}
+                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                      required
+                      className="w-full rounded-md border border-slate-300 px-4 py-3 focus:border-teal-600 focus:outline-none"
+                    />
+                  </div>
+
+                   <div className="flex items-start gap-3">
+                    <input
+                      type="checkbox"
+                      className="mt-1"
+                      checked={formData.agree}
+                      onChange={(e) => setFormData({ ...formData, agree: e.target.checked })}
+                      required
+                    />
+
+                    <p className="text-sm text-slate-600">
+                      I agree to the{" "}
+                      <Link href="/privacypolicy" className="text-teal-600 hover:underline">
+                        Privacy Policy
+                      </Link>{" "}
+                      regarding the handling of my business data.
+                    </p>
+                  </div>
+
+                  {error && (
+                    <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-md p-3">
+                      {error}
+                    </p>
+                  )}
+
+                  <button
+                    disabled={loading}
+                    type="submit"
+                    className="flex w-full items-center justify-center gap-2 rounded-md bg-[#041B4D] px-6 py-4 font-medium text-white transition hover:bg-[#062766] disabled:bg-slate-400 disabled:cursor-not-allowed"
+                  >
+                    {loading ? "Submitting..." : "Submit Enquiry"}
+                    {!loading && <ArrowRight size={18} />}
+                  </button>
+                </form>
+              )}
             </div>
           </div>
         </div>
@@ -201,7 +342,7 @@ function ContactSection() {
   );
 }
 
-function Input({ label, placeholder }) {
+function Input({ label, placeholder, value, onChange, required, type = "text" }) {
   return (
     <div>
       <label className="mb-2 block text-xs font-semibold tracking-wide text-slate-600">
@@ -209,24 +350,33 @@ function Input({ label, placeholder }) {
       </label>
 
       <input
-        type="text"
+        type={type}
         placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+        required={required}
         className="w-full rounded-md border border-slate-300 px-4 py-3 focus:border-teal-600 focus:outline-none"
       />
     </div>
   );
 }
 
-function Select({ label, options }) {
+function Select({ label, options, value, onChange }) {
   return (
     <div>
       <label className="mb-2 block text-xs font-semibold tracking-wide text-slate-600">
         {label}
       </label>
 
-      <select className="w-full rounded-md border border-slate-300 px-4 py-3 focus:border-teal-600 focus:outline-none">
+      <select
+        value={value}
+        onChange={onChange}
+        className="w-full rounded-md border border-slate-300 px-4 py-3 focus:border-teal-600 focus:outline-none"
+      >
         {options.map((option) => (
-          <option key={option}>{option}</option>
+          <option key={option} value={option}>
+            {option}
+          </option>
         ))}
       </select>
     </div>
