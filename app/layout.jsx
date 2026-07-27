@@ -1,6 +1,7 @@
 import { DM_Sans, Manrope, IBM_Plex_Sans, Poppins } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "./context/AuthContext";
+import { GoogleTagManager } from "@next/third-parties/google";
 
 const dm = DM_Sans({
   variable: "--font-dm",
@@ -37,6 +38,7 @@ export default function RootLayout({ children }) {
           {children}
         </AuthProvider>
       </body>
+      <GoogleTagManager gtmId="GTM-T44KSMJW" />
     </html>
   );
 }
