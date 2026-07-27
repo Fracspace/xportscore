@@ -134,10 +134,28 @@ export default function Navbar() {
             <Link
               href="/startassessment"
               onClick={() => setIsOpen(false)}
-              className="mt-4 rounded-md bg-black px-5 py-3 text-center text-white font-medium"
+              className="mt-4 rounded-md bg-teal-700 hover:bg-teal-800 transition px-5 py-3 text-center text-white font-medium"
             >
               Get Your XportScore
             </Link>
+
+            {!token ? (
+              <Link
+                href="/login"
+                onClick={() => setIsOpen(false)}
+                className="mt-2 rounded-md border border-gray-300 px-5 py-3 text-center text-gray-800 font-medium hover:bg-gray-50 transition"
+              >
+                Login / Signup
+              </Link>
+            ) : (
+              <Link
+                href="/dashboard"
+                onClick={() => setIsOpen(false)}
+                className="mt-2 rounded-md border border-gray-300 px-5 py-3 text-center text-gray-800 font-medium hover:bg-gray-50 transition"
+              >
+                Dashboard
+              </Link>
+            )}
           </div>
         </div>
       )}

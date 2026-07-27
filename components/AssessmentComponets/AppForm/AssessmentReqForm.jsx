@@ -1,31 +1,63 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Send } from "lucide-react";
 import { Country } from "country-state-city";
 
 import Input from "@/components/common/Input";
 import { useAuth } from "@/app/context/AuthContext";
+import VerifyEmailPage from "@/components/common/VerifyEmail";
 
 export default function AssessmentReqForm() {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors }
   } = useForm();
 
-  const { setFormType, setPaymentForm, token } = useAuth();
+  const { setFormType, setPaymentForm, token, user, setApplicationId } = useAuth();
 
-  console.log("toekn is", token);
+  const [showVerifyOTP, setShowVerifyOTP] = useState(false);
+  const [formEmail, setFormEmail] = useState("");
+  const [pendingFormData, setPendingFormData] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const onSubmit = async (data) => {
+  const countries = Country.getAllCountries();
+
+  console.log("token is", token);
+
+  useEffect(() => {
+    let prefill = null;
+    try {
+      const storedPrefill = localStorage.getItem("prefill details");
+      if (storedPrefill) {
+        prefill = JSON.parse(storedPrefill);
+      }
+    } catch (e) {
+      console.error("Error parsing prefill details", e);
+    }
+
+    if (user || prefill) {
+      reset({
+        company: prefill?.company || user?.company || user?.companyName || user?.applicant?.company || user?.applicant?.companyName || "",
+        fullname: prefill?.fullname || user?.fullname || user?.contactPersonName || user?.name || user?.applicant?.fullname || user?.applicant?.contactPersonName || "",
+        designation: prefill?.designation || user?.designation || user?.applicant?.designation || "",
+        email: prefill?.email || user?.email || user?.officeEmail || user?.applicant?.email || user?.applicant?.officeEmail || "",
+        phone: prefill?.phone || user?.phone || user?.phoneNumber || user?.applicant?.phone || user?.applicant?.phoneNumber || "",
+        country: prefill?.country || user?.country || user?.applicant?.country || ""
+      });
+    }
+  }, [user, reset]);
+
+  const submitFormWithToken = async (formData, submitToken) => {
     const payload = {
       applicant: {
-        fullname: data.fullname,
-        designation: data.designation,
-        email: data.email,
-        phone: data.phone
+        fullname: formData.fullname,
+        designation: formData.designation,
+        email: formData.email,
+        phone: formData.phone
       }
     };
 
@@ -39,7 +71,7 @@ export default function AssessmentReqForm() {
           headers: {
             "Content-Type": "application/json",
             "x-api-key": "Xportscore@2026",
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${submitToken}`
           },
           body: JSON.stringify(payload)
         }
@@ -50,20 +82,150 @@ export default function AssessmentReqForm() {
       const result = await response.json();
 
       if (result?.success) {
+        const assessmentId = result?.data?.id || result?.data?.assessmentId;
+        if (assessmentId) {
+          setApplicationId(assessmentId);
+          localStorage.setItem("applicationId", assessmentId);
+          localStorage.setItem("assessmentId", assessmentId);
+        }
         setPaymentForm(true);
         console.log("Success:", result);
         alert("Assessment request submitted successfully!");
+      } else {
+        // throw new Error(result?.error?.message || result?.message || "Failed to submit assessment request");
       }
 
       console.log("response is ", result);
-      // alert("Assessment request submitted successfully!");
     } catch (error) {
       console.error(error);
       alert(error.message);
     }
   };
 
-  const countries = Country.getAllCountries();
+  const onSubmit = async (data) => {
+    if (token) {
+      await submitFormWithToken(data, token);
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      const selectedCountry = countries.find((c) => c.name === data.country);
+      const countryCode = selectedCountry?.phonecode
+        ? `+${selectedCountry.phonecode}`
+        : "+91";
+
+      const signupPayload = {
+        companyName: data.company,
+        contactPersonName: data.fullname,
+        designation: data.designation,
+        officeEmail: data.email,
+        password: "",
+        countryCode,
+        phoneNumber: data.phone,
+        formType: "export"
+      };
+
+      console.log("Submitting signup payload:", signupPayload);
+
+      const response = await fetch(
+        "https://api.xportscore.com/api/auth/signup",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": "Xportscore@2026",
+            accept: "application/json"
+          },
+          body: JSON.stringify(signupPayload)
+        }
+      );
+
+      const signupResult = await response.json();
+      console.log("Signup response is:", signupResult);
+
+      let proceedToOtp = false;
+
+      if (response.ok && signupResult?.success) {
+        if (signupResult?.data?.prefill?.applicant) {
+          localStorage.setItem(
+            "prefill details",
+            JSON.stringify(signupResult?.data?.prefill?.applicant)
+          );
+        }
+        proceedToOtp = true;
+      } else {
+        const errMsg = signupResult?.error?.message || signupResult?.message || "";
+        if (
+          errMsg.toLowerCase().includes("exist") ||
+          errMsg.toLowerCase().includes("already") ||
+          response.status === 400 ||
+          response.status === 409
+        ) {
+          console.log("Email already registered. Attempting direct login via OTP...");
+          proceedToOtp = true;
+        } else {
+          throw new Error(errMsg || "Signup failed");
+        }
+      }
+
+      if (proceedToOtp) {
+        console.log("Calling send-otp for email:", data.email);
+        const otpResponse = await fetch(
+          "https://api.xportscore.com/api/auth/send-otp",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "x-api-key": "Xportscore@2026"
+            },
+            body: JSON.stringify({
+              email: data.email
+            })
+          }
+        );
+
+        const otpData = await otpResponse.json();
+        console.log("Internal OTP response:", otpData);
+
+        if (!otpResponse.ok) {
+          throw new Error(otpData?.error?.message || otpData?.message || "Failed to send verification OTP");
+        }
+
+        if (otpData?.success) {
+          setPendingFormData(data);
+          setFormEmail(data.email);
+          setShowVerifyOTP(true);
+        } else {
+          alert(otpData?.error?.message || "Failed to send verification OTP");
+        }
+      }
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleOtpSuccess = async (otpResponseData) => {
+    const submitToken = otpResponseData?.token;
+    if (submitToken && pendingFormData) {
+      await submitFormWithToken(pendingFormData, submitToken);
+    } else {
+      alert("Verification successful, but token or pending form data was missing. Please submit again.");
+    }
+  };
+
+  if (showVerifyOTP) {
+    return (
+      <VerifyEmailPage
+        email={formEmail}
+        onBack={() => setShowVerifyOTP(false)}
+        onSuccess={handleOtpSuccess}
+      />
+    );
+  }
 
   return (
     <section className="bg-gray-50 px-4 py-8 md:px-8 lg:px-12">
@@ -82,59 +244,48 @@ export default function AssessmentReqForm() {
             <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2">
               {/* Company Name */}
               <div>
-
-
                 <Input
                   label="Company Name"
                   {...register("company")}
                   error={errors?.company?.message}
                 />
-
               </div>
 
               {/* Contact Person */}
               <div>
-
                 <Input
                   label="Applicant Name"
                   {...register("fullname")}
                   error={errors?.fullname?.message}
                 />
-
               </div>
 
               {/* Designation */}
               <div>
-
                 <Input
                   label="Designation"
                   {...register("designation")}
                   error={errors?.designation?.message}
                 />
-
               </div>
 
               {/* Email */}
               <div>
-
                 <Input
                   label="Email Address"
                   type="email"
                   {...register("email")}
                   error={errors?.email?.message}
                 />
-
               </div>
 
               {/* Phone */}
               <div>
-
                 <Input
                   label="Mobile / WhatsApp Number"
                   {...register("phone")}
                   error={errors?.phone?.message}
                 />
-
               </div>
 
               {/* Country */}
@@ -182,9 +333,10 @@ export default function AssessmentReqForm() {
             <div className="flex justify-center">
               <button
                 type="submit"
-                className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-teal-700 px-8 py-3 font-semibold text-white transition hover:bg-teal-800 sm:w-auto"
+                disabled={isSubmitting}
+                className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-teal-700 px-8 py-3 font-semibold text-white transition hover:bg-teal-800 sm:w-auto disabled:opacity-50"
               >
-                Submit
+                {isSubmitting ? "Processing..." : "Submit"}
                 <Send size={18} />
               </button>
             </div>

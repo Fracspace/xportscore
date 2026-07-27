@@ -135,6 +135,9 @@ export default function PaymentMethodSelector() {
       //   window.location.href = data.approvalUrl;
       // }
     } catch (error) {
+      console.log("Error:", error);
+      console.log("Message:", error.message);
+      console.log("Stack:", error.stack);
       console.error(error);
       alert(error.message);
     }
@@ -150,8 +153,8 @@ export default function PaymentMethodSelector() {
 
         <p className="mx-auto mt-4 max-w-3xl text-slate-600 leading-7">
           The application fee for this service is{" "}
-          <span className="font-semibold">USD 299</span> (approximately{" "}
-          <span className="font-semibold">₹28,500</span>). Please select the
+          <span className="font-semibold">USD 299</span> for international users or{" "}
+          <span className="font-semibold">₹29,999</span> for domestic users. Please select the
           payment method that corresponds to the billing address associated with
           your card or bank account.
         </p>
@@ -203,18 +206,13 @@ export default function PaymentMethodSelector() {
               🇮🇳 Domestic Payment (India)
             </h2>
 
-            <p className="mt-2 text-4xl font-bold text-cyan-700">₹28,500</p>
-
-            <p className="mt-1 text-sm text-slate-500">
-              Approximate equivalent of USD 299
-            </p>
+            <p className="mt-2 text-4xl font-bold text-cyan-700">₹29,999</p>
 
             <p className="mt-6 leading-7 text-slate-600">
               Choose this option if your card or bank account has a billing
-              address in India. Your payment will be processed securely through
-              <span className="font-semibold"> Razorpay</span>, supporting
-              Indian debit cards, credit cards, UPI, net banking, and other
-              domestic payment methods.
+              address in India. Your payment will be processed securely through{" "}
+              <span className="font-semibold">Razorpay</span>, supporting Indian
+              credit cards, debit cards, UPI, net banking, and other domestic payment methods.
             </p>
 
             <div className="mt-6 flex items-center gap-2 text-sm font-medium text-cyan-700">
@@ -265,9 +263,8 @@ export default function PaymentMethodSelector() {
             <p className="mt-6 leading-7 text-slate-600">
               Choose this option if your card or bank account has a billing
               address outside India. Your payment will be processed securely
-              through <span className="font-semibold">PayPal</span>, allowing
-              payments using internationally issued credit cards, debit cards,
-              or a PayPal account.
+              through <span className="font-semibold">Razorpay</span>, allowing
+              payments using international cards.
             </p>
 
             <div className="mt-6 flex items-center gap-2 text-sm font-medium text-cyan-700">
