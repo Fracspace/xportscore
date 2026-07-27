@@ -33,6 +33,7 @@ export default function PaymentMethodSelector() {
   console.log("stored details are", formType, paymentType, applicantId, applicationId);
 
   const openRazorpayFromHtml = (htmlForm) => {
+    console.log("html form is", htmlForm)
     // Remove previous Razorpay container if it exists
     const existingContainer = document.getElementById("razorpay-container");
 

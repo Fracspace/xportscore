@@ -81,16 +81,19 @@ export default function AssessmentReqForm() {
 
       const result = await response.json();
 
+      console.log("result of the form sub is", result);
+
       if (result?.success) {
-        const assessmentId = result?.data?.id || result?.data?.assessmentId;
+        const assessmentId = result?.data?.application_id;
         if (assessmentId) {
           setApplicationId(assessmentId);
           localStorage.setItem("applicationId", assessmentId);
           localStorage.setItem("assessmentId", assessmentId);
+          localStorage.setItem("applicantId", result?.data?.applicant_id);
         }
         setPaymentForm(true);
         console.log("Success:", result);
-        alert("Assessment request submitted successfully!");
+        // alert("Assessment request submitted successfully!");
       } else {
         // throw new Error(result?.error?.message || result?.message || "Failed to submit assessment request");
       }

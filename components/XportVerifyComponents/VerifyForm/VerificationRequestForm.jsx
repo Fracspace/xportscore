@@ -81,6 +81,8 @@ export default function VerificationRequestForm() {
 
       const result = await response.json();
 
+      console.log("result of the verify form sub is", result);
+
       if (result?.success) {
         const reqId = result?.data?.id || result?.data?.requestId;
         if (reqId) {
