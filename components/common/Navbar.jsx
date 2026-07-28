@@ -95,7 +95,7 @@ export default function Navbar() {
               }}
               className="rounded-md font-ibm bg-black px-6 py-3 text-sm font-medium text-white transition hover:bg-gray-900 cursor-pointer"
             >
-              Login
+              Login/Signup
             </button>
           ) : (
             <button

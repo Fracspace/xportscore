@@ -90,6 +90,7 @@ export default function AssessmentReqForm() {
           localStorage.setItem("applicationId", assessmentId);
           localStorage.setItem("assessmentId", assessmentId);
           localStorage.setItem("applicantId", result?.data?.applicant_id);
+          localStorage.setItem("id", result?.data?.id);
         }
         setPaymentForm(true);
         console.log("Success:", result);

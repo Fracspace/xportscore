@@ -48,6 +48,8 @@ function AppForm() {
 
     const assessmentId1 = searchParams.get("assessmentId");
 
+    console.log("params assessment id is", assessmentId1)
+
     if (assessmentId1) {
       localStorage.setItem("assessmentId", assessmentId1);
       setAsssessmentId(assessmentId1);

@@ -38,12 +38,12 @@ export default function VerifyEmailPage({ email, backUrl = "/signup", onBack, on
       const data = await response.json();
 
       setUser(data?.data?.user);
-      setApplicantId(data?.data?.user?.id);
+      setApplicantId(data?.data?.user?.applicantId);
       setApplicationId(data?.data?.application?.id);
       setToken(data?.data?.token);
 
       localStorage.setItem("user", JSON.stringify(data?.data?.user));
-      localStorage.setItem("applicantId", data?.data?.user?.id || "");
+      localStorage.setItem("applicantId", data?.data?.user?.applicantId || "");
       localStorage.setItem("applicationId", data?.data?.application?.id || "");
       localStorage.setItem("token", data?.data?.token);
 

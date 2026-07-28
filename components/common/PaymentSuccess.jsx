@@ -32,7 +32,7 @@ function PaymentSuccess() {
     console.log(razorpayPaymentId);
     console.log(razorpaySignature);
     console.log(formType);
-    console.log(applicantId);
+    console.log("applicant Id is", applicantId);
 
     const fetchPaymentDetails = async () => {
       try {
@@ -64,6 +64,8 @@ function PaymentSuccess() {
           "********",
           data?.data?.verifyRequestId
         );
+
+        console.log("assessment id is", data?.data?.exportAssessmentId)
 
         if (data?.success) {
           // navigateRoute(formType);
