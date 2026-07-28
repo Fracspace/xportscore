@@ -39,12 +39,12 @@ function AppForm() {
   const [assessmentData, setAssessmentData] = useState(null);
 
   useEffect(() => {
-    const storedId = localStorage.getItem("assessmentId");
-    if (storedId) {
-      console.log("stored id is", storedId)
-      setAsssessmentId(storedId);
-      return;
-    }
+    // const storedId = localStorage.getItem("assessmentId");
+    // if (storedId) {
+    //   console.log("stored id is", storedId)
+    //   setAsssessmentId(storedId);
+    //   return;
+    // }
 
     const assessmentId1 = searchParams.get("assessmentId");
 
@@ -54,7 +54,7 @@ function AppForm() {
       localStorage.setItem("assessmentId", assessmentId1);
       setAsssessmentId(assessmentId1);
     }
-  }, [searchParams]);
+  }, []);
 
   useEffect(() => {
     if (!assessmentId || !token) return;
