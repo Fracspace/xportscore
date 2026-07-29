@@ -29,7 +29,7 @@ export default function VerificationRequestForm() {
   useEffect(() => {
     let prefill = null;
     try {
-      const storedPrefill = localStorage.getItem("prefill details");
+      const storedPrefill = localStorage.getItem("xportverify prefill details");
       if (storedPrefill) {
         prefill = JSON.parse(storedPrefill);
       }
@@ -84,10 +84,11 @@ export default function VerificationRequestForm() {
       console.log("result of the verify form sub is", result);
 
       if (result?.success) {
-        const reqId = result?.data?.id || result?.data?.requestId;
+        const reqId = result?.data?.id;
+        const verificationApplicantId = result?.data?.applicant_id
         if (reqId) {
           setApplicationId(reqId);
-          localStorage.setItem("applicationId", reqId);
+          localStorage.setItem("verifyApplicantId", verificationApplicantId);
           localStorage.setItem("verificationRequestId", reqId);
         }
         setPaymentForm(true);
@@ -151,7 +152,7 @@ export default function VerificationRequestForm() {
       if (response.ok && signupResult?.success) {
         if (signupResult?.data?.prefill?.applicant) {
           localStorage.setItem(
-            "prefill details",
+            "xportverify prefill details",
             JSON.stringify(signupResult?.data?.prefill?.applicant)
           );
         }

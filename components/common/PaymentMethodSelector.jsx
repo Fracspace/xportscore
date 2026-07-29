@@ -23,14 +23,15 @@ export default function PaymentMethodSelector() {
     applicationId,
     setApplicationId,
     token,
-
+    xportVerifyApplicantId,
     setUser,
     applicantId,
     setApplicantId
   } = useAuth();
 
   const router = useRouter();
-  console.log("stored details are", formType, paymentType, applicantId, applicationId);
+
+  console.log("stored details are", formType, paymentType, "xport verify applicant id is", xportVerifyApplicantId, applicantId, applicationId);
 
   const openRazorpayFromHtml = (htmlForm) => {
     console.log("html form is", htmlForm)
@@ -95,6 +96,19 @@ export default function PaymentMethodSelector() {
     try {
       const token = localStorage.getItem("token");
 
+      const payload = {
+        applicationId,
+        applicantId,
+        planName: formType,
+        paymentType,
+      };
+
+      if (formType === "xport_verify") {
+        payload.applicantId = xportVerifyApplicantId;
+      } else {
+        payload.applicantId = applicantId;
+      }
+
       const response = await fetch(
         "https://api.xportscore.com/api/payments/create-order/direct",
         {
@@ -103,12 +117,7 @@ export default function PaymentMethodSelector() {
             "Content-Type": "application/json",
             "x-api-key": "Xportscore@2026"
           },
-          body: JSON.stringify({
-            applicationId,
-            applicantId,
-            planName: formType,
-            paymentType
-          })
+          body: JSON.stringify(payload)
         }
       );
 

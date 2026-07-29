@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { useAuth } from "@/app/context/AuthContext";
+import { da } from "zod/locales";
 
 export default function VerifyEmailPage({ email, backUrl = "/signup", onBack, onSuccess }) {
   const [otp, setOtp] = useState("");
@@ -15,7 +16,7 @@ export default function VerifyEmailPage({ email, backUrl = "/signup", onBack, on
 
   const router = useRouter();
 
-  const { setUser, setApplicationId, setToken, setApplicantId } = useAuth();
+  const { setUser, setXportVerifyApplicantId, setApplicationId, setToken, setApplicantId } = useAuth();
 
   const verifyOTP = async () => {
     try {
@@ -41,6 +42,7 @@ export default function VerifyEmailPage({ email, backUrl = "/signup", onBack, on
       setApplicantId(data?.data?.user?.applicantId);
       setApplicationId(data?.data?.application?.id);
       setToken(data?.data?.token);
+      setXportVerifyApplicantId(data?.data?.user?.id);
 
       localStorage.setItem("user", JSON.stringify(data?.data?.user));
       localStorage.setItem("applicantId", data?.data?.user?.applicantId || "");

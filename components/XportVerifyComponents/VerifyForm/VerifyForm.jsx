@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Input from "@/components/common/Input";
 import CompanyDetails from "./CompanyDetails";
 import BusinessDetails from "./BusinessDetails";
@@ -25,12 +25,17 @@ function VerifyForm() {
 
   const searchParams = useSearchParams();
   const verificationRequestId = searchParams.get("verifyId");
-
-  if (verificationRequestId) {
-    localStorage.setItem("verificationRequestId", verificationRequestId);
-  }
-
+  const paramsToken = searchParams.get("token");
   const { token } = useAuth();
+
+  console.log("verification req id is", verificationRequestId, "stored token", token, "token from params", paramsToken)
+
+  useEffect(() => {
+    if (verificationRequestId) {
+      localStorage.setItem("verificationRequestId", verificationRequestId);
+    }
+  }, [verificationRequestId])
+
 
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
@@ -52,30 +57,19 @@ function VerifyForm() {
   });
 
   const stepPayloadMap = {
-    0: "requestingCompany",
-    1: "businessToVerify",
-    2: "relationship",
-    3: "verificationScope",
-    4: "supportingInfo",
-    5: "additionalInformation",
-    6: null,
-    7: "declaration",
-    8: "submission"
+    0: "businessToVerify",
+    1: "relationship",
+    2: "verificationScope",
+    3: "supportingInfo",
+    4: "additionalInformation",
+    5: null,
+    6: "declaration",
+    7: "submission"
   };
 
   const extractSectionValues = (values, currentStep) => {
     switch (currentStep) {
       case 0:
-        return {
-          companyName: values.companyName,
-          contactPerson: values.contactPerson,
-          designation: values.designation,
-          email: values.email,
-          phone: values.phone,
-          country: values.country
-        };
-
-      case 1:
         return {
           legalCompanyName: values.legalCompanyName,
           brandTradingName: values.brandTradingName,
@@ -90,7 +84,7 @@ function VerifyForm() {
           businessContactPerson: values.businessContactPerson
         };
 
-      case 2:
+      case 1:
         return {
           beforePlacingOrder: values.beforePlacingOrder,
           beforeShippingGoods: values.beforeShippingGoods,
@@ -104,7 +98,7 @@ function VerifyForm() {
           other: values.other
         };
 
-      case 3:
+      case 2:
         return {
           identityVerification: values.identityVerification,
           tradeIntelligence: values.tradeIntelligence,
@@ -115,25 +109,25 @@ function VerifyForm() {
           contactVerification: values.contactVerification
         };
 
-      case 4:
+      case 3:
         return {
           supportingDocuments: values.supportingDocuments,
           uploadedDocuments: values.uploadedDocuments
         };
 
-      case 5:
+      case 4:
         return values.additionalInformation;
 
-      case 6:
+      case 5:
         return {}
 
-      case 7:
+      case 6:
         return {
           agree: values.agree
         };
 
 
-      case 8:
+      case 7:
         return {
           requestorName: values.requestorName,
           company: values.company,
@@ -148,7 +142,6 @@ function VerifyForm() {
   };
 
   const sections = [
-    "Requesting Company",
     "Business to Verify",
     "Relationship Nature",
     "Verification Scope",
@@ -199,7 +192,7 @@ function VerifyForm() {
         headers: {
           "Content-Type": "application/json",
           "x-api-key": "Xportscore@2026",
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${paramsToken}`
         },
         body: JSON.stringify(payload)
       });
@@ -297,19 +290,20 @@ function VerifyForm() {
                   <div className="rounded-2xl border bg-white shadow-sm">
                     {/* <ProgressBar progress={10} /> */}
 
-                    {currentStep === 0 && <CompanyDetails />}
-                    {currentStep === 1 && <BusinessDetails />}
-                    {currentStep === 2 && <BusinessRelation />}
-                    {currentStep === 3 && <VerificationScope />}
-                    {currentStep === 4 && <SupportingInfo />}
-                    {currentStep === 5 && <AdditionalInfo />}
-                    {currentStep === 6 && <Deliverables />}
-                    {currentStep === 7 && <VerifyDeclaration />}
-                    {currentStep === 8 && <Submission />}
+                    {/* {currentStep === 0 && <CompanyDetails />} */}
+                    {currentStep === 0 && <BusinessDetails />}
+                    {currentStep === 1 && <BusinessRelation />}
+                    {currentStep === 2 && <VerificationScope />}
+                    {currentStep === 3 && <SupportingInfo />}
+                    {currentStep === 4 && <AdditionalInfo />}
+                    {currentStep === 5 && <Deliverables />}
+                    {currentStep === 6 && <VerifyDeclaration />}
+                    {currentStep === 7 && <Submission />}
                     {/* <hr className="my-10" /> */}
 
                     <div className="flex ml-6 mr-6 mb-8 items-center justify-between">
                       <button
+                        type="button"
                         onClick={() => setCurrentStep(currentStep - 1)}
                         className="rounded-lg border px-4 py-1 md:px-8 md:py-3 font-medium text-slate-700 hover:bg-gray-100"
                       >

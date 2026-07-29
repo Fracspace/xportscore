@@ -423,6 +423,7 @@ function AppForm() {
         "factoryPhotos",
         "qualityControlProcessDocuments"
       ];
+
       fileKeys.forEach((key) => {
         delete payload[key];
       });
@@ -431,7 +432,7 @@ function AppForm() {
         payload1.assessmentStatus = "active";
       }
 
-      console.log("overal method values are :", payload);
+      console.log("overall method values are :", payload);
 
       const url = `https://api.xportscore.com/api/export-assessments/${assessmentId}`;
 
@@ -451,7 +452,7 @@ function AppForm() {
         payload1
       });
 
-      console.log("Submitting ***payload...", url, {
+      console.log("Submitting *** payload...", url, {
         method,
         url,
         payload

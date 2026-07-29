@@ -15,7 +15,9 @@ export function AuthProvider({ children }) {
 
   const [applicationId, setApplicationId] = useState("");
   const [applicantId, setApplicantId] = useState("");
-  const [paymentform,setPaymentForm] = useState(false);
+  const [paymentform, setPaymentForm] = useState(false);
+
+  const [xportVerifyApplicantId, setXportVerifyApplicantId] = useState("");
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
@@ -23,8 +25,8 @@ export function AuthProvider({ children }) {
 
     const storedApplicantId = localStorage.getItem("applicantId");
     const storedApplicationId = localStorage.getItem("applicationId");
-     
-    console.log("auth local storage details are:", storedApplicantId,storedApplicationId,storedToken)
+
+    console.log("auth local storage details are:", storedApplicantId, storedApplicationId, storedToken)
 
     // Defer state updates to avoid synchronous cascading renders during effect phase
     setTimeout(() => {
@@ -103,7 +105,9 @@ export function AuthProvider({ children }) {
         setApplicationId,
 
         applicantId,
-        setApplicantId
+        setApplicantId,
+
+        xportVerifyApplicantId, setXportVerifyApplicantId
       }}
     >
       {children}
