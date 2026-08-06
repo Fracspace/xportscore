@@ -48,6 +48,8 @@ export default function VerifyEmailPage({ email, backUrl = "/signup", onBack, on
       localStorage.setItem("applicantId", data?.data?.user?.applicantId || "");
       localStorage.setItem("applicationId", data?.data?.application?.id || "");
       localStorage.setItem("token", data?.data?.token);
+      localStorage.setItem("xportVerifyApplicantId", data?.data?.user?.id || "");
+      
 
       console.log(
         "details are inside otp",

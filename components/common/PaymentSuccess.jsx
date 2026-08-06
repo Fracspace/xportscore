@@ -97,6 +97,7 @@ function PaymentSuccess() {
 
     fetchPaymentDetails();
   }, [searchParams, router]);
+
   return (
     <>
       {loading ? (
