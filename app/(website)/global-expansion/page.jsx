@@ -8,7 +8,10 @@ import {
   Globe,
   CheckCircle2,
   Users,
+  Gavel,
   Layers,
+  Handshake,
+  Compass,
   Package,
   Map,
   CreditCard
