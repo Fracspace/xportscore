@@ -13,7 +13,7 @@ import { useAuth } from "@/app/context/AuthContext";
 const navLinks = [
   { label: "Home", href: "/" },
   { label: "How It Works", href: "/howitworks" },
-  { label: "Framework", href: "/assessmentframework" },
+  { label: "Global Expansion", href: "/global-expansion" },
   { label: "XportVerify", href: "/xportverify" },
   { label: "XportScore", href: "/startassessment" },
   { label: "Sample Report", href: "/samplereport" },

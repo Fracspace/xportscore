@@ -111,14 +111,13 @@ function ContactSection() {
                     label: "PHONE / WHATSAPP",
                     value: "+91 92479 52344",
                     desc: "Available Mon–Sat, 9:00 AM – 6:00 PM IST."
+                  },
+                  {
+                    icon: MapPin,
+                    label: "REGISTERED OFFICE",
+                    value: "Hyderabad, India",
+                    desc: "4th Floor, Dreamscapes Hotel, Road No. 12, MLA Colony, Banjara Hills, Hyderabad, Telangana 500096"
                   }
-                  // {
-                  //   icon: MapPin,
-                  //   label: "REGISTERED ADDRESS",
-                  //   value:
-                  //     "100 Trade Tower, Suite 400 Financial District, NY 10004",
-                  //   desc: ""
-                  // }
                 ].map((item) => {
                   const Icon = item.icon;
 
@@ -127,8 +126,8 @@ function ContactSection() {
                       key={item.label}
                       className="rounded-xl border border-slate-200 bg-white p-5"
                     >
-                      <div className="flex gap-4">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-md bg-[#041B4D]">
+                      <div className="flex gap-4 items-start">
+                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-[#041B4D]">
                           <Icon size={20} className="text-white" />
                         </div>
 
@@ -251,8 +250,8 @@ function ContactSection() {
                       options={[
                         "Xport Score",
                         "Xport Verify",
+                        "Global Expansion",
                         "Partnership",
-
                       ]}
                       value={formData.enquiryType}
                       onChange={(e) => setFormData({ ...formData, enquiryType: e.target.value })}
