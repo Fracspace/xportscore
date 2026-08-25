@@ -7,6 +7,7 @@ import {
   Rocket,
   Globe,
   CheckCircle2,
+  Users,
   Layers,
   Package,
   Map,
