@@ -3,7 +3,7 @@ import { z } from "zod";
 export const businessDetailsSchema = z.object({
   legalCompanyName: z.string().min(2, "Legal Company Name is required!"),
 
-  brandTradingName: z.string().optional(),
+  brandTradingName: z.string().min(1, "Brand / Trading Name is required!"),
 
   countryOfCompany: z.string().min(1, "Please select a country!"),
 
@@ -14,21 +14,18 @@ export const businessDetailsSchema = z.object({
     .trim()
     .optional()
     .refine((value) => !value || /^https?:\/\/.+\..+/.test(value), {
-      message: "Please enter a valid website URL!"
+      message: "Please enter a valid website URL starting with http:// or https://"
     }),
 
   companyEmail: z
     .string()
-    .trim()
-    .optional()
-    .refine((value) => !value || z.string().email().safeParse(value).success, {
-      message: "Invalid email address!"
-    }),
+    .min(1, "Email Address is required!")
+    .email("Invalid email address!"),
 
   companyPhone: z
     .string()
-    .optional()
-    .refine((value) => !value || value.replace(/\D/g, "").length >= 10, {
+    .min(1, "Phone Number is required!")
+    .refine((value) => value.replace(/\D/g, "").length >= 7, {
       message: "Invalid phone number!"
     }),
 

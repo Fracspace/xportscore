@@ -11,24 +11,26 @@ function RegistryConset() {
     <div className="bg-white border rounded-xl p-8">
       <h2 className="text-3xl font-bold mb-8">Registry Consent</h2>
 
-      <p className="text-slate-600 mb-6">
+      <p className="text-slate-600 mb-6 font-medium">
         Do you want your business to be listed on the XportScore Verified
-        Registry if certified?
+        Registry if certified? <span className="text-red-500 ml-0.5">*</span>
       </p>
 
       <div className="space-y-3">
-        {/* <Radio label="Yes" />
-        <Radio label="No" />
-        <Radio label="Decide Later" /> */}
         {["Yes", "No", "Decide Later"].map((item) => (
-          <label key={item} className="flex items-center gap-2 cursor-pointer">
-            <input type="radio" value={item} {...register("registryConsent")} />
-
+          <label key={item} className="flex items-center gap-2 cursor-pointer text-sm text-slate-700 cursor-pointer">
+            <input
+              type="radio"
+              value={item}
+              required={true}
+              {...register("registryConsent")}
+              className="accent-blue-600"
+            />
             {item}
           </label>
         ))}
         {errors?.registryConsent && (
-          <p className="text-red-500 text-sm mt-1">
+          <p className="text-red-500 text-sm mt-2 font-medium">
             {errors?.registryConsent?.message}
           </p>
         )}

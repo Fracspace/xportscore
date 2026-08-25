@@ -6,7 +6,9 @@ import { Country } from "country-state-city";
 import { Mail, Handshake, Phone, MapPin, ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-
+import { isValidPhoneNumber } from "react-phone-number-input";
+import PhoneNumberInput from "@/components/common/PhoneNumberInput";
+import CountrySelect from "@/components/common/CountrySelect";
 function ContactSection() {
   const router = useRouter();
   const countries = Country.getAllCountries();
@@ -15,17 +17,100 @@ function ContactSection() {
     companyName: "",
     email: "",
     phone: "",
+    countryCode: "",
     country: "",
-    enquiryType: "Standard Readiness Audit",
+    enquiryType: "",
     message: "",
     agree: false
   });
+  const [rawPhone, setRawPhone] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
 
+  const getCountryMaxDigits = (country) => {
+    if (!country) return 10;
+    const c = country.toUpperCase();
+    if (["GB", "DE", "CN", "RU", "BR", "JP"].includes(c)) return 11;
+    if (["AU", "AE", "SG", "NZ", "FR", "IL", "HK", "GR", "PT"].includes(c)) return 9;
+    if (["DK", "NO"].includes(c)) return 8;
+    return 10; // Default for all other countries
+  };
+
+  const handlePhoneChange = (value) => {
+    if (!value) {
+      setRawPhone("");
+      setFormData((prev) => ({
+        ...prev,
+        phone: "",
+        countryCode: ""
+      }));
+      return;
+    }
+
+    let finalValue = value;
+    let extractedCountryCode = "";
+    let nationalNum = "";
+
+    try {
+      const parsed = parsePhoneNumber(value);
+      if (parsed) {
+        if (parsed.countryCallingCode) {
+          extractedCountryCode = `+${parsed.countryCallingCode}`;
+        }
+        if (parsed.nationalNumber) {
+          nationalNum = parsed.nationalNumber;
+          const maxDigits = getCountryMaxDigits(parsed.country);
+          if (nationalNum.length > maxDigits) {
+            nationalNum = nationalNum.slice(0, maxDigits);
+            finalValue = `+${parsed.countryCallingCode}${nationalNum}`;
+          }
+        }
+      } else {
+        const asYouType = new AsYouType();
+        asYouType.input(value);
+        const callingCode = asYouType.getCallingCode();
+        nationalNum = asYouType.getNationalNumber();
+        if (callingCode) {
+          extractedCountryCode = `+${callingCode}`;
+        }
+        const country = asYouType.getCountry();
+        const maxDigits = getCountryMaxDigits(country);
+        if (nationalNum && nationalNum.length > maxDigits) {
+          nationalNum = nationalNum.slice(0, maxDigits);
+          finalValue = `+${callingCode}${nationalNum}`;
+        }
+      }
+    } catch (err) {
+      console.error("Error parsing phone number:", err);
+    }
+
+    if (value !== finalValue) {
+      setRawPhone("");
+      setTimeout(() => {
+        setRawPhone(finalValue);
+      }, 0);
+    } else {
+      setRawPhone(finalValue);
+    }
+
+    setFormData((prev) => ({
+      ...prev,
+      phone: nationalNum || finalValue.replace(/^\+\d+\s*/, ""),
+      countryCode: extractedCountryCode
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!rawPhone || (rawPhone && typeof isValidPhoneNumber === "function" && !isValidPhoneNumber(rawPhone))) {
+      setError("Please enter a valid phone number for the selected country.");
+      return;
+    }
+    if (!formData.enquiryType) {
+      setError("Please select an Enquiry Type.");
+      return;
+    }
     if (!formData.agree) {
       setError("You must agree to the Privacy Policy to submit your enquiry.");
       return;
@@ -41,6 +126,7 @@ function ContactSection() {
       message: formData.message,
       companyName: formData.companyName,
       phone: formData.phone,
+      countryCode: formData.countryCode,
       country: formData.country
     };
 
@@ -59,13 +145,15 @@ function ContactSection() {
 
       if (response.ok && (result?.success || result?.message === "success" || !result?.error)) {
         setSuccess(true);
+        setRawPhone("");
         setFormData({
           name: "",
           companyName: "",
           email: "",
           phone: "",
-          country: "United States",
-          enquiryType: "Standard Readiness Audit",
+          countryCode: "",
+          country: "",
+          enquiryType: "",
           message: "",
           agree: false
         });
@@ -111,14 +199,14 @@ function ContactSection() {
                     label: "PHONE / WHATSAPP",
                     value: "+91 92479 52344",
                     desc: "Available Mon–Sat, 9:00 AM – 6:00 PM IST."
+                  },
+                  {
+                    icon: MapPin,
+                    label: "OFFICE ADDRESS",
+                    value:
+                      "Road No.12, Banjara Hills, 500034, Hyderabad, Telangana, India",
+                    desc: "Open Mon–Sat, 9:00 AM – 6:00 PM IST."
                   }
-                  // {
-                  //   icon: MapPin,
-                  //   label: "REGISTERED ADDRESS",
-                  //   value:
-                  //     "100 Trade Tower, Suite 400 Financial District, NY 10004",
-                  //   desc: ""
-                  // }
                 ].map((item) => {
                   const Icon = item.icon;
 
@@ -127,12 +215,12 @@ function ContactSection() {
                       key={item.label}
                       className="rounded-xl border border-slate-200 bg-white p-5"
                     >
-                      <div className="flex gap-4">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-md bg-[#041B4D]">
+                      <div className="flex items-start gap-4">
+                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-[#041B4D]">
                           <Icon size={20} className="text-white" />
                         </div>
 
-                        <div>
+                        <div className="min-w-0 flex-1">
                           <p className="text-xs font-semibold tracking-wider text-slate-500">
                             {item.label}
                           </p>
@@ -192,7 +280,7 @@ function ContactSection() {
                   <div className="grid gap-5 md:grid-cols-2">
                     <Input
                       label="FULL NAME"
-                      placeholder="John Doe"
+                      placeholder="Ex: John Doe"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       required
@@ -200,7 +288,7 @@ function ContactSection() {
 
                     <Input
                       label="COMPANY NAME"
-                      placeholder="Global Exports Inc."
+                      placeholder="Ex: Global Exports Inc."
                       value={formData.companyName}
                       onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
                       required
@@ -211,57 +299,60 @@ function ContactSection() {
                     <Input
                       label="BUSINESS EMAIL"
                       type="email"
-                      placeholder="name@company.com"
+                      placeholder="Ex: name@company.com"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       required
                     />
 
-                    <Input
+                    <PhoneNumberInput
                       label="PHONE NUMBER"
-                      placeholder="+1 (555) 000-0000"
+                      required={true}
                       value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      required
+                      countryCode={formData.countryCode}
+                      placeholder="Ex: Enter phone number"
+                      onChange={({ phoneNumber, countryCode, rawValue }) => {
+                        setRawPhone(rawValue);
+                        setFormData((prev) => ({
+                          ...prev,
+                          phone: phoneNumber,
+                          countryCode: countryCode
+                        }));
+                      }}
                     />
                   </div>
 
                   <div className="grid gap-5 md:grid-cols-2">
                     <div>
                       <label className="mb-2 block text-xs font-semibold tracking-wide text-slate-600">
-                        COUNTRY OF OPERATION
+                        COUNTRY OF OPERATION <span className="text-red-500 ml-0.5">*</span>
                       </label>
-                      <select
+                      <CountrySelect
+                        required={true}
                         value={formData.country}
-                        onChange={(e) => setFormData({ ...formData, country: e.target.value })}
-                        required
-                        className="w-full rounded-md border border-slate-300 px-4 py-3 focus:border-teal-600 focus:outline-none text-sm text-gray-700 bg-white"
-                      >
-                        <option value="">Select Country</option>
-                        {countries.map((country) => (
-                          <option key={country.isoCode} value={country.name}>
-                            {country.name}
-                          </option>
-                        ))}
-                      </select>
+                        onChange={(selectedCountry) => setFormData({ ...formData, country: selectedCountry })}
+                        placeholder="Select Country"
+                      />
                     </div>
 
                     <Select
                       label="ENQUIRY TYPE"
+                      placeholder="Select Enquiry Type"
                       options={[
                         "Xport Score",
                         "Xport Verify",
-                        "Partnership",
-
+                        "Partnership"
                       ]}
                       value={formData.enquiryType}
                       onChange={(e) => setFormData({ ...formData, enquiryType: e.target.value })}
+                      required
+                      showStar={true}
                     />
                   </div>
 
                   <div>
                     <label className="mb-2 block text-xs font-semibold tracking-wide text-slate-600">
-                      MESSAGE / DETAILS
+                      MESSAGE / DETAILS <span className="text-red-500 ml-0.5">*</span>
                     </label>
 
                     <textarea
@@ -274,10 +365,10 @@ function ContactSection() {
                     />
                   </div>
 
-                   <div className="flex items-start gap-3">
+                  <div className="flex items-start gap-3">
                     <input
                       type="checkbox"
-                      className="mt-1"
+                      className="mt-1 h-4 w-4 accent-teal-600 shrink-0 cursor-pointer rounded border-gray-300"
                       checked={formData.agree}
                       onChange={(e) => setFormData({ ...formData, agree: e.target.checked })}
                       required
@@ -288,7 +379,7 @@ function ContactSection() {
                       <Link href="/privacypolicy" className="text-teal-600 hover:underline">
                         Privacy Policy
                       </Link>{" "}
-                      regarding the handling of my business data.
+                      regarding the handling of my business data. <span className="text-red-500 ml-0.5">*</span>
                     </p>
                   </div>
 
@@ -301,7 +392,7 @@ function ContactSection() {
                   <button
                     disabled={loading}
                     type="submit"
-                    className="flex w-full items-center justify-center gap-2 rounded-md bg-[#041B4D] px-6 py-4 font-medium text-white transition hover:bg-[#062766] disabled:bg-slate-400 disabled:cursor-not-allowed"
+                    className="flex w-full items-center justify-center gap-2 rounded-md bg-[#041B4D] px-6 py-4 font-medium text-white transition hover:bg-[#062766] disabled:bg-slate-400 disabled:cursor-not-allowed cursor-pointer"
                   >
                     {loading ? "Submitting..." : "Submit Enquiry"}
                     {!loading && <ArrowRight size={18} />}
@@ -342,11 +433,11 @@ function ContactSection() {
   );
 }
 
-function Input({ label, placeholder, value, onChange, required, type = "text" }) {
+function Input({ label, placeholder, value, onChange, required, type = "text", showStar = false }) {
   return (
     <div>
       <label className="mb-2 block text-xs font-semibold tracking-wide text-slate-600">
-        {label}
+        {label} {(required || showStar) && <span className="text-red-500 ml-0.5">*</span>}
       </label>
 
       <input
@@ -361,18 +452,20 @@ function Input({ label, placeholder, value, onChange, required, type = "text" })
   );
 }
 
-function Select({ label, options, value, onChange }) {
+function Select({ label, options, value, onChange, required, placeholder = "Select Option", showStar = false }) {
   return (
     <div>
       <label className="mb-2 block text-xs font-semibold tracking-wide text-slate-600">
-        {label}
+        {label} {(required || showStar) && <span className="text-red-500 ml-0.5">*</span>}
       </label>
 
       <select
         value={value}
         onChange={onChange}
-        className="w-full rounded-md border border-slate-300 px-4 py-3 focus:border-teal-600 focus:outline-none"
+        required={required}
+        className="w-full rounded-md border border-slate-300 px-4 py-3 focus:border-teal-600 focus:outline-none text-sm text-gray-700 bg-white"
       >
+        <option value="">{placeholder}</option>
         {options.map((option) => (
           <option key={option} value={option}>
             {option}

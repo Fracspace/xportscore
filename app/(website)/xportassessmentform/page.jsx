@@ -20,10 +20,10 @@ function XportAssessment() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <div>
-        <div className="mt-16 pt-12 bg-gray-50">
+        <div className="pt-28 md:pt-36 pb-12 bg-gray-50 min-h-screen">
           <div
             onClick={() => router.back()}
-            className="inline-flex cursor-pointer ml-12 bg-black px-2 py-2 rounded-lg text-white items-center gap-2 text-sm text-gray-500  transition"
+            className="inline-flex cursor-pointer ml-6 md:ml-12 bg-black px-3 py-2 rounded-lg text-white items-center gap-2 text-sm transition hover:bg-gray-800"
           >
             <ArrowLeft size={16} />
             Back

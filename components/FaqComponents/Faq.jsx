@@ -104,7 +104,7 @@ function Faq() {
             >
               <button
                 onClick={() => toggleFAQ(index)}
-                className="flex w-full items-center justify-between px-6 py-5 text-left"
+                className="flex w-full items-center justify-between px-6 py-5 text-left cursor-pointer"
               >
                 <span className="text-base font-medium text-slate-900">
                   {faq.question}
@@ -112,16 +112,14 @@ function Faq() {
 
                 <ChevronDown
                   size={18}
-                  className={`transition-transform duration-300 ${
-                    openIndex === index ? "rotate-180" : ""
-                  }`}
+                  className={`transition-transform duration-300 ${openIndex === index ? "rotate-180" : ""
+                    }`}
                 />
               </button>
 
               <div
-                className={`grid transition-all duration-300 ease-in-out ${
-                  openIndex === index ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
-                }`}
+                className={`grid transition-all duration-300 ease-in-out ${openIndex === index ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+                  }`}
               >
                 <div className="overflow-hidden">
                   <div className="border-t border-slate-100 px-6 py-5 text-slate-600 leading-relaxed">

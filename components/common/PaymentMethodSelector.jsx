@@ -34,7 +34,11 @@ export default function PaymentMethodSelector() {
   console.log("stored details are", formType, paymentType, "xport verify applicant id is", xportVerifyApplicantId, applicantId, applicationId);
 
   const openRazorpayFromHtml = (htmlForm) => {
-    console.log("html form is", htmlForm)
+    console.log("html form is", htmlForm);
+    if (!htmlForm || typeof htmlForm !== "string") {
+      throw new Error("Invalid Razorpay HTML response received from server.");
+    }
+
     // Remove previous Razorpay container if it exists
     const existingContainer = document.getElementById("razorpay-container");
 
@@ -57,7 +61,7 @@ export default function PaymentMethodSelector() {
     const script = doc.querySelector("script");
 
     if (!form || !script) {
-      throw new Error("Invalid Razorpay HTML received.");
+      throw new Error("Invalid Razorpay HTML received from payment gateway.");
     }
 
     // Create form
@@ -94,20 +98,24 @@ export default function PaymentMethodSelector() {
 
   const handleContinue = async () => {
     try {
-      const token = localStorage.getItem("token");
+      const storedToken = localStorage.getItem("token") || token;
+      const storedApplicationId = applicationId || localStorage.getItem("applicationId");
+      const storedApplicantId = applicantId || localStorage.getItem("applicantId") || xportVerifyApplicantId;
 
       const payload = {
-        applicationId,
-        applicantId,
-        planName: formType,
-        paymentType,
+        applicationId: storedApplicationId,
+        applicantId: storedApplicantId,
+        planName: formType || "xport_score",
+        paymentType: paymentType || "domestic"
       };
 
       if (formType === "xport_verify") {
-        payload.applicantId = xportVerifyApplicantId;
+        payload.applicantId = xportVerifyApplicantId || storedApplicantId;
       } else {
-        payload.applicantId = applicantId;
+        payload.applicantId = applicantId || storedApplicantId;
       }
+
+      console.log("Submitting create-order direct payload:", payload);
 
       const response = await fetch(
         "https://api.xportscore.com/api/payments/create-order/direct",
@@ -115,7 +123,8 @@ export default function PaymentMethodSelector() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "x-api-key": "Xportscore@2026"
+            "x-api-key": "Xportscore@2026",
+            ...(storedToken ? { Authorization: `Bearer ${storedToken}` } : {})
           },
           body: JSON.stringify(payload)
         }
@@ -123,32 +132,22 @@ export default function PaymentMethodSelector() {
 
       const data = await response.json();
 
-      // if (!response.ok) {
-      //   throw new Error(data.message || "Failed to create payment");
-      // }
+      console.log("payment API status:", response.status, data);
 
-      console.log("html data is ", data?.data?.htmlForm);
-
-      console.log("payment res is", data?.data);
-
-      openRazorpayFromHtml(data?.data?.htmlForm);
-
-      // Domestic
-      if (paymentType === "international") {
-        // Open Razorpay
-        // Example:
-        // openRazorpay(data);
+      if (!response.ok || !data?.success || !data?.data?.htmlForm) {
+        const serverError =
+          data?.message ||
+          data?.error?.message ||
+          (typeof data?.error === "string" ? data.error : null) ||
+          "Failed to initialize payment. Please verify application details.";
+        throw new Error(serverError);
       }
 
-      // International
-      // if (paymentType === "international") {
-      //   window.location.href = data.approvalUrl;
-      // }
+      console.log("Razorpay htmlForm successfully received");
+
+      openRazorpayFromHtml(data.data.htmlForm);
     } catch (error) {
-      console.log("Error:", error);
-      console.log("Message:", error.message);
-      console.log("Stack:", error.stack);
-      console.error(error);
+      console.error("Payment Error:", error);
       alert(error.message);
     }
   };
@@ -309,7 +308,7 @@ export default function PaymentMethodSelector() {
       {/* Button */}
       <div className="mt-10 flex justify-center">
         <button
-          className="rounded-lg bg-slate-900 px-10 py-3 font-semibold text-white transition hover:bg-slate-800"
+          className="rounded-lg bg-slate-900 px-10 py-3 font-semibold text-white transition hover:bg-slate-800 cursor-pointer"
           onClick={handleContinue}
         >
           Continue to Payment →

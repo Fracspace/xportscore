@@ -45,6 +45,7 @@ function ServiceInfo() {
         <Input
           label="Team Size"
           required
+          min="0"
           placeholder="e.g. 25"
           type="number"
           {...register("teamSize")}
@@ -55,6 +56,7 @@ function ServiceInfo() {
           label="Delivery Capacity (Projects / Month)"
           placeholder="e.g. 20"
           type="number"
+          min="0"
           {...register("deliveryCapacity")}
           error={errors?.deliveryCapacity?.message}
         />
@@ -62,6 +64,7 @@ function ServiceInfo() {
         <Input
           label="Avg Project Size (USD)"
           required
+          min="0"
           placeholder="e.g. 5000"
           type="number"
           {...register("avgProjectSize")}
@@ -72,6 +75,7 @@ function ServiceInfo() {
           label="Min Engagement Value (USD)"
           required
           placeholder="e.g. 1000"
+          min="0"
           type="number"
           {...register("minEngagementValue")}
           error={errors?.minEngagementValue?.message}
@@ -80,6 +84,8 @@ function ServiceInfo() {
         <Input
           label="Avg Turnaround Time"
           required
+          type="number"
+          min="0"
           placeholder="e.g. 2 Weeks"
           {...register("avgTurnaroundTime")}
           error={errors?.avgTurnaroundTime?.message}
@@ -90,7 +96,7 @@ function ServiceInfo() {
 
       <div className="mt-8">
         <label className="mb-2 block font-medium">
-          Detailed Service Description <span className="text-red-500"></span>
+          Detailed Service Description <span className="text-red-500">*</span>
         </label>
 
         <textarea
@@ -110,7 +116,7 @@ function ServiceInfo() {
 
       <div className="mt-8">
         <label className="mb-4 block font-medium">
-          Delivery Model <span className="text-red-500"></span>
+          Delivery Model <span className="text-red-500">*</span>
         </label>
 
         <div className="flex flex-col gap-4 sm:flex-row sm:gap-8">
@@ -120,6 +126,7 @@ function ServiceInfo() {
               name="deliveryModel"
               value="remote"
               className="h-4 w-4"
+              {...register("deliveryModel")}
             />
             <span>Remote</span>
           </label>
@@ -130,6 +137,7 @@ function ServiceInfo() {
               name="deliveryModel"
               value="onsite"
               className="h-4 w-4"
+              {...register("deliveryModel")}
             />
             <span>On-site</span>
           </label>
@@ -140,6 +148,7 @@ function ServiceInfo() {
               name="deliveryModel"
               value="hybrid"
               className="h-4 w-4"
+              {...register("deliveryModel")}
             />
             <span>Hybrid</span>
           </label>

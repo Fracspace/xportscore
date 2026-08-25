@@ -70,7 +70,7 @@ export default function Sidebar({ closeSidebar }) {
     alert("logout!");
   };
 
-  const logout = () =>{
+  const logout = () => {
     localStorage.removeItem("applicantId");
     localStorage.removeItem("applicationId");
     localStorage.removeItem("user");
@@ -103,11 +103,10 @@ export default function Sidebar({ closeSidebar }) {
               href={item.href}
               onClick={closeSidebar}
               className={`flex items-center gap-3 rounded-lg px-4 py-3 transition-all duration-200
-              ${
-                active
+              ${active
                   ? "bg-teal-300 text-slate-900 font-semibold"
                   : "text-gray-700 hover:bg-gray-100"
-              }`}
+                }`}
             >
               <Icon size={18} />
               <span>{item.title}</span>
@@ -168,13 +167,13 @@ export default function Sidebar({ closeSidebar }) {
         {/* Logout */}
         <button
           onClick={logout}
-          className="mt-5 w-full flex items-center justify-center gap-2 rounded-lg border border-red-200 py-2.5 text-red-600 hover:bg-red-50 transition"
+          className="mt-5 w-full flex items-center justify-center gap-2 rounded-lg border border-red-200 py-2.5 text-red-600 hover:bg-red-50 transition cursor-pointer"
         >
           <LogOut size={18} />
-          <span className="font-medium">Logout</span>
+          <span className="font-medium ">Logout</span>
         </button>
       </div>
-     
+
     </aside>
   );
 }

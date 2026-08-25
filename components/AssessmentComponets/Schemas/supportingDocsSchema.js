@@ -1,10 +1,15 @@
 import { z } from "zod";
 
 export const supportingDocsSchema = z.object({
-  distributorAgreement: z.any(),
-  productVideos: z.any(),
+  distributorAgreement: z
+    .any()
+    .refine((files) => files && files.length > 0, "Distributor Agreement is required."),
 
-  factoryPhotos: z.any(),
+  productVideos: z
+    .any()
+    .refine((files) => files && files.length > 0, "Product Videos are required."),
 
-  qualityControlProcessDocuments: z.any()
+  factoryPhotos: z.any().optional(),
+
+  qualityControlProcessDocuments: z.any().optional()
 });

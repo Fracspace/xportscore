@@ -11,9 +11,26 @@ export const businessRelationSchema = z
     vendorOnboarding: z.boolean().optional(),
     investmentDueDiligence: z.boolean().optional(),
     strategicPartnership: z.boolean().optional(),
-    other: z.boolean().optional()
+    otherReason: z.boolean().optional(),
+    otherText: z.string().optional()
   })
-  .refine((data) => Object.values(data).some((value) => value === true), {
-    message: "Please select at least one reason for verification.",
-    path: ["verificationReasons"]
+  .superRefine((data, ctx) => {
+    const { otherText, ...booleans } = data;
+    const hasAnyChecked = Object.values(booleans).some((val) => val === true);
+
+    if (!hasAnyChecked) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Please select at least one reason for verification.",
+        path: ["otherReason"]
+      });
+    }
+
+    if (data.otherReason && !data.otherText?.trim()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Please specify your reason.",
+        path: ["otherText"]
+      });
+    }
   });

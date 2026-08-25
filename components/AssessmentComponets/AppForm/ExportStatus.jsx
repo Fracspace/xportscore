@@ -7,8 +7,12 @@ import { useFormContext } from "react-hook-form";
 function ExportStatus() {
   const {
     register,
+    watch,
     formState: { errors }
   } = useFormContext();
+
+  const selectedIecRegistration = watch("iecExportRegistration");
+
   return (
     <div className="bg-white border rounded-xl p-8">
       <h2 className="text-3xl font-bold mb-8">Export Status</h2>
@@ -38,15 +42,17 @@ function ExportStatus() {
 
       <div className="mt-8">
         <Input
-          label="Countries Exported To"
+          label="Countries Willing/Exported To"
+          required={true}
           {...register("countriesExportedTo")}
-          error={errors?.countriesExportedTo}
+          error={errors?.countriesExportedTo?.message}
+          placeholder="Enter In Comma Seperated"
         />
       </div>
 
       <div className="mt-8">
         <label className="font-semibold block mb-4">
-          IEC / Export Registration
+          IEC / Export Registration <span className="text-red-500 ml-0.5">*</span>
         </label>
         {["Yes", "No", "Applied", "Not Applicable"].map((item) => (
           <Radio
@@ -62,10 +68,18 @@ function ExportStatus() {
             {errors?.iecExportRegistration?.message}
           </p>
         )}
-      </div>
 
-      <div className="mt-8">
-        <Input label="IEC (Import Export Code)" {...register("iecNumber")} />
+        {(selectedIecRegistration === "Yes" || selectedIecRegistration === "Applied") && (
+          <div className="mt-6 max-w-md">
+            <Input
+              label="IEC Code / Number"
+              required={true}
+              {...register("iecNumber")}
+              error={errors?.iecNumber?.message}
+              placeholder="Enter your IEC Code / Registration number"
+            />
+          </div>
+        )}
       </div>
     </div>
   );

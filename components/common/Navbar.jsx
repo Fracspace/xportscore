@@ -13,7 +13,7 @@ import { useAuth } from "@/app/context/AuthContext";
 const navLinks = [
   { label: "Home", href: "/" },
   { label: "How It Works", href: "/howitworks" },
-  { label: "Framework", href: "/assessmentframework" },
+  { label: "Global-Expansion", href: "/global-expansion" },
   { label: "XportVerify", href: "/xportverify" },
   { label: "XportScore", href: "/startassessment" },
   { label: "Sample Report", href: "/samplereport" },
@@ -53,13 +53,18 @@ export default function Navbar() {
   //   }
   // }, []);
 
-  // console.log("pathname is",pathname)
+  const handleHomeClick = (e, linkHref) => {
+    if (linkHref === "/" && pathname === "/") {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
 
   return (
     <div className="w-full border-b border-gray-200 bg-white">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         {/* Logo */}
-        <Link href="/" className="flex items-center">
+        <Link href="/" onClick={(e) => handleHomeClick(e, "/")} className="flex items-center cursor-pointer">
           <Image
             src={logoImg}
             alt="XportScore"
@@ -78,7 +83,10 @@ export default function Navbar() {
                 ? "border-b-2 border-cyan-500 pb-1 text-cyan-600"
                 : "text-gray-700"
                 }`}
-              onClick={() => setSelected(link?.label)}
+              onClick={(e) => {
+                handleHomeClick(e, link?.href);
+                setSelected(link?.label);
+              }}
             >
               {link.label}
             </Link>

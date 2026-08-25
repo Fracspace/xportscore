@@ -4,28 +4,56 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Send, CheckCircle2 } from "lucide-react";
 import Input from "@/components/common/Input";
+import PhoneNumberInput from "@/components/common/PhoneNumberInput";
+import { isValidPhoneNumber, parsePhoneNumber } from "react-phone-number-input";
 
 export default function PartnerForm() {
   const {
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors }
   } = useForm({
     defaultValues: {
       companyName: "",
       contactName: "",
       email: "",
-      phone: "",
       partnershipType: "Referral Partner",
+      otherPartnershipType: "",
       message: ""
     }
   });
 
+  const selectedPartnershipType = watch("partnershipType");
+  const [rawPhone, setRawPhone] = useState("");
+  const [phoneError, setPhoneError] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
   const onSubmit = async (data) => {
+    if (!rawPhone || (rawPhone && typeof isValidPhoneNumber === "function" && !isValidPhoneNumber(rawPhone))) {
+      setPhoneError("Please enter a valid phone number for the selected country.");
+      return;
+    }
+    setPhoneError("");
+
+    const finalPartnershipType = data.partnershipType === "Other" ? data.otherPartnershipType : data.partnershipType;
+
+    const parsedPhone = parsePhoneNumber(rawPhone);
+    const formattedPhone = parsedPhone
+      ? `+${parsedPhone.countryCallingCode} ${parsedPhone.nationalNumber}`
+      : rawPhone;
+
+    const payload = {
+      companyName: data.companyName,
+      contactName: data.contactName,
+      email: data.email,
+      phone: formattedPhone,
+      partnershipType: finalPartnershipType,
+      message: data.message
+    };
+
     try {
       setLoading(true);
       const response = await fetch("https://api.xportscore.com/api/partners", {
@@ -35,15 +63,16 @@ export default function PartnerForm() {
           "x-api-key": "Xportscore@2026",
           accept: "application/json"
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(payload)
       });
 
       const result = await response.json();
 
-      console.log("result is", result);
+      console.log("partner submission result:", result);
 
-      if (response.ok && result?.success) {
+      if (response.ok && (result?.success || result?.message === "success" || !result?.error)) {
         setSuccess(true);
+        setRawPhone("");
         reset();
       } else {
         alert(result?.message || result?.error?.message || "Failed to submit partnership request.");
@@ -78,7 +107,7 @@ export default function PartnerForm() {
             </p>
             <button
               onClick={() => setSuccess(false)}
-              className="mt-8 rounded-xl bg-slate-900 px-6 py-3 font-medium text-white transition hover:bg-slate-800"
+              className="mt-8 rounded-xl bg-slate-900 px-6 py-3 font-medium text-white transition hover:bg-slate-800 cursor-pointer"
             >
               Submit Another Application
             </button>
@@ -88,13 +117,15 @@ export default function PartnerForm() {
             <div className="grid gap-6 md:grid-cols-2">
               <Input
                 label="Company Name"
-                placeholder="e.g. Global Trade Partners Ltd"
+                required={true}
+                placeholder="e.g. XYZ Traders Ltd"
                 {...register("companyName", { required: "Company Name is required" })}
                 error={errors?.companyName?.message}
               />
               <Input
                 label="Contact Person Name"
-                placeholder="e.g. Raj Kumar"
+                required={true}
+                placeholder="e.g. John Doe"
                 {...register("contactName", { required: "Contact Name is required" })}
                 error={errors?.contactName?.message}
               />
@@ -104,7 +135,8 @@ export default function PartnerForm() {
               <Input
                 label="Email Address"
                 type="email"
-                placeholder="e.g. raj@globaltraders.com"
+                required={true}
+                placeholder="Please Enter Your Email Address"
                 {...register("email", {
                   required: "Email is required",
                   pattern: {
@@ -114,25 +146,26 @@ export default function PartnerForm() {
                 })}
                 error={errors?.email?.message}
               />
-              <Input
+              <PhoneNumberInput
                 label="Phone / WhatsApp Number"
-                placeholder="e.g. +919876543210"
-                {...register("phone", {
-                  required: "Phone is required",
-                  minLength: {
-                    value: 10,
-                    message: "Phone number must be at least 10 characters"
-                  }
-                })}
-                error={errors?.phone?.message}
+                required={true}
+                value={rawPhone}
+                placeholder="Please Enter Your Phone Number"
+                error={phoneError}
+                onChange={({ rawValue }) => {
+                  setRawPhone(rawValue);
+                  if (phoneError) setPhoneError("");
+                }}
               />
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-medium">Partnership Type</label>
+              <label className="mb-2 block text-sm font-medium">
+                Partnership Type <span className="text-red-500">*</span>
+              </label>
               <select
                 {...register("partnershipType", { required: "Partnership Type is required" })}
-                className="w-full rounded-lg border border-gray-300 bg-white p-3 outline-none transition-colors focus:border-blue-600"
+                className="w-full rounded-lg border border-gray-300 bg-white p-3 outline-none transition-colors focus:border-blue-600 cursor-pointer"
               >
                 <option value="Referral Partner">Referral Partner</option>
                 <option value="Assessment Drive Partner">Assessment Drive Partner</option>
@@ -142,15 +175,31 @@ export default function PartnerForm() {
               {errors?.partnershipType && (
                 <p className="mt-1 text-sm text-red-500">{errors.partnershipType.message}</p>
               )}
+
+              {selectedPartnershipType === "Other" && (
+                <div className="mt-4">
+                  <Input
+                    label="Specify Partnership Type"
+                    required={true}
+                    placeholder="Please specify your partnership type"
+                    {...register("otherPartnershipType", {
+                      required: selectedPartnershipType === "Other" ? "Please specify your partnership type" : false
+                    })}
+                    error={errors?.otherPartnershipType?.message}
+                  />
+                </div>
+              )}
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-medium">Message / Proposal</label>
+              <label className="mb-2 block text-sm font-medium">
+                Message / Proposal <span className="text-red-500">*</span>
+              </label>
               <textarea
                 placeholder="Briefly describe how we can cooperate..."
                 rows={4}
                 {...register("message", { required: "Message is required" })}
-                className={`w-full rounded-lg border p-3 outline-none transition-colors
+                className={`w-full rounded-lg border p-3 outline-none transition-colors text-slate-700
                   ${errors?.message
                     ? "border-red-500 focus:border-red-500"
                     : "border-gray-300 focus:border-blue-600"

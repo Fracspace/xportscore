@@ -95,7 +95,8 @@ function VerifyForm() {
           vendorOnboarding: values.vendorOnboarding,
           investmentDueDiligence: values.investmentDueDiligence,
           strategicPartnership: values.strategicPartnership,
-          other: values.other
+          otherReason: values.otherReason,
+          otherText: values.otherText
         };
 
       case 2:
@@ -112,6 +113,7 @@ function VerifyForm() {
       case 3:
         return {
           supportingDocuments: values.supportingDocuments,
+          otherSupportingDocument: values.otherSupportingDocument,
           uploadedDocuments: values.uploadedDocuments
         };
 
@@ -155,17 +157,94 @@ function VerifyForm() {
   const handleNext = async () => {
     try {
       let fields = [];
-      if (currentStep < 6) {
+      if (currentStep < 5) {
+        // Offset by +1 to skip commented-out Requesting Company step for step configuration
+        fields = verifyformSteps[currentStep + 1].fields;
+      } else if (currentStep >= 6) {
         fields = verifyformSteps[currentStep].fields;
-      } else if (currentStep > 6) {
-        fields = verifyformSteps[currentStep - 1].fields;
       }
 
+      console.log("Validating fields for currentStep", currentStep, fields);
       const isValid = await methods.trigger(fields);
+
+      if (currentStep === 1) {
+        const values = methods.getValues();
+        const booleanKeys = [
+          "beforePlacingOrder",
+          "beforeShippingGoods",
+          "beforeMakingPayment",
+          "beforeAppointingImporter",
+          "beforeAppointingDistributor",
+          "beforeAppointingSupplier",
+          "vendorOnboarding",
+          "investmentDueDiligence",
+          "strategicPartnership",
+          "otherReason"
+        ];
+
+        const hasAnyChecked = booleanKeys.some((key) => values[key] === true);
+
+        if (!hasAnyChecked) {
+          methods.setError("otherReason", {
+            type: "manual",
+            message: "Please select at least one reason for verification."
+          });
+          return;
+        }
+
+        if (values.otherReason && !values.otherText?.trim()) {
+          methods.setError("otherText", {
+            type: "manual",
+            message: "Please specify your reason."
+          });
+          return;
+        }
+      }
+
+      if (currentStep === 3) {
+        const values = methods.getValues();
+        const docs = values.supportingDocuments || [];
+        const files = values.uploadedDocuments;
+        let hasError = false;
+
+        if (docs.includes("Other Supporting Documents") && !values.otherSupportingDocument?.trim()) {
+          methods.setError("otherSupportingDocument", {
+            type: "manual",
+            message: "Please specify the document name."
+          });
+          hasError = true;
+        }
+
+        if (docs.length > 0 && (!files || !files.length || files.length === 0)) {
+          methods.setError("uploadedDocuments", {
+            type: "manual",
+            message: "Please upload at least one supporting document."
+          });
+          hasError = true;
+        }
+
+        if (hasError) return;
+      }
+
+      if (currentStep === 4) {
+        const val = methods.getValues("additionalInformation");
+        if (!val || !val.trim()) {
+          methods.setValue("additionalInformation", "No such additional information");
+        }
+      }
+
+      console.log("isValid", isValid);
 
       if (!isValid) return;
 
+      if (currentStep === 5) {
+        setCurrentStep((prev) => prev + 1);
+        return;
+      }
+
       if (currentStep === 6) {
+        const isValidAgree = await methods.trigger("agree");
+        if (!isValidAgree) return;
         setCurrentStep((prev) => prev + 1);
         return;
       }
@@ -305,7 +384,7 @@ function VerifyForm() {
                       <button
                         type="button"
                         onClick={() => setCurrentStep(currentStep - 1)}
-                        className="rounded-lg border px-4 py-1 md:px-8 md:py-3 font-medium text-slate-700 hover:bg-gray-100"
+                        className="rounded-lg border px-4 py-1 md:px-8 md:py-3 font-medium text-slate-700 hover:bg-gray-100 cursor-pointer"
                       >
                         ← Previous Step
                       </button>
@@ -313,7 +392,7 @@ function VerifyForm() {
                         <button
                           type="button"
                           onClick={handleNext}
-                          className="rounded-lg bg-teal-700 px-4 py-1 md:px-10 md:py-3 font-semibold text-white hover:bg-teal-800"
+                          className="rounded-lg bg-teal-700 px-4 py-1 md:px-10 md:py-3 font-semibold text-white hover:bg-teal-800 cursor-pointer"
                         >
                           Next Step →
                         </button>
@@ -321,7 +400,7 @@ function VerifyForm() {
                         <button
                           onClick={handleNext}
                           type="button"
-                          className="bg-[#041B4D] text-white px-4 py-1 md:px-6 md:py-3 rounded-lg"
+                          className="bg-[#041B4D] text-white px-4 py-1 md:px-6 md:py-3 rounded-lg cursor-pointer"
                         >
                           Submit Application
                         </button>

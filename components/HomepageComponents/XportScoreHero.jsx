@@ -293,7 +293,7 @@ export default function ExportScoreHero() {
             </p>
           </div>
 
-          <button className="bg-white text-teal-700 px-8 py-4 rounded-2xl font-semibold flex items-center gap-2">
+          <button className="bg-white cursor-pointer text-teal-700 px-8 py-4 rounded-2xl font-semibold flex items-center gap-2">
             Get Assessed Now
             <ArrowRight size={18} />
           </button>

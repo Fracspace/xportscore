@@ -11,12 +11,15 @@ function UploadDocs() {
       <h2 className="text-3xl font-bold mb-8">Documents Upload</h2>
 
       <div className="mb-8">
-        <h3 className="font-semibold text-lg mb-4">Business Documents</h3>
+        <h3 className="font-semibold text-lg mb-4">
+          Business Documents <span className="text-red-500 ml-0.5">*</span>
+        </h3>
 
         <input
           type="file"
+          required={true}
           {...register("businessDocuments")}
-          className="w-full border rounded-lg p-3"
+          className="w-full border rounded-lg p-3 cursor-pointer"
         />
 
         {errors?.businessDocuments && (
@@ -28,13 +31,14 @@ function UploadDocs() {
 
       <div className="mb-8">
         <h3 className="font-semibold text-lg mb-4">
-          Product / Service Documents
+          Product / Service Documents <span className="text-red-500 ml-0.5">*</span>
         </h3>
 
         <input
           type="file"
+          required={true}
           {...register("productServiceDocuments")}
-          className="w-full border rounded-lg p-3"
+          className="w-full border rounded-lg p-3 cursor-pointer"
         />
 
         {errors?.productServiceDocuments && (
@@ -45,12 +49,15 @@ function UploadDocs() {
       </div>
 
       <div className="mb-8">
-        <h3 className="font-semibold text-lg mb-4">Packaging Documents</h3>
+        <h3 className="font-semibold text-lg mb-4">
+          Packaging Documents <span className="text-red-500 ml-0.5">*</span>
+        </h3>
 
         <input
           type="file"
+          required={true}
           {...register("packagingDocuments")}
-          className="w-full border rounded-lg p-3"
+          className="w-full border rounded-lg p-3 cursor-pointer"
         />
 
         {errors?.packagingDocuments && (
@@ -62,7 +69,7 @@ function UploadDocs() {
 
       <div className="mb-8">
         <h3 className="font-semibold text-lg mb-4">
-          Certification & Quality Documents
+          Certification & Quality Documents (If Available)
         </h3>
 
         <input
@@ -79,7 +86,7 @@ function UploadDocs() {
       </div>
 
       <div className="mb-8">
-        <h3 className="font-semibold text-lg mb-4">Past Export Documents</h3>
+        <h3 className="font-semibold text-lg mb-4">Past Export Documents (If Available)</h3>
 
         <input
           type="file"

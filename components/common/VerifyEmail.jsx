@@ -154,7 +154,7 @@ export default function VerifyEmailPage({ email, backUrl = "/signup", onBack, on
         <button
           onClick={verifyOTP}
           disabled={loading || otp.length !== 6}
-          className="mt-6 w-full rounded bg-[#0B1E48] py-3 font-semibold text-white transition hover:bg-[#09183A] disabled:cursor-not-allowed disabled:opacity-50"
+          className="mt-6 w-full rounded bg-[#0B1E48] py-3 font-semibold text-white transition hover:bg-[#09183A] disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
         >
           {loading ? "Verifying..." : "Verify & Login"}
         </button>

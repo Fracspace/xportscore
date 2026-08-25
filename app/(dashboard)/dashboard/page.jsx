@@ -82,7 +82,7 @@ function Dashboard() {
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`relative pb-4 text-sm font-medium transition-colors duration-200 ${activeTab === tab ? "text-slate-900" : "text-gray-500 hover:text-slate-800"
+              className={`relative pb-4 text-sm font-medium transition-colors duration-200 cursor-pointer ${activeTab === tab ? "text-slate-900" : "text-gray-500 hover:text-slate-800"
                 }`}
             >
               {tab}

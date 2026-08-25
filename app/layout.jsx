@@ -1,5 +1,6 @@
 import { DM_Sans, Manrope, IBM_Plex_Sans, Poppins } from "next/font/google";
 import "./globals.css";
+import "react-phone-number-input/style.css";
 import { AuthProvider } from "./context/AuthContext";
 import { GoogleTagManager } from "@next/third-parties/google";
 

@@ -298,9 +298,70 @@ function AppForm() {
             : formSteps[3].serviceFields;
       }
 
+      // Validate DOCUMENTATION VALIDATION PART
+      const isValid = await methods.trigger(fields);
+
+      if (currentStep === 0) {
+        const values = methods.getValues();
+        if (values.businessType === "Others" && !values.otherBusinessType?.trim()) {
+          methods.setError("otherBusinessType", {
+            type: "manual",
+            message: "Please specify your business type!"
+          });
+          return;
+        }
+      }
+
+      if (currentStep === 3) {
+        const values = methods.getValues();
+        const currencies = values.preferredPricingCurrency || [];
+        if (currencies.includes("Other") && !values.otherCurrency?.trim()) {
+          methods.setError("otherCurrency", {
+            type: "manual",
+            message: "Please specify the other currency."
+          });
+          return;
+        }
+      }
+
+      if (currentStep === 4) {
+        const values = methods.getValues();
+        let hasDocError = false;
+
+        if (!values.businessDocuments || values.businessDocuments.length === 0) {
+          methods.setError("businessDocuments", {
+            type: "manual",
+            message: "Business Documents are required."
+          });
+          hasDocError = true;
+        }
+
+        if (!values.productServiceDocuments || values.productServiceDocuments.length === 0) {
+          methods.setError("productServiceDocuments", {
+            type: "manual",
+            message: "Product / Service Documents are required."
+          });
+          hasDocError = true;
+        }
+
+        if (!values.packagingDocuments || values.packagingDocuments.length === 0) {
+          methods.setError("packagingDocuments", {
+            type: "manual",
+            message: "Packaging Documents are required."
+          });
+          hasDocError = true;
+        }
+
+        if (hasDocError) return;
+      }
+
+      console.log("isValid", isValid);
+
+      if (!isValid) return;
+
       const uploadUrl = `https://api.xportscore.com/api/export-assessments/${assessmentId}/upload-document`;
 
-      // Upload Documents at step 4
+      // Step for uploading documents
       if (currentStep === 4) {
         const values = methods.getValues();
 
@@ -397,17 +458,12 @@ function AppForm() {
         return;
       }
 
-      // Validate current step
-      const isValid = await methods.trigger(fields);
-      console.log("isValid", isValid);
       const values = methods.getValues();
       const payload1 = {
         [stepPayloadMap[currentStep]]: extractSectionValues(values, currentStep)
       };
 
       console.log("current payload1 details are :", payload1);
-
-      // if (!isValid) return;
 
       const payload = { ...methods.getValues() };
 
@@ -432,6 +488,15 @@ function AppForm() {
         payload1.assessmentStatus = "active";
       }
 
+      const effectiveToken =
+        token || localStorage.getItem("token") || searchParams.get("token");
+
+      if (!effectiveToken) {
+        alert("Your authentication session has expired or is missing. Please log in again.");
+        router.push("/login");
+        return;
+      }
+
       console.log("overall method values are :", payload);
 
       const url = `https://api.xportscore.com/api/export-assessments/${assessmentId}`;
@@ -441,7 +506,7 @@ function AppForm() {
       const headers = {
         "Content-Type": "application/json",
         "x-api-key": "Xportscore@2026",
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${effectiveToken}`
       };
 
       console.log("headers are", headers);
@@ -469,7 +534,12 @@ function AppForm() {
       console.log("data is", data);
 
       if (!response.ok) {
-        throw new Error(data?.message || "Something went wrong");
+        const serverError =
+          data?.error?.message ||
+          (typeof data?.error === "string" ? data.error : null) ||
+          data?.message ||
+          `Request failed with status ${response.status}`;
+        throw new Error(serverError);
       }
 
       setAllStepPayloads((prev) => {
@@ -543,7 +613,7 @@ function AppForm() {
           <div className="mx-auto max-w-7xl px-6">
             <div className="grid gap-8 lg:grid-cols-[260px_1fr]">
               {/* Sidebar */}
-              <aside className="bg-white hidden md:block rounded-xl border p-6 h-fit sticky top-10">
+              <aside className="bg-white hidden lg:block rounded-xl border p-6 h-fit sticky top-28 md:top-36">
                 <h3 className="font-semibold text-slate-800 mb-6">
                   Application Sections
                 </h3>
@@ -585,7 +655,7 @@ function AppForm() {
                     type="button"
                     disabled={currentStep === 0}
                     onClick={() => setCurrentStep((prev) => prev - 1)}
-                    className="px-6 py-3 border rounded-lg"
+                    className="px-6 py-3 border rounded-lg cursor-pointer"
                   >
                     Previous
                   </button>
@@ -602,14 +672,14 @@ function AppForm() {
                     <button
                       type="button"
                       onClick={handleNext}
-                      className="bg-[#041B4D] text-white px-6 py-3 rounded-lg"
+                      className="bg-[#041B4D] text-white px-6 py-3 rounded-lg cursor-pointer"
                     >
                       Next
                     </button>
                   ) : (
                     <button
                       type="button"
-                      className="bg-[#041B4D] text-white px-6 py-3 rounded-lg"
+                      className="bg-[#041B4D] text-white px-6 py-3 rounded-lg cursor-pointer"
                       onClick={handleNext}
                     >
                       Submit Application

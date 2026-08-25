@@ -1,18 +1,21 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { Send } from "lucide-react";
 import { Country } from "country-state-city";
 
 import Input from "@/components/common/Input";
 import { useAuth } from "@/app/context/AuthContext";
 import VerifyEmailPage from "@/components/common/VerifyEmail";
+import PhoneNumberInput from "@/components/common/PhoneNumberInput";
+import CountrySelect from "@/components/common/CountrySelect";
 
 export default function AssessmentReqForm() {
   const {
     register,
     handleSubmit,
+    control,
     reset,
     formState: { errors }
   } = useForm();
@@ -23,6 +26,7 @@ export default function AssessmentReqForm() {
   const [formEmail, setFormEmail] = useState("");
   const [pendingFormData, setPendingFormData] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [rawPhone, setRawPhone] = useState("");
 
   const countries = Country.getAllCountries();
 
@@ -234,6 +238,7 @@ export default function AssessmentReqForm() {
   return (
     <section className="bg-gray-50 px-4 py-8 md:px-8 lg:px-12">
       <div className="mx-auto max-w-6xl rounded-2xl border border-gray-200 bg-white shadow-sm">
+        {/* {The Form Fields In This Page} */}
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="p-5 sm:p-6 md:p-8 lg:p-10">
             {/* Heading */}
@@ -248,68 +253,95 @@ export default function AssessmentReqForm() {
             <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2">
               {/* Company Name */}
               <div>
+                <label className="mb-2 block text-sm font-semibold text-slate-800">
+                  Company Name <span className="text-red-500">*</span>
+                </label>
                 <Input
-                  label="Company Name"
-                  {...register("company")}
+                  required={true}
+                  {...register("company", { required: "Company Name is required" })}
                   error={errors?.company?.message}
+                  placeholder="Ex: Example pvt.ltd"
                 />
               </div>
 
-              {/* Contact Person */}
+              {/* Contact Person / Applicant Name */}
               <div>
+                <label className="mb-2 block text-sm font-semibold text-slate-800">
+                  Applicant Name <span className="text-red-500">*</span>
+                </label>
                 <Input
-                  label="Applicant Name"
-                  {...register("fullname")}
+                  required={true}
+                  {...register("fullname", { required: "Applicant Name is required" })}
                   error={errors?.fullname?.message}
+                  placeholder="Ex: John Doe"
                 />
               </div>
 
               {/* Designation */}
               <div>
+                <label className="mb-2 block text-sm font-semibold text-slate-800">
+                  Designation <span className="text-red-500">*</span>
+                </label>
                 <Input
-                  label="Designation"
-                  {...register("designation")}
+                  required={true}
+                  {...register("designation", { required: "Designation is required" })}
                   error={errors?.designation?.message}
+                  placeholder="Ex: Export Manager"
                 />
               </div>
 
               {/* Email */}
               <div>
+                <label className="mb-2 block text-sm font-semibold text-slate-800">
+                  Email Address <span className="text-red-500">*</span>
+                </label>
                 <Input
-                  label="Email Address"
+                  required={true}
                   type="email"
-                  {...register("email")}
+                  {...register("email", { required: "Email Address is required" })}
                   error={errors?.email?.message}
+                  placeholder="Ex: j.doe@gmail.com"
                 />
               </div>
 
-              {/* Phone */}
+              {/* Mobile / WhatsApp Number */}
               <div>
-                <Input
-                  label="Mobile / WhatsApp Number"
-                  {...register("phone")}
-                  error={errors?.phone?.message}
+                <Controller
+                  name="phone"
+                  control={control}
+                  rules={{ required: "Mobile / WhatsApp Number is required" }}
+                  render={({ field }) => (
+                    <PhoneNumberInput
+                      label="MOBILE / WHATSAPP NUMBER"
+                      required={true}
+                      value={field.value}
+                      placeholder="Ex: 1234567890"
+                      onChange={({ phoneNumber, countryCode, rawValue }) => {
+                        setRawPhone(rawValue);
+                        field.onChange(rawValue || phoneNumber);
+                      }}
+                      error={errors?.phone?.message}
+                    />
+                  )}
                 />
               </div>
 
               {/* Country */}
               <div>
-                <label className="mb-2 block text-sm font-semibold text-slate-800">
-                  Country<span className="text-red-500">*</span>
-                </label>
-
-                <select
-                  {...register("country")}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-teal-600 focus:ring-2 focus:ring-teal-100"
-                >
-                  <option value="">Select Country</option>
-
-                  {countries.map((country) => (
-                    <option key={country.isoCode} value={country.name}>
-                      {country.name}
-                    </option>
-                  ))}
-                </select>
+                <Controller
+                  name="country"
+                  control={control}
+                  rules={{ required: "Country is required" }}
+                  render={({ field }) => (
+                    <CountrySelect
+                      label="Country"
+                      required={true}
+                      value={field.value}
+                      onChange={field.onChange}
+                      error={errors?.country?.message}
+                    />
+                  )}
+                />
               </div>
             </div>
 
@@ -318,14 +350,15 @@ export default function AssessmentReqForm() {
               <label className="flex items-start gap-3">
                 <input
                   type="checkbox"
-                  {...register("agree")}
-                  className="mt-1 h-5 w-5 shrink-0 rounded border-gray-300 accent-teal-600"
+                  required={true}
+                  {...register("agree", { required: true })}
+                  className="mt-1 h-5 w-5 shrink-0 rounded border-gray-300 accent-teal-600 cursor-pointer"
                 />
 
                 <span className="text-sm leading-6 text-slate-700">
                   I understand that my work email address will be used as my
                   primary login credential, and OTPs will be sent to this email
-                  for secure authentication.
+                  for secure authentication. <span className="text-red-500">*</span>
                 </span>
               </label>
             </div>

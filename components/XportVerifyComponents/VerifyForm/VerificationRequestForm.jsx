@@ -1,21 +1,33 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { Send } from "lucide-react";
 import { Country } from "country-state-city";
 
 import { useAuth } from "@/app/context/AuthContext";
 import Input from "@/components/common/Input";
 import VerifyEmailPage from "@/components/common/VerifyEmail";
+import PhoneNumberInput from "@/components/common/PhoneNumberInput";
+import CountrySelect from "@/components/common/CountrySelect";
 
 export default function VerificationRequestForm() {
   const {
     register,
     handleSubmit,
+    control,
     reset,
     formState: { errors }
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      company: "",
+      fullname: "",
+      designation: "",
+      email: "",
+      phone: "",
+      country: ""
+    }
+  });
 
   const { setFormType, setPaymentForm, token, user, setApplicationId } = useAuth();
 
@@ -23,31 +35,9 @@ export default function VerificationRequestForm() {
   const [formEmail, setFormEmail] = useState("");
   const [pendingFormData, setPendingFormData] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [rawPhone, setRawPhone] = useState("");
 
   const countries = Country.getAllCountries();
-
-  useEffect(() => {
-    let prefill = null;
-    try {
-      const storedPrefill = localStorage.getItem("xportverify prefill details");
-      if (storedPrefill) {
-        prefill = JSON.parse(storedPrefill);
-      }
-    } catch (e) {
-      console.error("Error parsing prefill details", e);
-    }
-
-    if (user || prefill) {
-      reset({
-        company: prefill?.company || user?.company || user?.companyName || user?.applicant?.company || user?.applicant?.companyName || "",
-        fullname: prefill?.fullname || user?.fullname || user?.contactPersonName || user?.name || user?.applicant?.fullname || user?.applicant?.contactPersonName || "",
-        designation: prefill?.designation || user?.designation || user?.applicant?.designation || "",
-        email: prefill?.email || user?.email || user?.officeEmail || user?.applicant?.email || user?.applicant?.officeEmail || "",
-        phone: prefill?.phone || user?.phone || user?.phoneNumber || user?.applicant?.phone || user?.applicant?.phoneNumber || "",
-        country: prefill?.country || user?.country || user?.applicant?.country || ""
-      });
-    }
-  }, [user, reset]);
 
   const submitFormWithToken = async (formData, submitToken) => {
     const payload = {
@@ -248,19 +238,27 @@ export default function VerificationRequestForm() {
             <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2">
               {/* Company Name */}
               <div>
+                <label className="mb-2 block text-sm font-semibold text-slate-800">
+                  Company Name <span className="text-red-500">*</span>
+                </label>
                 <Input
-                  label="Company Name"
-                  {...register("company")}
+                  required={true}
+                  {...register("company", { required: "Company Name is required" })}
                   error={errors?.company?.message}
+                  placeholder="Ex: Example pvt.ltd"
                 />
               </div>
 
-              {/* Contact Person */}
+              {/* Contact Person / Applicant Name */}
               <div>
+                <label className="mb-2 block text-sm font-semibold text-slate-800">
+                  Applicant Name <span className="text-red-500">*</span>
+                </label>
                 <Input
-                  label="Applicant Name"
-                  {...register("fullname")}
+                  required={true}
+                  {...register("fullname", { required: "Applicant Name is required" })}
                   error={errors?.fullname?.message}
+                  placeholder="Ex: John Doe"
                 />
               </div>
 
@@ -270,46 +268,62 @@ export default function VerificationRequestForm() {
                   label="Designation"
                   {...register("designation")}
                   error={errors?.designation?.message}
+                  placeholder="Describe Designation"
                 />
               </div>
 
               {/* Email */}
               <div>
+                <label className="mb-2 block text-sm font-semibold text-slate-800">
+                  Email Address <span className="text-red-500">*</span>
+                </label>
                 <Input
-                  label="Email Address"
+                  required={true}
                   type="email"
-                  {...register("email")}
+                  {...register("email", { required: "Email Address is required" })}
                   error={errors?.email?.message}
+                  placeholder="Ex: j.doe@gmail.com"
                 />
               </div>
 
-              {/* Phone */}
+              {/* Mobile / WhatsApp Number */}
               <div>
-                <Input
-                  label="Mobile / WhatsApp Number"
-                  {...register("phone")}
-                  error={errors?.phone?.message}
+                <Controller
+                  name="phone"
+                  control={control}
+                  rules={{ required: "Mobile / WhatsApp Number is required" }}
+                  render={({ field }) => (
+                    <PhoneNumberInput
+                      label="MOBILE / WHATSAPP NUMBER"
+                      required={true}
+                      value={field.value}
+                      placeholder="Ex: 1234567890"
+                      onChange={({ phoneNumber, countryCode, rawValue }) => {
+                        setRawPhone(rawValue);
+                        field.onChange(rawValue || phoneNumber);
+                      }}
+                      error={errors?.phone?.message}
+                    />
+                  )}
                 />
               </div>
 
               {/* Country */}
               <div>
-                <label className="mb-2 block text-sm font-semibold text-slate-800">
-                  Country<span className="text-red-500">*</span>
-                </label>
-
-                <select
-                  {...register("country")}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-teal-600 focus:ring-2 focus:ring-teal-100"
-                >
-                  <option value="">Select Country</option>
-
-                  {countries.map((country) => (
-                    <option key={country.isoCode} value={country.name}>
-                      {country.name}
-                    </option>
-                  ))}
-                </select>
+                <Controller
+                  name="country"
+                  control={control}
+                  rules={{ required: "Country is required" }}
+                  render={({ field }) => (
+                    <CountrySelect
+                      label="Country"
+                      required={true}
+                      value={field.value}
+                      onChange={field.onChange}
+                      error={errors?.country?.message}
+                    />
+                  )}
+                />
               </div>
             </div>
 
@@ -318,14 +332,15 @@ export default function VerificationRequestForm() {
               <label className="flex items-start gap-3">
                 <input
                   type="checkbox"
+                  required={true}
                   {...register("agree")}
-                  className="mt-1 h-5 w-5 shrink-0 rounded border-gray-300 accent-teal-600"
+                  className="mt-1 h-5 w-5 shrink-0 rounded border-gray-300 accent-teal-600 cursor-pointer"
                 />
 
                 <span className="text-sm leading-6 text-slate-700">
                   I understand that my work email address will be used as my
                   primary login credential, and OTPs will be sent to this email
-                  for secure authentication.
+                  for secure authentication.<span className="text-red-500">*</span>
                 </span>
               </label>
             </div>
@@ -338,7 +353,7 @@ export default function VerificationRequestForm() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex w-full items-center justify-center gap-2 rounded-lg bg-teal-700 px-8 py-3 font-semibold text-white transition hover:bg-teal-800 sm:w-auto disabled:opacity-50"
+                className="flex w-full items-center justify-center gap-2 rounded-lg bg-teal-700 px-8 py-3 font-semibold text-white transition hover:bg-teal-800 sm:w-auto disabled:opacity-50 cursor-pointer"
               >
                 {isSubmitting ? "Processing..." : "Submit"}
                 <Send size={18} />

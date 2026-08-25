@@ -12,27 +12,45 @@ function SupportingDocs() {
       <h2 className="text-3xl font-bold mb-8">Optional Supporting Documents</h2>
 
       <div className="mb-8">
-        <h3 className="font-semibold text-lg mb-4">Distributor Agreement</h3>
+        <h3 className="font-semibold text-lg mb-4">
+          Distributor Agreement <span className="text-red-500 ml-0.5">*</span>
+        </h3>
 
         <input
           type="file"
+          required={true}
           {...register("distributorAgreement")}
-          className="w-full border rounded-lg p-3"
+          className="w-full border rounded-lg p-3 cursor-pointer"
         />
+
+        {errors?.distributorAgreement && (
+          <p className="text-red-500 text-sm mt-1">
+            {errors?.distributorAgreement?.message}
+          </p>
+        )}
       </div>
 
       <div className="mb-8">
-        <h3 className="font-semibold text-lg mb-4">Product Videos</h3>
+        <h3 className="font-semibold text-lg mb-4">
+          Product Videos <span className="text-red-500 ml-0.5">*</span>
+        </h3>
 
         <input
           type="file"
+          required={true}
           {...register("productVideos")}
-          className="w-full border rounded-lg p-3"
+          className="w-full border rounded-lg p-3 cursor-pointer"
         />
+
+        {errors?.productVideos && (
+          <p className="text-red-500 text-sm mt-1">
+            {errors?.productVideos?.message}
+          </p>
+        )}
       </div>
 
       <div className="mb-8">
-        <h3 className="font-semibold text-lg mb-4">Factory Photos</h3>
+        <h3 className="font-semibold text-lg mb-4">Factory Photos (If Available)</h3>
 
         <input
           type="file"
@@ -43,7 +61,7 @@ function SupportingDocs() {
 
       <div className="mb-8">
         <h3 className="font-semibold text-lg mb-4">
-          Certification & Quality Documents
+          Certification & Quality Documents (If Available)
         </h3>
 
         <input

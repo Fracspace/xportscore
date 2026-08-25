@@ -15,28 +15,34 @@ function Submission() {
 
       <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-8">
         <Input
-          label="Requestor Name*"
+          required={true}
+          label="Requestor Name"
           placeholder="Full Name"
           {...register("requestorName")}
           error={errors?.requestorName?.message}
         />
 
         <Input
-          label="Company*"
+          label="Company"
+          required={true}
           placeholder="Company Name"
           {...register("company")}
           error={errors?.company?.message}
         />
 
         <Input
-          label="Date*"
+          label="Date"
+          required={true}
           type="date"
+          max='9999-12-31'
+          // className="cursor-pointer"
           {...register("date")}
           error={errors?.date?.message}
         />
 
         <Input
-          label="Digital Signature / Confirmation*"
+          label="Digital Signature / Confirmation"
+          required={true}
           {...register("digitalSignature")}
           placeholder="Type your full name as your digital signature"
           error={errors?.digitalSignature?.message}

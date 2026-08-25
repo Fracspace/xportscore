@@ -18,18 +18,15 @@ export const commercialInfoSchema = z
       .array(z.string())
       .min(1, "Select at least one payment term.")
   })
-  .refine(
-    (data) => {
-      if (
-        data.preferredPricingCurrency.includes("Other") &&
-        !data.otherCurrency?.trim()
-      ) {
-        return false;
-      }
-      return true;
-    },
-    {
-      path: ["otherCurrency"],
-      message: "Please specify the other currency."
+  .superRefine((data, ctx) => {
+    if (
+      data.preferredPricingCurrency?.includes("Other") &&
+      !data.otherCurrency?.trim()
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Please specify the other currency.",
+        path: ["otherCurrency"]
+      });
     }
-  );
+  });

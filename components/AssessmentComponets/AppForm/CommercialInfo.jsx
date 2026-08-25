@@ -25,7 +25,9 @@ function CommercialInfo() {
         {/* Current Price List */}
 
         <div>
-          <h3 className="mb-4 font-semibold">Current Price List Available?</h3>
+          <h3 className="mb-4 font-semibold">
+            Current Price List Available? <span className="text-red-500 ml-0.5">*</span>
+          </h3>
 
           <div className="space-y-3">
             <Radio
@@ -51,7 +53,9 @@ function CommercialInfo() {
         {/* Export Price List */}
 
         <div>
-          <h3 className="mb-4 font-semibold">Export Price List Available?</h3>
+          <h3 className="mb-4 font-semibold">
+            Export Price List Available? <span className="text-red-500 ml-0.5">*</span>
+          </h3>
 
           <div className="space-y-3">
             <Radio
@@ -77,7 +81,9 @@ function CommercialInfo() {
         {/* Preferred Pricing Currency */}
 
         <div>
-          <h3 className="mb-4 font-semibold">Preferred Pricing Currency</h3>
+          <h3 className="mb-4 font-semibold">
+            Preferred Pricing Currency <span className="text-red-500 ml-0.5">*</span>
+          </h3>
 
           <div className="grid gap-4 md:grid-cols-3">
             {["USD", "INR", "EUR", "GBP", "AED", "Other"].map((item) => (
@@ -97,11 +103,13 @@ function CommercialInfo() {
           )}
 
           {selectedCurrencies.includes("Other") && (
-            <div className="mt-4">
+            <div className="mt-4 max-w-md">
               <Input
-                label="Other Currency"
+                label="Please Specify Other Currency"
+                required={true}
                 {...register("otherCurrency")}
-                error={errors.otherCurrency}
+                error={errors.otherCurrency?.message}
+                placeholder="Ex: CAD, AUD, JPY (Comma Seperated)"
               />
             </div>
           )}
@@ -110,7 +118,9 @@ function CommercialInfo() {
         {/* Payment Terms */}
 
         <div>
-          <h3 className="mb-4 font-semibold">Payment Terms</h3>
+          <h3 className="mb-4 font-semibold">
+            Payment Terms <span className="text-red-500 ml-0.5">*</span>
+          </h3>
 
           <div className="grid gap-4 md:grid-cols-2">
             {[

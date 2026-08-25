@@ -9,19 +9,13 @@ export const productInfoSchema = z.object({
     .string()
     .min(1, "Monthly Production / Supply Capacity is required."),
 
-  minimumOrderQuantity: z
-    .string()
-    .min(1, "Minimum Order Quantity is required."),
+  minimumOrderQuantity: z.string().optional(),
 
-  productShelfLife: z
-    .string()
-    .min(1, "Product Shelf Life is required."),
+  productShelfLife: z.string().optional(),
 
   productDescription: z
     .string()
     .min(10, "Product Description is required."),
 
-  skus: z
-    .array(z.string().min(1))
-    .min(1, "Add at least one SKU."),
+  skus: z.array(z.string()).optional()
 });

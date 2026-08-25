@@ -9,7 +9,7 @@ const Checkbox = forwardRef(
             ref={ref}
             type="checkbox"
             value={value}
-            className={`h-4 w-4 rounded border-gray-300 ${className}`}
+            className={`h-4 w-4 rounded cursor-pointer border-gray-300 ${className}`}
             {...props}
           />
 

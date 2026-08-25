@@ -1,9 +1,9 @@
 "use client";
 
-import { Bell, Search, Plus,Menu } from "lucide-react";
+import { Bell, Search, Plus, Menu } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-export default function Topbar({onMenuClick}) {
+export default function Topbar({ onMenuClick }) {
   const router = useRouter();
   return (
     // <header className="h-20 bg-white border-b border-gray-200 px-8 flex items-center justify-between">
@@ -63,16 +63,17 @@ export default function Topbar({onMenuClick}) {
       </div>
 
       <div className="flex items-center gap-2 md:gap-4">
-        <button className="relative p-2 rounded-lg hover:bg-gray-100">
+        {/* Notifiation Button */}
+        {/* <button className="relative p-2 rounded-lg hover:bg-gray-100 cursor-pointer">
           <Bell className="w-5 h-5" />
 
           <span className="absolute top-2 right-2 h-2 w-2 bg-red-500 rounded-full" />
-        </button>
+        </button> */}
 
         {/* Hide on Mobile */}
         <button
           onClick={() => router.push("/xportverifyform")}
-          className="hidden md:flex items-center gap-2 border border-cyan-500 px-4 py-2 rounded-md"
+          className="hidden md:flex items-center gap-2 border border-cyan-500 px-4 py-2 rounded-md cursor-pointer"
         >
           <Search size={18} />
           Verify Business
@@ -80,7 +81,7 @@ export default function Topbar({onMenuClick}) {
 
         <button
           onClick={() => router.push("/xportassessmentform")}
-          className="hidden md:flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-md"
+          className="hidden md:flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-md cursor-pointer"
         >
           <Plus size={18} />
           New Assessment

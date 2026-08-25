@@ -14,42 +14,70 @@ function Declaration() {
 
       <div className="space-y-5">
         <Checkbox
-          label="Information Accuracy"
+          label={
+            <span>
+              Information Accuracy <span className="text-red-500 ml-0.5">*</span>
+            </span>
+          }
+          required={true}
           {...register("informationAccuracy")}
           error={errors.informationAccuracy}
         />
 
         <Checkbox
-          label="Document Authenticity"
+          label={
+            <span>
+              Document Authenticity <span className="text-red-500 ml-0.5">*</span>
+            </span>
+          }
+          required={true}
           {...register("documentAuthenticity")}
           error={errors.documentAuthenticity}
         />
 
         <Checkbox
-          label="Private Audit Acknowledgement"
+          label={
+            <span>
+              Private Audit Acknowledgement <span className="text-red-500 ml-0.5">*</span>
+            </span>
+          }
+          required={true}
           {...register("privateAuditAcknowledgement")}
           error={errors.privateAuditAcknowledgement}
         />
 
         <Checkbox
-          label="No Guarantee Acknowledgement"
+          label={
+            <span>
+              No Guarantee Acknowledgement <span className="text-red-500 ml-0.5">*</span>
+            </span>
+          }
+          required={true}
           {...register("noGuaranteeAcknowledgement")}
           error={errors.noGuaranteeAcknowledgement}
         />
 
         <Checkbox
-          label="Revocation Acknowledgement"
+          label={
+            <span>
+              Revocation Acknowledgement <span className="text-red-500 ml-0.5">*</span>
+            </span>
+          }
+          required={true}
           {...register("revocationAcknowledgement")}
           error={errors.revocationAcknowledgement}
         />
 
         <Checkbox
-          label="Data Consent"
+          label={
+            <span>
+              Data Consent <span className="text-red-500 ml-0.5">*</span>
+            </span>
+          }
+          required={true}
           {...register("dataConsent")}
           error={errors.dataConsent}
         />
-
-      
       </div>
     </div>
   );

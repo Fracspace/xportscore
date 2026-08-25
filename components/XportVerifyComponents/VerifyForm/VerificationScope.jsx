@@ -330,7 +330,7 @@ function VerificationScope() {
           {/* Contact Verification */}
           <div>
             <h3 className="mb-5 text-xl font-semibold text-slate-800">
-              Contact Verification
+              Contact Verification <span className="text-red-500 ml-0.5">*</span>
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-5">

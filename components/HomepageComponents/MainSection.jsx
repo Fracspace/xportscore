@@ -20,7 +20,7 @@ import QRCode from "react-qr-code";
 
 function MainSection() {
   const router = useRouter();
-   const verifyUrl = "https://www.xportscore.com/verifycertificates";
+  const verifyUrl = "https://www.xportscore.com/verifycertificates";
   const pillars = [
     {
       icon: ShieldCheck,
@@ -179,7 +179,7 @@ function MainSection() {
               </p>
 
               {/* <div className="w-20 h-20 bg-slate-300 mx-auto mt-6 rounded" /> */}
-              <QRCode value={verifyUrl} className="w-20 h-20 mx-auto mt-4"  />
+              <QRCode value={verifyUrl} className="w-20 h-20 mx-auto mt-4" />
 
 
               <p className="mt-4 font-medium text-teal-600">724 / 900</p>
@@ -206,7 +206,7 @@ function MainSection() {
           </div>
         ))}
       </div>
-      
+
 
       {/* Pillars + How It Works */}
       <div className="grid lg:grid-cols-3 gap-10 mt-12">
@@ -294,7 +294,7 @@ function MainSection() {
 
         <button
           onClick={() => router.push("/startassessment")}
-          className="bg-white text-teal-700 px-6 py-4 rounded-xl font-semibold flex items-center gap-2"
+          className="bg-white cursor-pointer text-teal-700 px-6 py-4 rounded-xl font-semibold flex items-center gap-2"
         >
           Get Assessed Now
           <ArrowRight size={18} />

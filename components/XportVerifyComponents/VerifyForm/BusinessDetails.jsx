@@ -1,16 +1,15 @@
 import React from "react";
 import Input from "@/components/common/Input";
-import { useFormContext } from "react-hook-form";
-
-import { Country } from "country-state-city";
+import CountrySelect from "@/components/common/CountrySelect";
+import PhoneNumberInput from "@/components/common/PhoneNumberInput";
+import { useFormContext, Controller } from "react-hook-form";
 
 function BusinessDetails() {
   const {
     register,
+    control,
     formState: { errors }
   } = useFormContext();
-
-  const countries = Country.getAllCountries();
 
   return (
     <div className="border-t border-slate-200">
@@ -25,43 +24,34 @@ function BusinessDetails() {
 
         <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-8">
           <Input
-            label="Legal Company Name*"
-            placeholder="Registered Legal Company Name"
+            required={true}
+            label="Legal Company Name"
+            placeholder="Registered Company Name"
             {...register("legalCompanyName")}
             error={errors?.legalCompanyName?.message}
           />
 
           <Input
+            required={true}
             label="Brand / Trading Name"
             placeholder="Brand or Trading Name (if different)"
             {...register("brandTradingName")}
             error={errors?.brandTradingName?.message}
           />
 
-          <div>
-            <label className="mb-2 block text-sm font-medium text-slate-700">
-              Country*
-            </label>
-
-            <select
-              {...register("countryOfCompany")}
-              defaultValue=""
-              className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm outline-none transition focus:border-teal-500 focus:ring-2 focus:ring-teal-200"
-            >
-              <option value="">Select Country</option>
-              {countries.map((country) => (
-                <option key={country.isoCode} value={country.name}>
-                  {country.name}
-                </option>
-              ))}
-            </select>
-
-            {errors?.countryOfCompany && (
-              <p className="mt-1 text-sm text-red-500">
-                {errors.countryOfCompany.message}
-              </p>
+          <Controller
+            name="countryOfCompany"
+            control={control}
+            render={({ field }) => (
+              <CountrySelect
+                label="Country"
+                required={true}
+                value={field.value}
+                onChange={(countryName) => field.onChange(countryName)}
+                error={errors?.countryOfCompany?.message}
+              />
             )}
-          </div>
+          />
 
           <Input
             label="Registered Address"
@@ -72,26 +62,33 @@ function BusinessDetails() {
 
           <Input
             label="Website"
-            placeholder="https://www.company.com"
+            placeholder="Ex: https://www.company.com (if known)"
             type="url"
             {...register("website")}
             error={errors?.website?.message}
           />
 
           <Input
+            required={true}
             label="Email Address"
-            placeholder="contact@company.com"
+            placeholder="Ex: contact@company.com"
             type="email"
             {...register("companyEmail")}
             error={errors?.companyEmail?.message}
           />
 
-          <Input
-            label="Phone Number"
-            placeholder="+1..."
-            type="tel"
-            {...register("companyPhone")}
-            error={errors?.companyPhone?.message}
+          <Controller
+            name="companyPhone"
+            control={control}
+            render={({ field }) => (
+              <PhoneNumberInput
+                label="Phone Number"
+                required={true}
+                value={field.value}
+                onChange={(data) => field.onChange(data?.rawValue || data)}
+                error={errors?.companyPhone?.message}
+              />
+            )}
           />
 
           <Input

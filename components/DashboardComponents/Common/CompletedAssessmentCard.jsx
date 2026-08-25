@@ -49,7 +49,7 @@ export default function CompletedAssessmentCard() {
 
 
 
-        <button className="flex items-center justify-center gap-2 bg-blue-50 hover:bg-blue-100 rounded-lg py-3 text-sm font-medium text-slate-700 transition">
+        <button className="flex items-center justify-center gap-2 bg-blue-50 hover:bg-blue-100 rounded-lg py-3 text-sm font-medium text-slate-700 transition cursor-pointer">
           <BadgeCheck size={17} />
           Certificate
         </button>

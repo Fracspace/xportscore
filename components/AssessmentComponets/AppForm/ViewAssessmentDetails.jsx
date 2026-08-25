@@ -2,19 +2,113 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, CheckCircle2, Building, Globe, Layers, BadgePercent, ShieldCheck, Check, FileText, ExternalLink, Download } from "lucide-react";
+import {
+  ArrowLeft,
+  CheckCircle2,
+  Building,
+  Globe,
+  Layers,
+  BadgePercent,
+  ShieldCheck,
+  Check,
+  FileText,
+  ExternalLink,
+  Download,
+  User,
+  Package,
+  Award
+} from "lucide-react";
+import { toPng } from "html-to-image";
+import jsPDF from "jspdf";
 
 export default function ViewAssessmentDetails({ assessment }) {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("business");
+  const [isDownloadingReport, setIsDownloadingReport] = useState(false);
 
   const business = assessment?.business || {};
+  const applicant = assessment?.applicant || {};
   const exportStatusObj = assessment?.export_status || {};
   const productService = assessment?.product_service || {};
   const commercial = assessment?.commercial_information || {};
   const declaration = assessment?.declaration || {};
   const uploadDocs = assessment?.upload_documents || {};
   const supportingDocs = assessment?.supporting_documents || {};
+
+  const handleDownloadAuditReport = async () => {
+    try {
+      setIsDownloadingReport(true);
+      const page1El = document.getElementById("pdf-page-1");
+      const page2El = document.getElementById("pdf-page-2");
+      const exportWrapper = document.getElementById("full-pdf-export-wrapper");
+
+      if (!page1El || !page2El || !exportWrapper) {
+        alert("Report template elements not found.");
+        return;
+      }
+
+      // Temporarily reveal full export wrapper for capture
+      exportWrapper.style.display = "block";
+
+      // Capture Page 1 at 3x resolution
+      const page1DataUrl = await toPng(page1El, {
+        quality: 0.98,
+        pixelRatio: 3,
+        cacheBust: true,
+        backgroundColor: "#ffffff"
+      });
+
+      // Capture Page 2 at 3x resolution
+      const page2DataUrl = await toPng(page2El, {
+        quality: 0.98,
+        pixelRatio: 3,
+        cacheBust: true,
+        backgroundColor: "#ffffff"
+      });
+
+      // Hide template back
+      exportWrapper.style.display = "none";
+
+      const pdf = new jsPDF("p", "mm", "a4");
+      const pdfWidth = pdf.internal.pageSize.getWidth(); // 210mm
+      const pdfHeight = pdf.internal.pageSize.getHeight(); // 297mm
+
+      // Standard centered image width: 190mm (10mm left margin, 10mm right margin)
+      const targetImgWidth = 190;
+      const xOffset = (pdfWidth - targetImgWidth) / 2; // 10mm centered
+
+      // Render Page 1
+      const imgProps1 = pdf.getImageProperties(page1DataUrl);
+      const targetImgHeight1 = (imgProps1.height * targetImgWidth) / imgProps1.width;
+      const yOffset1 = 10; // 10mm top margin
+
+      pdf.addImage(page1DataUrl, "PNG", xOffset, yOffset1, targetImgWidth, targetImgHeight1);
+
+      // Add Page 2
+      pdf.addPage();
+      const imgProps2 = pdf.getImageProperties(page2DataUrl);
+      const targetImgHeight2 = (imgProps2.height * targetImgWidth) / imgProps2.width;
+      const yOffset2 = 10; // 10mm top margin
+
+      pdf.addImage(page2DataUrl, "PNG", xOffset, yOffset2, targetImgWidth, targetImgHeight2);
+
+      // Add clickable native PDF link over the verification URL in Page 2 footer
+      const linkY = yOffset2 + targetImgHeight2 - 12;
+      pdf.link(xOffset, linkY, targetImgWidth, 10, {
+        url: "https://www.xportscore.com/verifycertificates"
+      });
+
+      const filename = `XportScore_Audit_Report_${assessment?.id || "Summary"}.pdf`;
+      pdf.save(filename);
+    } catch (error) {
+      console.error("Error generating audit report PDF:", error);
+      alert("Failed to generate PDF. Please try again.");
+    } finally {
+      const exportWrapper = document.getElementById("full-pdf-export-wrapper");
+      if (exportWrapper) exportWrapper.style.display = "none";
+      setIsDownloadingReport(false);
+    }
+  };
 
   const tabs = [
     { id: "business", label: "Business Profile" },
@@ -50,13 +144,21 @@ export default function ViewAssessmentDetails({ assessment }) {
               <p className="text-sm text-slate-500 mt-1">Assessment ID: {assessment?.id || "—"}</p>
             </div>
           </div>
-          <div className="flex items-center gap-6">
-            <div className="text-right">
+          <div className="flex items-center gap-4">
+            <div className="text-right mr-2">
               <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Readiness Score</span>
               <div className="text-2xl font-extrabold text-teal-700">
                 {assessment?.score !== null && assessment?.score !== undefined ? assessment.score : "Pending"}
               </div>
             </div>
+            <button
+              onClick={handleDownloadAuditReport}
+              disabled={isDownloadingReport}
+              className="flex items-center justify-center gap-2 rounded-xl bg-teal-700 hover:bg-teal-800 px-5 py-3 text-sm font-semibold text-white transition cursor-pointer shadow-sm disabled:opacity-50"
+            >
+              <Download size={16} />
+              <span>{isDownloadingReport ? "Generating PDF..." : "Download Audit Report"}</span>
+            </button>
             <button
               onClick={() => router.push("/dashboard")}
               className="flex items-center justify-center gap-2 rounded-xl bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 cursor-pointer"
@@ -66,8 +168,8 @@ export default function ViewAssessmentDetails({ assessment }) {
           </div>
         </div>
 
+        {/* On-Screen Interactive Tabbed View */}
         <div className="grid gap-8 lg:grid-cols-[280px_1fr]">
-          {/* Navigation Sidebar */}
           <aside className="bg-white rounded-2xl border border-slate-200 p-5 h-fit sticky top-6 shadow-sm">
             <h3 className="font-semibold text-slate-900 mb-4 px-2 text-xs uppercase tracking-wider">
               Assessment Summary
@@ -91,7 +193,6 @@ export default function ViewAssessmentDetails({ assessment }) {
             </div>
           </aside>
 
-          {/* Detailed Content Panels */}
           <div className="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
             {activeTab === "business" && (
               <div className="space-y-6">
@@ -293,7 +394,7 @@ export default function ViewAssessmentDetails({ assessment }) {
                   <DetailRow label="Certificate Number" value={assessment?.certificate_number || "Pending Release"} />
                   <DetailRow label="Created Date" value={assessment?.created_at ? new Date(assessment.created_at).toLocaleString() : "—"} />
                   <DetailRow label="Last Update Date" value={assessment?.updated_at ? new Date(assessment.updated_at).toLocaleString() : "—"} />
-                  
+
                   <div className="sm:col-span-2 border-t border-slate-100 pt-6">
                     <h3 className="text-md font-semibold text-slate-800 mb-4">Official Documentation</h3>
                     <div className="grid gap-4 sm:grid-cols-2">
@@ -343,6 +444,150 @@ export default function ViewAssessmentDetails({ assessment }) {
             )}
           </div>
         </div>
+
+        {/* DEDICATED FULL EXPORT TEMPLATE (2 CLEAN PAGE CONTAINERS FOR PERFECT DEAD-CENTERED PDF) */}
+        <div id="full-pdf-export-wrapper" style={{ display: "none" }} className="w-[794px] mx-auto bg-white font-sans text-slate-900">
+          {/* PAGE 1: Header + Sections 1, 2, 3 */}
+          <div id="pdf-page-1" className="p-8 bg-white">
+            {/* Header */}
+            <div className="border-b-2 border-teal-700 pb-5 mb-5 flex justify-between items-start">
+              <div>
+                <h1 className="text-2xl font-black text-slate-900 tracking-tight">XPORTSCORE</h1>
+                <p className="text-xs text-teal-700 font-bold uppercase tracking-widest mt-0.5">Official Export Readiness Audit Report</p>
+                <p className="text-xs text-slate-500 mt-1">Assessment ID: {assessment?.id || "—"}</p>
+              </div>
+              <div className="text-right">
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Readiness Score</span>
+                <span className="text-3xl font-extrabold text-teal-700">{assessment?.score !== null && assessment?.score !== undefined ? `${assessment.score} / 100` : "Pending"}</span>
+                <div className="mt-1">
+                  <span className="inline-block rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-800">
+                    {assessment?.assessment_status || assessment?.assessmentStatus || "Completed"}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Section 1: Business Profile */}
+            <div className="mb-5">
+              <div className="bg-slate-900 text-white font-bold text-xs uppercase px-4 py-2 rounded-t-lg flex items-center gap-2">
+                <Building size={14} className="text-teal-400" /> 1. BUSINESS PROFILE
+              </div>
+              <table className="w-full text-xs border-collapse border border-slate-300">
+                <tbody>
+                  <TableRow label="Legal Business Name" value={business.legalBusinessName || business.companyName} />
+                  <TableRow label="Brand / Trade Name" value={business.brandName} />
+                  <TableRow label="Country & Region" value={`${business.country || "—"}, ${business.city || "—"}`} />
+                  <TableRow label="Full Registered Address" value={business.address || business.registeredAddress} />
+                  <TableRow label="Corporate Website" value={business.website} />
+                  <TableRow label="Business Entity Type" value={business.businessType === "Other" ? business.otherBusinessType : business.businessType} />
+                  <TableRow label="Year Established" value={business.yearEstablished} />
+                </tbody>
+              </table>
+            </div>
+
+            {/* Section 2: Applicant Profile */}
+            <div className="mb-5">
+              <div className="bg-slate-900 text-white font-bold text-xs uppercase px-4 py-2 rounded-t-lg flex items-center gap-2">
+                <User size={14} className="text-teal-400" /> 2. APPLICANT PROFILE
+              </div>
+              <table className="w-full text-xs border-collapse border border-slate-300">
+                <tbody>
+                  <TableRow label="Contact Representative" value={assessment?.applicant?.fullname || applicant.fullName} />
+                  <TableRow label="Representative Email" value={assessment?.applicant?.email || applicant.email} />
+                  <TableRow label="Phone / WhatsApp Number" value={assessment?.applicant?.phone || applicant.phone} />
+                  <TableRow label="Corporate Designation" value={assessment?.applicant?.designation || applicant.designation} />
+                </tbody>
+              </table>
+            </div>
+
+            {/* Section 3: Export Status & Logistics */}
+            <div>
+              <div className="bg-slate-900 text-white font-bold text-xs uppercase px-4 py-2 rounded-t-lg flex items-center gap-2">
+                <Globe size={14} className="text-teal-400" /> 3. EXPORT STATUS & REGISTRATION
+              </div>
+              <table className="w-full text-xs border-collapse border border-slate-300">
+                <tbody>
+                  <TableRow label="Export Status" value={exportStatusObj.exportStatus} />
+                  <TableRow label="IEC Export Registration Code" value={exportStatusObj.iecExportRegistration} />
+                  <TableRow label="Target Export Markets" value={Array.isArray(exportStatusObj.countriesExportedTo) ? exportStatusObj.countriesExportedTo.join(", ") : exportStatusObj.countriesExportedTo || exportStatusObj.targetMarkets} />
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* PAGE 2: Sections 4, 5, 6, 7 + Footer */}
+          <div id="pdf-page-2" className="p-8 bg-white">
+            {/* Section 4: Product Specifications */}
+            <div className="mb-5">
+              <div className="bg-slate-900 text-white font-bold text-xs uppercase px-4 py-2 rounded-t-lg flex items-center gap-2">
+                <Package size={14} className="text-teal-400" /> 4. PRODUCT & SERVICE CAPABILITIES
+              </div>
+              <table className="w-full text-xs border-collapse border border-slate-300">
+                <tbody>
+                  <TableRow label="Export Type" value={productService.exportType === "service" ? "Service Capabilities" : "Product Capabilities"} />
+                  <TableRow label="Primary Category" value={productService.productCategory || productService.primaryServiceCategory} />
+                  <TableRow label="Capacity / Team Size" value={productService.monthlyProductionCapacity || productService.teamSize} />
+                  <TableRow label="MOQ / Minimum Engagement" value={productService.minimumOrderQuantity || productService.minEngagementValue} />
+                  <TableRow label="Description" value={productService.productDescription || productService.serviceDescription} />
+                </tbody>
+              </table>
+            </div>
+
+            {/* Section 5: Commercial Terms */}
+            <div className="mb-5">
+              <div className="bg-slate-900 text-white font-bold text-xs uppercase px-4 py-2 rounded-t-lg flex items-center gap-2">
+                <BadgePercent size={14} className="text-teal-400" /> 5. COMMERCIAL & PRICING TERMS
+              </div>
+              <table className="w-full text-xs border-collapse border border-slate-300">
+                <tbody>
+                  <TableRow label="Price List Available" value={commercial.currentPriceListAvailable} />
+                  <TableRow label="Export Pricing Available" value={commercial.exportPriceListAvailable} />
+                  <TableRow label="Preferred Pricing Currencies" value={Array.isArray(commercial.preferredPricingCurrency) ? commercial.preferredPricingCurrency.join(", ") : commercial.preferredPricingCurrency} />
+                  <TableRow label="Preferred Payment Terms" value={Array.isArray(commercial.paymentTerms) ? commercial.paymentTerms.join(", ") : commercial.paymentTerms} />
+                </tbody>
+              </table>
+            </div>
+
+            {/* Section 6: Uploaded Documents */}
+            <div className="mb-5">
+              <div className="bg-slate-900 text-white font-bold text-xs uppercase px-4 py-2 rounded-t-lg flex items-center gap-2">
+                <FileText size={14} className="text-teal-400" /> 6. UPLOADED & VERIFIED DOCUMENTS
+              </div>
+              <table className="w-full text-xs border-collapse border border-slate-300">
+                <tbody>
+                  <TableRow label="Business Registration Documents" value={uploadDocs.businessDocuments && uploadDocs.businessDocuments.length > 0 ? "Verified Document Uploaded" : "Not Uploaded"} />
+                  <TableRow label="Product / Service Catalogs" value={uploadDocs.productServiceDocuments && uploadDocs.productServiceDocuments.length > 0 ? "Verified Catalog Uploaded" : "Not Uploaded"} />
+                  <TableRow label="Packaging Specifications" value={uploadDocs.packagingDocuments && uploadDocs.packagingDocuments.length > 0 ? "Verified Spec Uploaded" : "Not Uploaded"} />
+                  <TableRow label="Quality & Standards Certificates" value={uploadDocs.certificationQualityDocuments && uploadDocs.certificationQualityDocuments.length > 0 ? "Verified Certificate Uploaded" : "Not Uploaded"} />
+                  <TableRow label="Past Export Invoices / Proofs" value={uploadDocs.pastExportDocuments && uploadDocs.pastExportDocuments.length > 0 ? "Verified Proof Uploaded" : "Not Uploaded"} />
+                </tbody>
+              </table>
+            </div>
+
+            {/* Section 7: Declarations */}
+            <div className="mb-6">
+              <div className="bg-slate-900 text-white font-bold text-xs uppercase px-4 py-2 rounded-t-lg flex items-center gap-2">
+                <ShieldCheck size={14} className="text-teal-400" /> 7. CONSENT & DECLARATION
+              </div>
+              <table className="w-full text-xs border-collapse border border-slate-300">
+                <tbody>
+                  <TableRow label="Information Accuracy Confirmation" value={declaration.informationAccuracy ? "Yes - Confirmed" : "Pending"} />
+                  <TableRow label="Document Authenticity Confirmation" value={declaration.documentAuthenticity ? "Yes - Confirmed" : "Pending"} />
+                  <TableRow label="Audit Protocol Acknowledgement" value={declaration.privateAuditAcknowledgement ? "Yes - Confirmed" : "Pending"} />
+                  <TableRow label="Data Consent Agreement" value={declaration.dataConsent ? "Yes - Confirmed" : "Pending"} />
+                </tbody>
+              </table>
+            </div>
+
+            {/* Footer with Clickable Verification Link */}
+            <div className="border-t border-slate-300 pt-4 mt-6 text-center text-[10px] text-slate-500">
+              <p className="font-bold text-slate-700 uppercase tracking-wider">Official Institutional Export Audit Document — XportScore Compliance Protocol</p>
+              <p className="mt-1 text-teal-700 font-semibold underline cursor-pointer">
+                Verify online at www.xportscore.com/verifycertificates
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -364,6 +609,19 @@ function DetailRow({ label, value, colSpan = 1, isUrl = false }) {
         )}
       </div>
     </div>
+  );
+}
+
+function TableRow({ label, value }) {
+  return (
+    <tr className="border-b border-slate-200">
+      <td className="w-1/3 bg-slate-100/70 p-2 font-bold text-slate-700 uppercase tracking-wider border-r border-slate-300">
+        {label}
+      </td>
+      <td className="w-2/3 p-2 font-semibold text-slate-900">
+        {value || "—"}
+      </td>
+    </tr>
   );
 }
 

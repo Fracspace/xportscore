@@ -1,5 +1,5 @@
 import Link from "next/link";
-
+import { ExternalLink } from "lucide-react";
 export default function TermsPage() {
   return (
     <main className="bg-[#F8F8F8] py-16 md:py-20">
@@ -571,9 +571,10 @@ export default function TermsPage() {
               <p>
                 <Link
                   href="mailto:support@xportscore.com"
-                  className="font-medium text-[#0D9488] underline underline-offset-4 hover:text-[#0b7f76]"
+                  className="inline-flex items-center gap-1.5 font-medium text-[#0D9488] underline underline-offset-4 hover:text-[#0b7f76] cursor-pointer"
                 >
                   support@xportscore.com
+                  <ExternalLink size={14} className="shrink-0" />
                 </Link>
               </p>
             </div>

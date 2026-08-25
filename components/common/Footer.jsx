@@ -1,16 +1,28 @@
+"use client";
+
 import { ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import logoImg from "@/assets/XPORTSCORE_IMG.png";
+import { usePathname } from "next/navigation";
 
 export default function Footer() {
+  const pathname = usePathname();
+
+  const handleHomeClick = (e) => {
+    if (pathname === "/") {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
   return (
     <footer className="bg-[#01081A] border-t border-[#101d35]">
       <div className="max-w-7xl mx-auto px-6 pt-10 pb-14">
         <div className="flex flex-col md:flex-row justify-between gap-10">
           {/* Logo Section */}
           <div className="max-w-xs">
-            <Link href="/" className="flex items-center mb-4">
+            <Link href="/" onClick={handleHomeClick} className="flex items-center mb-4 cursor-pointer">
               <Image
                 src={logoImg}
                 alt="XportScore"
@@ -33,7 +45,8 @@ export default function Footer() {
               <li>
                 <Link
                   href="/"
-                  className="text-gray-400 hover:text-white transition"
+                  onClick={handleHomeClick}
+                  className="text-gray-400 hover:text-white transition cursor-pointer"
                 >
                   Home
                 </Link>
@@ -167,8 +180,10 @@ export default function Footer() {
             certifications, banking approvals, customs requirements, or country
             specific import compliance.
           </p>
-
-          <p className="text-[11px] text-gray-500 mt-6">
+          <p className="text-center text-base sm:text-lg font-bold text-white mt-6 tracking-wider">
+            These Services Are Operated & Maintained By FRACSPACE PVT. LTD.
+          </p>
+          <p className="text-[11px] text-gray-500 mt-3 text-center">
             © 2026 XportScore. All rights reserved.
           </p>
         </div>
