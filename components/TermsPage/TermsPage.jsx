@@ -77,6 +77,10 @@ export default function TermsPage() {
                 XportScore assessment framework.
               </p>
 
+              <p>
+                Additionally, XportScore offers a premium Global Expansion Program designed to provide market entry intelligence, strategic brand positioning, commercial risk-mitigation frameworks, and strategic buyer outreach support. This program is advisory in nature and does not guarantee specific export transactions, regulatory approvals, customs clearances, or target market commercial success.
+              </p>
+
               <div className="pt-2">
                 <h3 className="mb-3 text-xl font-semibold text-[#0B1F44]">
                   XportScore is:

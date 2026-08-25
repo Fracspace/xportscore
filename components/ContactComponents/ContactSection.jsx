@@ -202,10 +202,16 @@ function ContactSection() {
                   },
                   {
                     icon: MapPin,
+<<<<<<< HEAD
                     label: "OFFICE ADDRESS",
                     value:
                       "Road No.12, Banjara Hills, 500034, Hyderabad, Telangana, India",
                     desc: "Open Mon–Sat, 9:00 AM – 6:00 PM IST."
+=======
+                    label: "REGISTERED OFFICE",
+                    value: "Hyderabad, India",
+                    desc: "4th Floor, Dreamscapes Hotel, Road No. 12, MLA Colony, Banjara Hills, Hyderabad, Telangana 500096"
+>>>>>>> 906f14b79f1107258cbffcdba3514b908ee7e281
                   }
                 ].map((item) => {
                   const Icon = item.icon;
@@ -215,7 +221,11 @@ function ContactSection() {
                       key={item.label}
                       className="rounded-xl border border-slate-200 bg-white p-5"
                     >
+<<<<<<< HEAD
                       <div className="flex items-start gap-4">
+=======
+                      <div className="flex gap-4 items-start">
+>>>>>>> 906f14b79f1107258cbffcdba3514b908ee7e281
                         <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-[#041B4D]">
                           <Icon size={20} className="text-white" />
                         </div>
@@ -341,6 +351,7 @@ function ContactSection() {
                       options={[
                         "Xport Score",
                         "Xport Verify",
+                        "Global Expansion",
                         "Partnership"
                       ]}
                       value={formData.enquiryType}

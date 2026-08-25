@@ -186,6 +186,9 @@ export default function Footer() {
           <p className="text-[11px] text-gray-500 mt-3 text-center">
             © 2026 XportScore. All rights reserved.
           </p>
+          <p className="text-center text-sm font-bold text-gray-300 mt-6 tracking-wide">
+            These Services are operated and maintained by FRACSPACE PRIVATE LIMITED
+          </p>
         </div>
       </div>
     </footer>

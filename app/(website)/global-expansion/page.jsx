@@ -38,7 +38,7 @@ export default function GlobalExpansion() {
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Link
               className="inline-flex items-center justify-center gap-2 bg-primary-container text-on-primary font-label-md text-label-md px-8 py-4 rounded hover:bg-inverse-surface transition-colors shadow-sm"
-              href="#"
+              href="/contact"
             >
               Apply for the Global Expansion Program
               <ArrowRight className="w-5 h-5" />
@@ -342,7 +342,7 @@ export default function GlobalExpansion() {
       {/* Pricing & Value Section */}
       <section className="py-24 px-margin-desktop bg-primary-container text-on-primary">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="font-headline-lg text-headline-lg mb-8">$20,000 Isn't the Cost of a Report. <br /><span className="text-secondary-fixed">It's the Cost of an Execution Team.</span></h2>
+          <h2 className="font-headline-lg text-headline-lg mb-8">$20,000 USD Isn't the Cost of a Report. <br /><span className="text-secondary-fixed">It's the Cost of an Execution Team.</span></h2>
           <div className="bg-inverse-surface/50 p-8 rounded-xl backdrop-blur-sm border border-primary-fixed/20 text-left mb-10">
             <p className="font-body-lg text-body-lg text-primary-fixed leading-relaxed">
               You could spend months trying to piece together market data, hire fragmented consultants, struggle with cultural branding nuances, and burn capital on misaligned buyer outreach. Or, you can partner with XportScore to deploy a comprehensive, synchronized global expansion engine from day one.
@@ -350,13 +350,6 @@ export default function GlobalExpansion() {
           </div>
           <h3 className="font-display-lg text-display-lg mb-4">Your Next Market Could Be Worth More Than Your Current One.</h3>
           <p className="font-body-lg text-body-lg text-primary-fixed mb-10">Don't leave global expansion to chance.</p>
-          {/* <Link
-            className="inline-flex items-center justify-center gap-2 bg-secondary text-on-secondary font-label-md text-label-md px-8 py-4 rounded hover:bg-secondary-fixed hover:text-on-secondary-fixed transition-colors shadow-lg"
-            href="#"
-          >
-            Schedule Your Expansion Consultation
-            <ArrowRight className="w-5 h-5" />
-          </Link> */}
         </div>
       </section>
     </main>

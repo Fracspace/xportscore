@@ -137,6 +137,7 @@ export default function PrivacyPolicy() {
               <ul className="list-disc space-y-2 pl-6 marker:text-slate-400">
                 <li>Process applications</li>
                 <li>Conduct export-readiness assessments</li>
+                <li>Administer and execute the Global Expansion Program, including target market identification and buyer outreach</li>
                 <li>Review submitted documents</li>
                 <li>Generate reports</li>
                 <li>Issue certificates</li>
