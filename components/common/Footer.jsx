@@ -181,7 +181,7 @@ export default function Footer() {
             specific import compliance.
           </p>
           <p className="text-center text-base sm:text-lg font-bold text-white mt-6 tracking-wider">
-            Unit Of FRACSPACE PVT. LTD.
+            A Unit Of FRACSPACE PVT. LTD.
           </p>
           <p className="text-[11px] text-gray-500 mt-3 text-center">
             © 2026 XportScore. All rights reserved.
